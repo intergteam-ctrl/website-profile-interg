@@ -57,4 +57,12 @@ class AdminProductFormTest extends TestCase
         $this->get('/marketplace')->assertSee('ThinkPad T14')->assertSee('Rp 9.800.000');
         $this->assertSame(1, Product::count());
     }
+
+    public function test_admin_can_open_profile_page_to_change_password(): void
+    {
+        $this->actingAs($this->admin())
+            ->get('/admin/profile')
+            ->assertOk()
+            ->assertSee('password', false);
+    }
 }
