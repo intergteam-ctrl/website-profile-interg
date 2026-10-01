@@ -61,8 +61,7 @@
   <header id="navbar" class="{{ $onHome ? '' : 'solid' }}">
     <div class="container nav-inner">
       <a href="{{ $section('hero') }}" class="brand" aria-label="{{ config('company.name') }} — beranda">
-        <span class="brand-name">IG<span>&amp;</span>B</span>
-        <span class="brand-tag">Accelerating<br>Innovation and<br>Technology</span>
+        <img src="{{ asset('images/logo-igb.png') }}" alt="IG&amp;B — Accelerating Innovation and Technology" width="176" height="40">
       </a>
 
       <ul class="nav-links">
@@ -89,8 +88,7 @@
       <div class="footer-grid">
         <div>
           <a href="{{ $section('hero') }}" class="brand">
-            <span class="brand-name">IG<span>&amp;</span>B</span>
-            <span class="brand-tag">Accelerating<br>Innovation and<br>Technology</span>
+            <img src="{{ asset('images/logo-igb.png') }}" alt="IG&amp;B — Accelerating Innovation and Technology" width="176" height="40">
           </a>
           <p class="footer-desc">
             {{ config('company.name') }} — Total IT Solution untuk pemerintahan dan perusahaan: system integrator, software, IoT, surveillance, dan display solution.
