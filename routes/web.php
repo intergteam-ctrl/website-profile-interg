@@ -1,40 +1,30 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
-use App\Http\Controllers\Editor\HomeController;
+use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\FrontendController;
+use Illuminate\Support\Facades\Route;
 
-//frontend routes
+// Frontend
 Route::get('/', [FrontendController::class, 'home'])->name('home');
-Route::get('/about', [FrontendController::class, 'about'])->name('about');
-Route::get('/services', [FrontendController::class, 'services'])->name('services');
-Route::get('/contact', [FrontendController::class, 'contact'])->name('contact');
 Route::get('/blog', [FrontendController::class, 'blog'])->name('blog');
+Route::get('/blog/{slug}', [FrontendController::class, 'blogShow'])->name('blog.show');
 Route::get('/portfolio', [FrontendController::class, 'portfolio'])->name('portfolio');
-
 Route::get('/marketplace', [FrontendController::class, 'marketplace'])->name('marketplace');
 
-//editor routes
-Route::prefix('editor')->group(function () {
-    Route::get('/dashboard', [HomeController::class, 'index'])
-        ->name('editor.dashboard');
-});
+// Contact form submission (rate-limited: 5 per minute per IP).
+Route::post('/contact', [ContactMessageController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('contact.store');
 
-Route::prefix('Editor')->group(function () {
-    Route::get('/dashboard', [HomeController::class, 'index']);
-});
+// About / Services / Contact live as sections on the home page. These routes
+// previously pointed at controller methods that did not exist (HTTP 500), so
+// they now redirect to the matching section to keep any old links working.
+// GET-only on purpose: Route::redirect() registers ANY, which would override POST /contact.
+Route::get('/about', fn () => redirect('/#about', 301))->name('about');
+Route::get('/services', fn () => redirect('/#services', 301))->name('services');
+Route::get('/contact', fn () => redirect('/#contact', 301))->name('contact');
 
-//debug sementara - HAPUS setelah selesai
-// Route::get('/debug-s3', function () {
-//     return [
-//         'livewire_temp_disk' => config('livewire.temporary_file_upload.disk') ?? 'default (' . config('filesystems.default') . ')',
-//         'gd_loaded' => extension_loaded('gd'),
-//         'gd_functions' => [
-//             'imagecreatefromstring' => function_exists('imagecreatefromstring'),
-//             'imagejpeg' => function_exists('imagejpeg'),
-//         ],
-//         'files_in_bucket_root' => Storage::disk('s3')->files(),
-//         'files_in_products' => Storage::disk('s3')->files('products'),
-//     ];
-// });
+// The old static "editor" dashboard was publicly reachable without login.
+// All content management now happens in the authenticated Filament panel.
+Route::get('/editor/dashboard', fn () => redirect('/admin', 301))->name('editor.dashboard');
+Route::get('/Editor/dashboard', fn () => redirect('/admin', 301));

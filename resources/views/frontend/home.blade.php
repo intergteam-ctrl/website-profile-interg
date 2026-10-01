@@ -1,199 +1,120 @@
 @extends('layout.app')
 
+@php
+  $stats = config('company.stats');
+  $arrow = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>';
+
+  $services = [
+      ['title' => 'System Integrator', 'desc' => 'Solusi terpadu yang mengintegrasikan berbagai komponen sistem untuk meningkatkan efisiensi operasional dan kinerja bisnis Anda.',
+       'icon' => 'M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z'],
+      ['title' => 'Software & App Development', 'desc' => 'Tim ahli kami merancang solusi perangkat lunak inovatif — mulai dari aplikasi web, desktop, hingga mobile yang sesuai kebutuhan unik Anda.',
+       'icon' => 'M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z'],
+      ['title' => 'IoT Solution & Surveillance', 'desc' => 'Solusi IoT menghubungkan perangkat pintar dan mengoptimalkan proses bisnis. Dari kamera pengawas hingga sensor IoT terintegrasi.',
+       'icon' => 'M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z'],
+      ['title' => 'Display Solution', 'desc' => 'Videotron, VMS, LED Display untuk Control Room, Command Center, NOC, Traffic Control, Digital Signage, dan aplikasi display profesional lainnya.',
+       'icon' => 'M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z'],
+      ['title' => 'Hardware Service & Maintenance', 'desc' => 'Layanan perawatan dan pemeliharaan perangkat keras memastikan ketersediaan optimal dan kinerja stabil dari sistem IT perusahaan Anda.',
+       'icon' => 'M22 9V7h-2V5c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-2h2v-2h-2v-2h2v-2h-2V9h2zm-4 10H4V5h14v14zM6 13h5v4H6zm6-6h4v3h-4zM6 7h5v5H6zm6 4h4v6h-4z'],
+      ['title' => 'Digital Transformation Consulting', 'desc' => 'Konsultasi transformasi digital end-to-end yang membantu organisasi Anda beradaptasi dan unggul dalam era revolusi industri 5.0.',
+       'icon' => 'M13 2.05v2.02c3.95.49 7 3.85 7 7.93 0 3.21-1.81 6-4.72 7.72L13 17v5h5l-1.22-1.22C19.91 19.07 22 15.76 22 12c0-5.18-3.95-9.45-9-9.95zM11 2.05C5.95 2.55 2 6.82 2 12c0 3.76 2.09 7.07 5.22 8.78L6 22h5V2.05z'],
+  ];
+
+  $reasons = [
+      ['👥', 'Tim Profesional', 'Didukung tenaga ahli berpengalaman di bidang IT, system integration, dan transformasi digital.'],
+      ['⚡', 'Teknologi Terkini', 'Selalu mengadopsi teknologi terdepan — AI, IoT, Big Data — untuk memberikan solusi masa depan hari ini.'],
+      ['🚀', 'Implementasi Cepat', 'Metodologi delivery efisien memastikan project selesai tepat waktu tanpa mengorbankan kualitas.'],
+      ['🛡️', 'Keamanan Data', 'Standar keamanan enterprise-grade melindungi data dan sistem Anda dari ancaman siber.'],
+      ['🔧', 'Dukungan 24/7', 'Tim support siap membantu kapan saja — monitoring proaktif dan respons cepat untuk operasional tanpa gangguan.'],
+      ['🎯', 'Solusi Sesuai Kebutuhan', 'Setiap solusi dirancang khusus — bukan off-the-shelf — untuk memenuhi kebutuhan spesifik bisnis dan regulasi klien.'],
+  ];
+
+  // Shown only while no portfolio has been added in the admin panel.
+  $fallbackPortfolios = [
+      ['🖥️', 'Display Solution', 'Control Room Dinas SDA Jatim', 'Video wall system terintegrasi untuk monitoring sumber daya air Provinsi Jawa Timur secara real-time.'],
+      ['🚦', 'Software Development', 'JT Command Center (JTCC)', 'Platform monitoring lalu lintas real-time Dishub Jatim — analisis data, pengelolaan kejadian, modernisasi transportasi.'],
+      ['💧', 'IoT Solution', 'Telemetri AWLR', 'Sistem pemantauan ketinggian air jarak jauh berbasis telemetri dengan akses data real-time untuk Dinas SDA.'],
+      ['🛣️', 'Display Solution', 'VMS Traffic Info Kota Malang', 'Variable Message Sign outdoor terintegrasi sistem lalu lintas — estimasi waktu tempuh dan informasi kemacetan.'],
+      ['🗄️', 'Software Development', 'SINTA — Sistem Interoperabilitas JT & UPKB', 'Platform web terintegrasi untuk pertukaran data Jembatan Timbang dan UPKB di seluruh Jawa Timur.'],
+      ['📡', 'IoT Solution', 'Radar Traffic Counting', 'Sensor radar presisi tinggi untuk analisis kendaraan dan pola lalu lintas — mendukung keputusan berbasis data.'],
+  ];
+@endphp
+
 @section('content')
 
-<!-- ============================================================
-     HERO
-============================================================ -->
+{{-- ============================== HERO ============================== --}}
 <section id="hero">
-  <div class="hero-bg">
+  <div class="hero-bg" aria-hidden="true">
     <div class="hero-grid"></div>
     <div class="hero-shape hero-shape-1"></div>
     <div class="hero-shape hero-shape-2"></div>
   </div>
   <div class="hero-content">
-    <div class="container">
-      <div class="hero-grid-layout">
-        <!-- Left: copy -->
-        <div>
+    <div class="container hero-layout">
+      <div>
         <div class="hero-tag">{{ $setting?->hero_tag ?: 'Total IT Solution Provider' }}</div>
-                  <h1 class="hero-headline">
-                    @if($setting?->hero_title)
-                      {!! nl2br(e($setting->hero_title)) !!}
-                    @else
-                      Akselerasi<br>
-                      <span class="red-word">Digital 5.0</span><br>
-                      <span class="accent-word">Tanpa Batas</span>
-                    @endif
-                  </h1>
-                  <p class="hero-sub">
-                    {{ $setting?->hero_subtitle ?: 'Membantu perusahaan dan pemerintahan bertransformasi melalui solusi teknologi modern — dari system integration, IoT, software development, hingga display solution profesional.' }}
-                  </p>
-          <div class="hero-ctas">
-            <a href="#contact" class="btn btn-red">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
-              Konsultasi Sekarang
-            </a>
-            <a href="#services" class="btn btn-outline">
-              Lihat Layanan
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
-            </a>
-          </div>
-          <!-- Stats -->
-          <div class="hero-stats">
-            <div class="hero-stat-item">
-              <div class="hero-stat-num">100<span>+</span></div>
-              <div class="hero-stat-label">Project Selesai</div>
-            </div>
-            <div class="hero-stat-item">
-              <div class="hero-stat-num">50<span>+</span></div>
-              <div class="hero-stat-label">Klien Aktif</div>
-            </div>
-            <div class="hero-stat-item">
-              <div class="hero-stat-num">10<span>+</span></div>
-              <div class="hero-stat-label">Tahun Pengalaman</div>
-            </div>
-            <div class="hero-stat-item">
-              <div class="hero-stat-num">24<span>/7</span></div>
-              <div class="hero-stat-label">Support</div>
-            </div>
-          </div>
-        </div>
-        <!-- Right: UI card -->
-        <div class="hero-visual">
-          <div class="hero-card-main">
-            <div class="hero-card-header">
-              <div class="hero-card-dot" style="background:#EF4444"></div>
-              <div class="hero-card-dot" style="background:#F59E0B"></div>
-              <div class="hero-card-dot" style="background:#10B981"></div>
-              <span style="font-size:12px;color:rgba(218, 216, 216, 0.578);margin-left:8px;font-family:var(--font-head)">IGB Dashboard</span>
-            </div>
-            <div class="hero-card-screen">
-              <div class="hero-screen-bar" style="background:rgba(217,4,41,0.5);width:70%"></div>
-              <div class="hero-screen-bar" style="background:rgba(255,255,255,0.08);width:45%"></div>
-              <div class="hero-screen-bar" style="background:rgba(255,255,255,0.05);width:85%"></div>
-              <div class="hero-screen-grid">
-                <div class="hero-screen-cell">
-                  <div class="hero-screen-cell-num" style="color:#D90429">100+</div>
-                  <div class="hero-screen-cell-lbl">Projects</div>
-                </div>
-                <div class="hero-screen-cell">
-                  <div class="hero-screen-cell-num" style="color:#F4B400">50+</div>
-                  <div class="hero-screen-cell-lbl">Clients</div>
-                </div>
-                <div class="hero-screen-cell">
-                  <div class="hero-screen-cell-num" style="color:#10B981">99%</div>
-                  <div class="hero-screen-cell-lbl">Uptime</div>
-                </div>
-                <div class="hero-screen-cell">
-                  <div class="hero-screen-cell-num" style="color:rgba(255,255,255,0.8)">24/7</div>
-                  <div class="hero-screen-cell-lbl">Support</div>
-                </div>
-              </div>
-            </div>
-            <div style="display:flex;gap:8px;margin-top:4px">
-              <div style="height:6px;flex:3;background:var(--red);border-radius:3px;opacity:0.7"></div>
-              <div style="height:6px;flex:1;background:rgba(255,255,255,0.08);border-radius:3px"></div>
-              <div style="height:6px;flex:2;background:rgba(255,255,255,0.08);border-radius:3px"></div>
-            </div>
-          </div>
-          <!-- Floating cards -->
-          <div class="hero-float-card fc-1">
-            <div class="hero-float-card-icon" style="background:#FEF2F2">🔌</div>
-            <div class="hero-float-card-text">
-              <div class="hero-float-card-title">IoT Connected</div>
-              <div class="hero-float-card-val">Real-time monitoring aktif</div>
-            </div>
-          </div>
-          <div class="hero-float-card fc-2">
-            <div class="hero-float-card-icon" style="background:#F0FDF4">✅</div>
-            <div class="hero-float-card-text">
-              <div class="hero-float-card-title">Project Terkirim</div>
-              <div class="hero-float-card-val">Control Room Dishub Jatim</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
-     ABOUT
-============================================================ -->
-<section id="about">
-  <div class="container">
-    <div class="about-grid">
-      <!-- Visual left -->
-      <div class="about-visual reveal-left">
-        <div class="about-stripe"></div>
-        <div class="about-img-wrap">
-          <div class="about-img-inner">
-            <!-- Abstract geometric grid representing technology -->
-            <svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="10" y="10" width="50" height="50" rx="8" fill="rgba(217,4,41,0.25)" stroke="rgba(217,4,41,0.4)" stroke-width="1.5"/>
-              <rect x="70" y="10" width="50" height="50" rx="8" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
-              <rect x="130" y="10" width="40" height="50" rx="8" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
-              <rect x="10" y="70" width="50" height="50" rx="8" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
-              <rect x="70" y="70" width="100" height="50" rx="8" fill="rgba(217,4,41,0.15)" stroke="rgba(217,4,41,0.3)" stroke-width="1.5"/>
-              <rect x="10" y="130" width="110" height="40" rx="8" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
-              <rect x="130" y="130" width="40" height="40" rx="8" fill="rgba(244,180,0,0.15)" stroke="rgba(244,180,0,0.3)" stroke-width="1.5"/>
-              <!-- Center icon -->
-              <circle cx="90" cy="95" r="18" fill="rgba(217,4,41,0.3)" stroke="rgba(217,4,41,0.6)" stroke-width="1.5"/>
-              <text x="90" y="100" text-anchor="middle" fill="white" font-size="16">⚡</text>
-            </svg>
-            <div style="font-family:var(--font-head);font-size:13px;font-weight:600;color:rgba(255,255,255,0.4);letter-spacing:0.1em">TOTAL IT SOLUTION</div>
-          </div>
-        </div>
-        <div class="about-badge">
-          <div class="about-badge-num">10+</div>
-          <div class="about-badge-lbl">Tahun Pengalaman</div>
-        </div>
-      </div>
-      <!-- Text right -->
-      <div class="about-text reveal-right">
-        <div class="section-label">Tentang Kami</div>
-        <h2 class="section-title">Inter G Queen<br><span>Bumindo</span></h2>
-        <p class="about-body">
-          @if($setting?->about_text)
-            {!! nl2br(e($setting->about_text)) !!}
+        <h1 class="hero-headline">
+          @if ($setting?->hero_title)
+            {!! nl2br(e($setting->hero_title)) !!}
           @else
-            Seiring perkembangan revolusi teknologi 5.0, Inter G hadir menjawab tantangan dengan konsep <strong>Total IT Solution</strong>. 
-            Kami menyediakan berbagai solusi untuk memenuhi segala kebutuhan teknologi — baik pemerintahan maupun perusahaan — mulai dari otomasi, big data, IoT, 
-            hingga Artificial Intelligence.
+            Akselerasi<br>
+            <span class="red-word">Digital 5.0</span><br>
+            <span class="accent-word">Tanpa Batas</span>
           @endif
+        </h1>
+        <p class="hero-sub">
+          {{ $setting?->hero_subtitle ?: 'Membantu perusahaan dan pemerintahan bertransformasi melalui solusi teknologi modern — dari system integration, IoT, software development, hingga display solution profesional.' }}
         </p>
-        <!-- Stats -->
-        <div class="about-stats">
-          <div class="about-stat">
-            <div class="about-stat-num">100+</div>
-            <div class="about-stat-lbl">Project</div>
+        <div class="hero-ctas">
+          <a href="#contact" class="btn btn-red">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+            Konsultasi Sekarang
+          </a>
+          <a href="#services" class="btn btn-outline">Lihat Layanan {!! $arrow !!}</a>
+        </div>
+        <dl class="hero-stats">
+          @foreach ($stats as $stat)
+            <div>
+              <dt class="sr-only">{{ $stat['label'] }}</dt>
+              <dd>
+                <div class="hero-stat-num">{{ $stat['value'] }}<span>{{ $stat['suffix'] }}</span></div>
+                <div class="hero-stat-label" aria-hidden="true">{{ $stat['label'] }}</div>
+              </dd>
+            </div>
+          @endforeach
+        </dl>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="hero-card-main">
+          <div class="hero-card-header">
+            <span class="hero-card-dot"></span><span class="hero-card-dot"></span><span class="hero-card-dot"></span>
+            <span class="hero-card-title">IGB Dashboard</span>
           </div>
-          <div class="about-stat">
-            <div class="about-stat-num">50+</div>
-            <div class="about-stat-lbl">Client</div>
+          <div class="hero-card-screen">
+            <div class="hero-screen-bar"></div>
+            <div class="hero-screen-bar"></div>
+            <div class="hero-screen-bar"></div>
+            <div class="hero-screen-grid">
+              <div class="hero-screen-cell"><div class="hero-screen-cell-num">{{ $stats['projects']['value'].$stats['projects']['suffix'] }}</div><div class="hero-screen-cell-lbl">Projects</div></div>
+              <div class="hero-screen-cell"><div class="hero-screen-cell-num">{{ $stats['clients']['value'].$stats['clients']['suffix'] }}</div><div class="hero-screen-cell-lbl">Clients</div></div>
+              <div class="hero-screen-cell"><div class="hero-screen-cell-num">{{ $stats['years']['value'].$stats['years']['suffix'] }}</div><div class="hero-screen-cell-lbl">Years</div></div>
+              <div class="hero-screen-cell"><div class="hero-screen-cell-num">{{ $stats['support']['value'].$stats['support']['suffix'] }}</div><div class="hero-screen-cell-lbl">Support</div></div>
+            </div>
           </div>
-          <div class="about-stat">
-            <div class="about-stat-num">24/7</div>
-            <div class="about-stat-lbl">Support</div>
+          <div class="hero-progress"><span></span><span></span><span></span></div>
+        </div>
+        <div class="hero-float-card fc-1">
+          <div class="hero-float-card-icon">🔌</div>
+          <div>
+            <div class="hero-float-card-title">IoT Connected</div>
+            <div class="hero-float-card-val">Real-time monitoring aktif</div>
           </div>
         </div>
-        <!-- Vision / Mission -->
-        <div class="vm-row">
-          <div class="vm-item">
-            <div class="vm-icon">🎯</div>
-            <div>
-              <div class="vm-label">Visi</div>
-              <div class="vm-text">Menjadi mitra transformasi digital terpercaya 
-                                  yang mengakselerasi inovasi dan teknologi di Indonesia.</div>
-            </div>
-          </div>
-          <div class="vm-item">
-            <div class="vm-icon">🚀</div>
-            <div>
-              <div class="vm-label">Misi</div>
-              <div class="vm-text">Menghadirkan solusi teknologi terpadu yang komprehensif, handal, dan berkelanjutan untuk meningkatkan daya saing klien.</div>
-            </div>
+        <div class="hero-float-card fc-2">
+          <div class="hero-float-card-icon">✅</div>
+          <div>
+            <div class="hero-float-card-title">Project Terkirim</div>
+            <div class="hero-float-card-val">Control Room Dishub Jatim</div>
           </div>
         </div>
       </div>
@@ -201,719 +122,280 @@
   </div>
 </section>
 
-<!-- ============================================================
-     SERVICES
-============================================================ -->
-<section id="services">
+{{-- ============================== ABOUT ============================== --}}
+<section id="about" class="section">
+  <div class="container about-grid">
+    <div class="about-visual reveal">
+      <div class="about-stripe" aria-hidden="true"></div>
+      <div class="about-img-wrap" aria-hidden="true">
+        <svg width="180" height="180" viewBox="0 0 180 180" fill="none">
+          <rect x="10" y="10" width="50" height="50" rx="8" fill="rgba(217,4,41,0.25)" stroke="rgba(217,4,41,0.4)" stroke-width="1.5"/>
+          <rect x="70" y="10" width="50" height="50" rx="8" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
+          <rect x="130" y="10" width="40" height="50" rx="8" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
+          <rect x="10" y="70" width="50" height="50" rx="8" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
+          <rect x="70" y="70" width="100" height="50" rx="8" fill="rgba(217,4,41,0.15)" stroke="rgba(217,4,41,0.3)" stroke-width="1.5"/>
+          <rect x="10" y="130" width="110" height="40" rx="8" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
+          <rect x="130" y="130" width="40" height="40" rx="8" fill="rgba(244,180,0,0.15)" stroke="rgba(244,180,0,0.3)" stroke-width="1.5"/>
+          <circle cx="90" cy="95" r="18" fill="rgba(217,4,41,0.3)" stroke="rgba(217,4,41,0.6)" stroke-width="1.5"/>
+          <path d="M93 84l-9 13h6l-1 9 9-13h-6l1-9z" fill="#fff"/>
+        </svg>
+        <div class="about-img-caption">TOTAL IT SOLUTION</div>
+      </div>
+      <div class="about-badge">
+        <div class="about-badge-num">{{ $stats['years']['value'].$stats['years']['suffix'] }}</div>
+        <div class="about-badge-lbl">{{ $stats['years']['label'] }}</div>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <div class="section-label">Tentang Kami</div>
+      <h2 class="section-title">Inter G Queen<br><span>Bumindo</span></h2>
+      <p class="about-body">
+        @if ($setting?->about_text)
+          {!! nl2br(e($setting->about_text)) !!}
+        @else
+          Seiring perkembangan revolusi teknologi 5.0, Inter G hadir menjawab tantangan dengan konsep <strong>Total IT Solution</strong>.
+          Kami menyediakan berbagai solusi untuk memenuhi kebutuhan teknologi — baik pemerintahan maupun perusahaan — mulai dari otomasi, big data, IoT,
+          hingga Artificial Intelligence.
+        @endif
+      </p>
+      <div class="about-stats">
+        @foreach (['projects', 'clients', 'support'] as $key)
+          <div class="about-stat">
+            <div class="about-stat-num">{{ $stats[$key]['value'].$stats[$key]['suffix'] }}</div>
+            <div class="about-stat-lbl">{{ $stats[$key]['label'] }}</div>
+          </div>
+        @endforeach
+      </div>
+      <div class="vm-row">
+        <div class="vm-item">
+          <div class="vm-icon" aria-hidden="true">🎯</div>
+          <div>
+            <div class="vm-label">Visi</div>
+            <div class="vm-text">Menjadi mitra transformasi digital terpercaya yang mengakselerasi inovasi dan teknologi di Indonesia.</div>
+          </div>
+        </div>
+        <div class="vm-item">
+          <div class="vm-icon" aria-hidden="true">🚀</div>
+          <div>
+            <div class="vm-label">Misi</div>
+            <div class="vm-text">Menghadirkan solusi teknologi terpadu yang komprehensif, handal, dan berkelanjutan untuk meningkatkan daya saing klien.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{{-- ============================== SERVICES ============================== --}}
+<section id="services" class="section section--light">
   <div class="container">
-    <div class="services-header reveal">
+    <div class="section-head section-head--center reveal">
       <div class="section-label">Layanan Kami</div>
       <h2 class="section-title">General <span>Services</span></h2>
       <p class="section-sub">{{ $setting?->services_intro ?: 'Solusi teknologi komprehensif yang dirancang khusus untuk kebutuhan pemerintahan dan perusahaan modern.' }}</p>
     </div>
-    <div class="services-grid">
-
-      <!-- System Integrator -->
-      <div class="service-card reveal">
-        <div class="service-icon">
-          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
-        </div>
-        <div class="service-title">System Integrator</div>
-        <p class="service-desc">Solusi terpadu yang mengintegrasikan berbagai komponen sistem untuk meningkatkan efisiensi operasional dan kinerja bisnis Anda.</p>
-        <a href="#contact" class="service-link">
-          Pelajari Lebih
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
-        </a>
-      </div>
-
-      <!-- Software & App Dev -->
-      <div class="service-card reveal">
-        <div class="service-icon">
-          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>
-        </div>
-        <div class="service-title">Software & App Development</div>
-        <p class="service-desc">Tim ahli kami merancang solusi perangkat lunak inovatif — mulai dari aplikasi web, desktop, hingga mobile yang sesuai kebutuhan unik Anda.</p>
-        <a href="#contact" class="service-link">
-          Pelajari Lebih
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
-        </a>
-      </div>
-
-      <!-- IoT Solution -->
-      <div class="service-card reveal">
-        <div class="service-icon">
-          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
-        </div>
-        <div class="service-title">IoT Solution & Surveillance Camera</div>
-        <p class="service-desc">Solusi IoT menghubungkan perangkat pintar dan mengoptimalkan proses bisnis. Dari kamera pengawas hingga sensor IoT terintegrasi.</p>
-        <a href="#contact" class="service-link">
-          Pelajari Lebih
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
-        </a>
-      </div>
-
-      <!-- Display Solution -->
-      <div class="service-card reveal">
-        <div class="service-icon">
-          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
-        </div>
-        <div class="service-title">Professional Integrated Display Solution</div>
-        <p class="service-desc">Videotron, VMS, LED Display untuk Control Room, Command Center, NOC, Traffic Control, Digital Signage, dan aplikasi display profesional lainnya.</p>
-        <a href="#contact" class="service-link">
-          Pelajari Lebih
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
-        </a>
-      </div>
-
-      <!-- Hardware Service -->
-      <div class="service-card reveal">
-        <div class="service-icon">
-          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M22 9V7h-2V5c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-2h2v-2h-2v-2h2v-2h-2V9h2zm-4 10H4V5h14v14zM6 13h5v4H6zm6-6h4v3h-4zM6 7h5v5H6zm6 4h4v6h-4z"/></svg>
-        </div>
-        <div class="service-title">Hardware Service & Maintenance</div>
-        <p class="service-desc">Layanan perawatan dan pemeliharaan perangkat keras memastikan ketersediaan optimal dan kinerja stabil dari sistem IT perusahaan Anda.</p>
-        <a href="#contact" class="service-link">
-          Pelajari Lebih
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
-        </a>
-      </div>
-
-      <!-- Digital Transformation -->
-      <div class="service-card reveal">
-        <div class="service-icon">
-          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M13 2.05v2.02c3.95.49 7 3.85 7 7.93 0 3.21-1.81 6-4.72 7.72L13 17v5h5l-1.22-1.22C19.91 19.07 22 15.76 22 12c0-5.18-3.95-9.45-9-9.95zM11 2.05C5.95 2.55 2 6.82 2 12c0 3.76 2.09 7.07 5.22 8.78L6 22h5V2.05z"/></svg>
-        </div>
-        <div class="service-title">Digital Transformation Consulting</div>
-        <p class="service-desc">Konsultasi transformasi digital end-to-end yang membantu organisasi Anda beradaptasi dan unggul dalam era revolusi industri 5.0.</p>
-        <a href="#contact" class="service-link">
-          Pelajari Lebih
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
-        </a>
-      </div>
-
+    <div class="grid-3">
+      @foreach ($services as $service)
+        <article class="service-card reveal">
+          <div class="service-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="{{ $service['icon'] }}"/></svg>
+          </div>
+          <h3 class="service-title">{{ $service['title'] }}</h3>
+          <p class="service-desc">{{ $service['desc'] }}</p>
+          <a href="#contact" class="service-link" data-service="{{ $service['title'] }}">
+            Konsultasikan {!! $arrow !!}
+          </a>
+        </article>
+      @endforeach
     </div>
   </div>
 </section>
 
-<!-- ============================================================
-     WHY CHOOSE US
-============================================================ -->
-<section id="why">
+{{-- ============================== WHY US ============================== --}}
+<section id="why" class="section section--dark">
   <div class="container">
-    <div class="why-header reveal">
+    <div class="section-head section-head--center reveal">
       <div class="section-label">Keunggulan Kami</div>
       <h2 class="section-title">Mengapa Memilih <span>IGB?</span></h2>
-      <p class="section-sub" style="color:rgba(255,255,255,0.5);margin-inline:auto">
-        Kami menghadirkan kombinasi teknologi mutakhir, tim berpengalaman, dan komitmen penuh terhadap kesuksesan klien.
-      </p>
+      <p class="section-sub">Kami menghadirkan kombinasi teknologi mutakhir, tim berpengalaman, dan komitmen penuh terhadap kesuksesan klien.</p>
     </div>
-    <div class="why-grid">
-      <div class="why-card reveal">
-        <div class="why-icon">👥</div>
-        <div class="why-title">Tim Profesional</div>
-        <p class="why-desc">Didukung tenaga ahli berpengalaman di bidang IT, system integration, dan transformasi digital.</p>
-      </div>
-      <div class="why-card reveal">
-        <div class="why-icon">⚡</div>
-        <div class="why-title">Teknologi Terkini</div>
-        <p class="why-desc">Selalu mengadopsi teknologi terdepan — AI, IoT, Big Data — untuk memberikan solusi masa depan hari ini.</p>
-      </div>
-      <div class="why-card reveal">
-        <div class="why-icon">🚀</div>
-        <div class="why-title">Implementasi Cepat</div>
-        <p class="why-desc">Metodologi delivery efisien memastikan project selesai tepat waktu tanpa mengorbankan kualitas.</p>
-      </div>
-      <div class="why-card reveal">
-        <div class="why-icon">🛡️</div>
-        <div class="why-title">Keamanan Data</div>
-        <p class="why-desc">Standar keamanan enterprise-grade melindungi data dan sistem Anda dari ancaman siber.</p>
-      </div>
-      <div class="why-card reveal">
-        <div class="why-icon">🔧</div>
-        <div class="why-title">Dukungan 24/7</div>
-        <p class="why-desc">Tim support siap membantu kapan saja — monitoring proaktif dan respons cepat untuk operasional tanpa gangguan.</p>
-      </div>
-      <div class="why-card reveal">
-        <div class="why-icon">🎯</div>
-        <div class="why-title">Solusi Sesuai Kebutuhan</div>
-        <p class="why-desc">Setiap solusi dirancang khusus — bukan off-the-shelf — untuk memenuhi kebutuhan spesifik bisnis dan regulasi klien.</p>
-      </div>
+    <div class="grid-3">
+      @foreach ($reasons as [$icon, $title, $desc])
+        <div class="why-card reveal">
+          <div class="why-icon" aria-hidden="true">{{ $icon }}</div>
+          <h3 class="why-title">{{ $title }}</h3>
+          <p class="why-desc">{{ $desc }}</p>
+        </div>
+      @endforeach
     </div>
   </div>
 </section>
 
-<!-- ============================================================
-     PORTFOLIO
-============================================================ -->
-<section id="portfolio">
+{{-- ============================== PORTFOLIO ============================== --}}
+<section id="portfolio" class="section">
   <div class="container">
-    <div class="portfolio-header">
+    <div class="section-head section-head--split">
       <div class="reveal">
         <div class="section-label">Portfolio</div>
         <h2 class="section-title">Project <span>Unggulan</span></h2>
       </div>
-      <a href="{{ route('portfolio') }}" class="btn btn-navy reveal">Lihat Semua Project →</a>
+      @if ($portfolios->isNotEmpty())
+        <a href="{{ route('portfolio') }}" class="btn btn-navy reveal">Lihat Semua Project →</a>
+      @endif
     </div>
-    <div class="portfolio-grid">
-      @if(isset($portfolios) && $portfolios->isNotEmpty())
-        @foreach($portfolios as $item)
-          <div class="portfolio-card reveal">
-            <div class="portfolio-thumb" style="background:linear-gradient(135deg,#1e293b,#0F172A);position:relative;overflow:hidden">
-              @if($item->image_url)
-                <img src="{{ $item->image_url }}" alt="{{ $item->title }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" loading="lazy">
-              @else
-                <div class="portfolio-thumb-inner">
-                  <div class="portfolio-thumb-icon">🖥️</div>
-                  <div class="portfolio-thumb-label">{{ Str::upper($item->category ?: 'PROJECT') }}</div>
-                </div>
-              @endif
-              <div class="portfolio-overlay">
-                <div class="portfolio-overlay-btn">Lihat Detail</div>
+    <div class="grid-3">
+      @forelse ($portfolios as $item)
+        @include('partials.portfolio-card', ['item' => $item])
+      @empty
+        @foreach ($fallbackPortfolios as [$icon, $category, $title, $desc])
+          <article class="media-card reveal">
+            <div class="media-thumb">
+              <div class="media-thumb-inner">
+                <div class="media-thumb-icon" aria-hidden="true">{{ $icon }}</div>
+                <div class="media-thumb-label">{{ $category }}</div>
               </div>
             </div>
-            <div class="portfolio-info">
-              <div class="portfolio-cat">{{ $item->category }}</div>
-              <div class="portfolio-name">{{ $item->title }}</div>
-              <p class="portfolio-desc">{{ Str::limit($item->description, 140) }}</p>
+            <div class="media-body">
+              <div class="media-cat">{{ $category }}</div>
+              <h3 class="media-title">{{ $title }}</h3>
+              <p class="media-desc">{{ $desc }}</p>
             </div>
-          </div>
+          </article>
         @endforeach
-      @else
+      @endforelse
+    </div>
+  </div>
+</section>
 
-      <div class="portfolio-card reveal">
-        <div class="portfolio-thumb" style="background:linear-gradient(135deg,#1e293b,#0F172A)">
-          <div class="portfolio-thumb-inner">
-            <div class="portfolio-thumb-icon">🖥️</div>
-            <div class="portfolio-thumb-label">CONTROL ROOM</div>
-          </div>
-          <div class="portfolio-overlay">
-            <div class="portfolio-overlay-btn">Lihat Detail</div>
-          </div>
-        </div>
-        <div class="portfolio-info">
-          <div class="portfolio-cat">Display Solution</div>
-          <div class="portfolio-name">Control Room Dinas SDA Jatim</div>
-          <p class="portfolio-desc">Video wall system terintegrasi untuk monitoring sumber daya air Provinsi Jawa Timur secara real-time.</p>
-        </div>
-      </div>
-
-      <div class="portfolio-card reveal">
-        <div class="portfolio-thumb" style="background:linear-gradient(135deg,#1e293b,#2d1b69)">
-          <div class="portfolio-thumb-inner">
-            <div class="portfolio-thumb-icon">🚦</div>
-            <div class="portfolio-thumb-label">TRAFFIC SYSTEM</div>
-          </div>
-          <div class="portfolio-overlay">
-            <div class="portfolio-overlay-btn">Lihat Detail</div>
-          </div>
-        </div>
-        <div class="portfolio-info">
-          <div class="portfolio-cat">Software Development</div>
-          <div class="portfolio-name">JT Command Center (JTCC)</div>
-          <p class="portfolio-desc">Platform monitoring lalu lintas real-time Dishub Jatim — analisis data, pengelolaan kejadian, modernisasi transportasi.</p>
-        </div>
-      </div>
-
-      <div class="portfolio-card reveal">
-        <div class="portfolio-thumb" style="background:linear-gradient(135deg,#1e293b,#134e4a)">
-          <div class="portfolio-thumb-inner">
-            <div class="portfolio-thumb-icon">💧</div>
-            <div class="portfolio-thumb-label">IoT · AWLR</div>
-          </div>
-          <div class="portfolio-overlay">
-            <div class="portfolio-overlay-btn">Lihat Detail</div>
-          </div>
-        </div>
-        <div class="portfolio-info">
-          <div class="portfolio-cat">IoT Solution</div>
-          <div class="portfolio-name">Telemetri AWLR</div>
-          <p class="portfolio-desc">Sistem pemantauan ketinggian air jarak jauh berbasis telemetri canggih dengan akses data real-time untuk Dinas SDA.</p>
-        </div>
-      </div>
-
-      <div class="portfolio-card reveal">
-        <div class="portfolio-thumb" style="background:linear-gradient(135deg,#1e293b,#7c2d12)">
-          <div class="portfolio-thumb-inner">
-            <div class="portfolio-thumb-icon">🛣️</div>
-            <div class="portfolio-thumb-label">VMS · OUTDOOR</div>
-          </div>
-          <div class="portfolio-overlay">
-            <div class="portfolio-overlay-btn">Lihat Detail</div>
-          </div>
-        </div>
-        <div class="portfolio-info">
-          <div class="portfolio-cat">Display Solution</div>
-          <div class="portfolio-name">VMS Traffic Info Kota Malang</div>
-          <p class="portfolio-desc">Variable Message Sign outdoor terintegrasi sistem lalu lintas — estimasi waktu tempuh dan informasi kemacetan.</p>
-        </div>
-      </div>
-
-      <div class="portfolio-card reveal">
-        <div class="portfolio-thumb" style="background:linear-gradient(135deg,#1e293b,#1e3a5f)">
-          <div class="portfolio-thumb-inner">
-            <div class="portfolio-thumb-icon">🗄️</div>
-            <div class="portfolio-thumb-label">WEB PLATFORM</div>
-          </div>
-          <div class="portfolio-overlay">
-            <div class="portfolio-overlay-btn">Lihat Detail</div>
-          </div>
-        </div>
-        <div class="portfolio-info">
-          <div class="portfolio-cat">Software Development</div>
-          <div class="portfolio-name">SINTA — Sistem Interoperabilitas JT&UPKB</div>
-          <p class="portfolio-desc">Platform web terintegrasi untuk pertukaran data Jembatan Timbang dan UPKB di seluruh Jawa Timur.</p>
-        </div>
-      </div>
-
-      <div class="portfolio-card reveal">
-        <div class="portfolio-thumb" style="background:linear-gradient(135deg,#1e293b,#14532d)">
-          <div class="portfolio-thumb-inner">
-            <div class="portfolio-thumb-icon">📡</div>
-            <div class="portfolio-thumb-label">AI · RADAR</div>
-          </div>
-          <div class="portfolio-overlay">
-            <div class="portfolio-overlay-btn">Lihat Detail</div>
-          </div>
-        </div>
-        <div class="portfolio-info">
-          <div class="portfolio-cat">IoT Solution</div>
-          <div class="portfolio-name">Radar Traffic Counting</div>
-          <p class="portfolio-desc">Sensor radar presisi tinggi untuk analisis kendaraan dan pola lalu lintas — mendukung pengambilan keputusan berbasis data.</p>
-                  </div>
-                </div>
-
-                @endif
-              </div>
-            </div>
-          </section>
-
-
-
-<!-- ============================================================
-     BLOG
-============================================================ -->
-<section id="blog">
+{{-- ============================== BLOG ============================== --}}
+@if ($posts->isNotEmpty())
+<section id="blog" class="section section--light">
   <div class="container">
-    <div class="blog-header">
+    <div class="section-head section-head--split">
       <div class="reveal">
-        <div class="section-label">Blog & Insight</div>
+        <div class="section-label">Blog &amp; Insight</div>
         <h2 class="section-title">Artikel <span>Terkini</span></h2>
       </div>
       <a href="{{ route('blog') }}" class="btn btn-navy reveal">Semua Artikel →</a>
     </div>
-<div class="blog-grid">
-      @if(isset($posts) && $posts->isNotEmpty())
-        @foreach($posts as $post)
-          <div class="blog-card reveal">
-            <div class="blog-thumb" style="position:relative;overflow:hidden">
-              @if($post->image_url)
-                <img src="{{ $post->image_url }}" alt="{{ $post->title }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" loading="lazy">
-              @else
-                <div class="blog-thumb-emoji">📰</div>
-                <div class="blog-thumb-bar"></div>
-              @endif
-            </div>
-            <div class="blog-meta">
-              <div class="blog-cat">{{ $post->category }}</div>
-              <div class="blog-date">{{ $post->published_at?->translatedFormat('d F Y') }}</div>
-              <div class="blog-title">{{ $post->title }}</div>
-              <p class="blog-excerpt">{{ $post->excerpt ?: Str::limit(strip_tags((string) $post->content), 140) }}</p>
-            </div>
-            <div class="blog-footer">
-              <a href="#" class="blog-read-more">
-                Baca Selengkapnya
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
-              </a>
-            </div>
-          </div>
-        @endforeach
-      @else
-      <div class="blog-card reveal">
-        <div class="blog-thumb">
-          <div class="blog-thumb-emoji">🌐</div>
-          <div class="blog-thumb-bar"></div>
-        </div>
-        <div class="blog-meta">
-          <div class="blog-cat">IoT & Smart City</div>
-          <div class="blog-date">18 Juni 2025</div>
-          <div class="blog-title">Masa Depan Smart City: Peran IoT dalam Transformasi Infrastruktur Kota</div>
-          <p class="blog-excerpt">Bagaimana sensor IoT, radar traffic, dan telemetri AWLR membentuk ekosistem kota pintar yang efisien dan berkelanjutan...</p>
-        </div>
-        <div class="blog-footer">
-          <a href="#" class="blog-read-more">
-            Baca Selengkapnya
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
-          </a>
-          <span style="font-size:12px;color:var(--gray-text)">5 min read</span>
-        </div>
-      </div>
-      <div class="blog-card reveal">
-        <div class="blog-thumb" style="background:linear-gradient(135deg,#1e293b,#1e3a5f)">
-          <div class="blog-thumb-emoji">🖥️</div>
-          <div class="blog-thumb-bar"></div>
-        </div>
-        <div class="blog-meta">
-          <div class="blog-cat">Display Solution</div>
-          <div class="blog-date">5 Juni 2025</div>
-          <div class="blog-title">Membangun Control Room Modern: Panduan Lengkap Video Wall & Command Center</div>
-          <p class="blog-excerpt">Dari pemilihan teknologi display hingga arsitektur sistem yang redundan — kunci membangun ruang kendali operasional kelas enterprise...</p>
-        </div>
-        <div class="blog-footer">
-          <a href="#" class="blog-read-more">
-            Baca Selengkapnya
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
-          </a>
-          <span style="font-size:12px;color:var(--gray-text)">7 min read</span>
-        </div>
-      </div>
-      <div class="blog-card reveal">
-        <div class="blog-thumb" style="background:linear-gradient(135deg,#1e293b,#14532d)">
-          <div class="blog-thumb-emoji">🤖</div>
-          <div class="blog-thumb-bar"></div>
-        </div>
-        <div class="blog-meta">
-          <div class="blog-cat">AI & Surveillance</div>
-          <div class="blog-date">22 Mei 2025</div>
-          <div class="blog-title">AI Vision Camera: Revolusi Sistem Pengawasan Cerdas untuk Bisnis dan Pemerintah</div>
-          <p class="blog-excerpt">Kemampuan analisa, deteksi, identifikasi, dan klasifikasi berbasis AI mengubah paradigma keamanan konvensional menjadi sistem proaktif...</p>
-        </div>
-        <div class="blog-footer">
-          <a href="#" class="blog-read-more">
-            Baca Selengkapnya
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
-          </a>
-          <span style="font-size:12px;color:var(--gray-text)">6 min read</span>
-        </div>
-      </div>
-      @endif
+    <div class="grid-3">
+      @foreach ($posts as $post)
+        @include('partials.post-card', ['post' => $post])
+      @endforeach
     </div>
   </div>
 </section>
+@endif
 
-<!-- ============================================================
-     CONTACT
-============================================================ -->
-<section id="contact">
-  <div class="container">
-    <div class="contact-grid">
-      <!-- Left -->
-      <div>
-        <div class="section-label" style="color:rgba(255,255,255,0.5)">
-          Hubungi Kami
-        </div>
-        <h2 class="section-title" style="color:var(--white)">Mari Mulai<br><span>Bersama Kami</span></h2>
-        <p class="section-sub" style="color:rgba(255,255,255,0.5)">
-          Siap membantu Anda bertransformasi digital. Ceritakan kebutuhan Anda dan kami siapkan solusi terbaik.
-        </p>
-        <div class="contact-info-list">
-<div class="contact-info-item reveal">
-            <div class="contact-info-icon">📞</div>
-            <div>
-              <div class="contact-info-label">Telepon</div>
-              <div class="contact-info-val">{{ $setting?->phone ?: '+62 341 400 272' }}</div>
-            </div>
+{{-- ============================== CONTACT ============================== --}}
+<section id="contact" class="section section--dark">
+  <div class="container contact-grid">
+    <div>
+      <div class="section-label">Hubungi Kami</div>
+      <h2 class="section-title">Mari Mulai<br><span>Bersama Kami</span></h2>
+      <p class="section-sub">Siap membantu Anda bertransformasi digital. Ceritakan kebutuhan Anda dan kami siapkan solusi terbaik.</p>
+
+      <div class="contact-info-list">
+        <div class="contact-info-item">
+          <div class="contact-info-icon" aria-hidden="true">📞</div>
+          <div>
+            <div class="contact-info-label">Telepon</div>
+            <div class="contact-info-val"><a href="tel:{{ preg_replace('/[^\d+]/', '', $site['phone']) }}">{{ $site['phone'] }}</a></div>
           </div>
-          <div class="contact-info-item reveal">
-            <div class="contact-info-icon">💬</div>
+        </div>
+        @if ($site['whatsapp_link'])
+          <div class="contact-info-item">
+            <div class="contact-info-icon" aria-hidden="true">💬</div>
             <div>
               <div class="contact-info-label">WhatsApp</div>
-              <div class="contact-info-val">
-                @if($setting?->whatsapp)
-                  <a href="{{ $setting->whatsapp_link }}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">{{ $setting->whatsapp }}</a>
-                @else
-                  +62 812-3356-956
-                @endif
-              </div>
+              <div class="contact-info-val"><a href="{{ $site['whatsapp_link'] }}" target="_blank" rel="noopener">{{ $site['whatsapp'] }}</a></div>
             </div>
           </div>
-          <div class="contact-info-item reveal">
-            <div class="contact-info-icon">🌐</div>
-            <div>
-              <div class="contact-info-label">Website</div>
-              <div class="contact-info-val">{{ $setting?->website ?: 'interg.co.id' }}</div>
-            </div>
-          </div>
-          <div class="contact-info-item reveal">
-            <div class="contact-info-icon">📍</div>
-            <div>
-              <div class="contact-info-label">Alamat</div>
-              <div class="contact-info-val">
-                @if($setting?->address)
-                  {!! nl2br(e($setting->address)) !!}
-                @else
-                  Perum Permata Jingga Blok AA No. 27,<br>Tunggulwulung, Lowokwaru, Kota Malang 65143
-                @endif
-              </div>
-            </div>
+        @endif
+        <div class="contact-info-item">
+          <div class="contact-info-icon" aria-hidden="true">✉️</div>
+          <div>
+            <div class="contact-info-label">Email</div>
+            <div class="contact-info-val"><a href="mailto:{{ $site['email'] }}">{{ $site['email'] }}</a></div>
           </div>
         </div>
-      </div>
-      <!-- Form -->
-      <div class="contact-form reveal">
-        <div style="font-family:var(--font-head);font-size:18px;font-weight:700;color:var(--white);margin-bottom:24px">
-          Kirim Pesan
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Nama Lengkap</label>
-            <input class="form-input" type="text" placeholder="Nama Anda" />
-          </div>
-          <div class="form-group">
-            <label class="form-label">Email</label>
-            <input class="form-input" type="email" placeholder="email@perusahaan.com" />
+        <div class="contact-info-item">
+          <div class="contact-info-icon" aria-hidden="true">📍</div>
+          <div>
+            <div class="contact-info-label">Alamat</div>
+            <div class="contact-info-val">{!! nl2br(e($site['address'])) !!}</div>
           </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Perusahaan / Instansi</label>
-          <input class="form-input" type="text" placeholder="Nama perusahaan Anda" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Layanan yang Dibutuhkan</label>
-          <select class="form-input" style="cursor:pointer">
-            <option value="" style="background:#1e293b">Pilih layanan...</option>
-            <option style="background:#1e293b">System Integrator</option>
-            <option style="background:#1e293b">Software & App Development</option>
-            <option style="background:#1e293b">IoT Solution & Surveillance</option>
-            <option style="background:#1e293b">Display Solution</option>
-            <option style="background:#1e293b">Hardware Service & Maintenance</option>
-            <option style="background:#1e293b">Digital Transformation Consulting</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Pesan</label>
-          <textarea class="form-textarea" placeholder="Ceritakan kebutuhan atau pertanyaan Anda..."></textarea>
-        </div>
-        <button class="form-submit" onclick="handleSubmit(this)">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-          Kirim Pesan
-        </button>
       </div>
     </div>
+
+    <form class="contact-form" method="POST" action="{{ route('contact.store') }}" novalidate data-contact-form>
+      @csrf
+      <h3 class="contact-form-title">Kirim Pesan</h3>
+
+      @if (session('contact_success'))
+        <div class="alert alert-success" role="status">{{ session('contact_success') }}</div>
+      @elseif ($errors->any())
+        <div class="alert alert-error" role="alert">Mohon periksa kembali isian yang ditandai.</div>
+      @endif
+
+      {{-- Honeypot (hidden from humans) --}}
+      <div class="form-hp" aria-hidden="true">
+        <label for="website_url">Jangan diisi</label>
+        <input type="text" id="website_url" name="website_url" tabindex="-1" autocomplete="off">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="cf-name">Nama Lengkap <span class="req">*</span></label>
+          <input class="form-input" id="cf-name" name="name" type="text" placeholder="Nama Anda" value="{{ old('name') }}" required maxlength="120" autocomplete="name" @error('name') aria-invalid="true" aria-describedby="cf-name-error" @enderror>
+          @error('name')<span class="form-error" id="cf-name-error">{{ $message }}</span>@enderror
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="cf-email">Email <span class="req">*</span></label>
+          <input class="form-input" id="cf-email" name="email" type="email" placeholder="email@perusahaan.com" value="{{ old('email') }}" required maxlength="190" autocomplete="email" @error('email') aria-invalid="true" aria-describedby="cf-email-error" @enderror>
+          @error('email')<span class="form-error" id="cf-email-error">{{ $message }}</span>@enderror
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="cf-company">Perusahaan / Instansi</label>
+        <input class="form-input" id="cf-company" name="company" type="text" placeholder="Nama perusahaan Anda" value="{{ old('company') }}" maxlength="190" autocomplete="organization">
+        @error('company')<span class="form-error">{{ $message }}</span>@enderror
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="cf-service">Layanan yang Dibutuhkan</label>
+        <select class="form-input" id="cf-service" name="service">
+          <option value="">Pilih layanan...</option>
+          @foreach (\App\Models\ContactMessage::SERVICES as $service)
+            <option value="{{ $service }}" @selected(old('service') === $service)>{{ $service }}</option>
+          @endforeach
+        </select>
+        @error('service')<span class="form-error">{{ $message }}</span>@enderror
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="cf-message">Pesan <span class="req">*</span></label>
+        <textarea class="form-textarea" id="cf-message" name="message" placeholder="Ceritakan kebutuhan atau pertanyaan Anda..." required minlength="10" maxlength="5000" @error('message') aria-invalid="true" aria-describedby="cf-message-error" @enderror>{{ old('message') }}</textarea>
+        @error('message')<span class="form-error" id="cf-message-error">{{ $message }}</span>@enderror
+      </div>
+
+      <button type="submit" class="btn btn-red form-submit">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        Kirim Pesan
+      </button>
+      <p class="form-note">Data Anda hanya digunakan untuk menindaklanjuti pesan ini.</p>
+    </form>
   </div>
 </section>
 
-<!-- ============================================================
-     MARKETPLACE
-============================================================ -->
-<section id="marketplace">
+{{-- ============================== MARKETPLACE ============================== --}}
+<section id="marketplace" class="section section--light">
   <div class="container">
-    <div class="mp-head reveal">
-      <div class="section-label" style="justify-content:center">Tech Marketplace</div>
-      <h2 class="mp-title">Tech <span>Marketplace</span></h2>
-      <p class="mp-subtitle">Buy &amp; Sell Computers, Hardware, and Software - produk teknologi terpercaya untuk kebutuhan personal maupun bisnis Anda.</p>
-    </div>
-
-    <!-- Search & Filter -->
-    <div class="mp-toolbar reveal">
-      <div class="mp-search">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.7.7l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14z"/></svg>
-        <input type="text" id="mpSearchInput" placeholder="Cari produk: laptop, SSD, lisensi Windows..." oninput="mpFilterProducts()" />
-      </div>
-      <select class="mp-select" id="mpCategorySelect" onchange="mpFilterProducts()">
-        <option value="all">Semua Kategori</option>
-        <option value="komputer">Komputer / Laptop</option>
-        <option value="storage">Harddisk / Storage</option>
-        <option value="software">Software / Lisensi</option>
-        <option value="aksesoris">Aksesoris</option>
-      </select>
-      <select class="mp-select" id="mpSortSelect" onchange="mpFilterProducts()">
-        <option value="terbaru">Terbaru</option>
-        <option value="termurah">Harga Termurah</option>
-        <option value="termahal">Harga Tertinggi</option>
-      </select>
-    </div>
-
-    <!-- Product Grid -->
-    <div class="product-grid" id="mpProductGrid"></div>
-    <div class="mp-results-count reveal"><strong id="mpResultsCount">0</strong> produk ditemukan</div>
-
+    @include('partials.marketplace', ['heading' => 'h2'])
   </div>
 </section>
-
-<!-- Marketplace product detail modal -->
-<div class="mp-modal-overlay" id="mpModalOverlay" onclick="mpCloseModalOnOverlay(event)">
-  <div class="mp-modal-box">
-    <div class="mp-modal-close" onclick="mpCloseModal()">✕</div>
-    <div class="mp-modal-grid">
-      <div class="mp-modal-visual" id="mpModalVisual"></div>
-      <div class="mp-modal-content" id="mpModalContent"></div>
-    </div>
-  </div>
-</div>
-
-<div class="mp-toast" id="mpToast"></div>
-
-<script>
-  /* ---- Form submit feedback ---- */
-  function handleSubmit(btn) {
-    const orig = btn.innerHTML;
-    btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Terkirim!';
-    btn.style.background = '#10b981';
-    setTimeout(() => {
-      btn.innerHTML = orig;
-      btn.style.background = '';
-    }, 3000);
-  }
-</script>
-
-<script>
-  /* ============================================================
-     MARKETPLACE — DATA, RENDER, FILTER, MODAL, WA/EMAIL CTA
-  ============================================================ */
-  const WA_NUMBER = '6281233569560';
-  const SELLER_EMAIL = 'sales@interg.co.id';
-
-  const mpProducts = @json($products ?? []);
-
-  function mpFormatPrice(n) { return 'Rp ' + n.toLocaleString('id-ID'); }
-
-  function mpStatusBadge(s) {
-    if (s === 'baru') return { label: 'Baru', cls: 'status-baru' };
-    if (s === 'bekas') return { label: 'Bekas', cls: 'status-bekas' };
-    return { label: 'Digital License', cls: 'status-digital' };
-  }
-  function mpCatClass(cat) {
-    return { komputer: 'cat-komputer', storage: 'cat-storage', software: 'cat-software', aksesoris: 'cat-aksesoris' }[cat] || '';
-  }
-  function mpWaLink(name) {
-    return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent('Halo saya ingin memesan ' + name)}`;
-  }
-  function mpEmailLink(name) {
-    return `mailto:${SELLER_EMAIL}?subject=${encodeURIComponent('Pesanan ' + name)}&body=${encodeURIComponent('Halo, saya ingin memesan produk: ' + name)}`;
-  }
-
-  function mpGetFiltered() {
-    const q = (document.getElementById('mpSearchInput')?.value || '').trim().toLowerCase();
-    const cat = document.getElementById('mpCategorySelect')?.value || 'all';
-    const sort = document.getElementById('mpSortSelect')?.value || 'terbaru';
-
-    let list = mpProducts.filter(p => (cat === 'all' || p.cat === cat) &&
-      (q === '' || p.name.toLowerCase().includes(q) || p.catLabel.toLowerCase().includes(q)));
-
-    if (sort === 'termurah') list = list.sort((a, b) => a.price - b.price);
-    else if (sort === 'termahal') list = list.sort((a, b) => b.price - a.price);
-    else list = list.sort((a, b) => b.date - a.date);
-
-    return list;
-  }
-
-  function mpRenderProducts() {
-    const grid = document.getElementById('mpProductGrid');
-    if (!grid) return;
-    const list = mpGetFiltered();
-    document.getElementById('mpResultsCount').textContent = list.length;
-
-    if (list.length === 0) {
-      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--gray-text)">
-        <div style="font-size:36px;margin-bottom:10px">🔍</div>
-        <div style="font-family:var(--font-head);font-weight:700;color:var(--navy);margin-bottom:6px">Produk tidak ditemukan</div>
-        <div style="font-size:13.5px">Coba kata kunci atau kategori lain.</div>
-      </div>`;
-      return;
-    }
-
-    grid.innerHTML = list.map(p => {
-      const status = mpStatusBadge(p.status);
-      return `
-      <div class="product-card reveal">
-        <div class="product-thumb" onclick="mpOpenModal(${p.id})" style="background-image:url('${p.image}'); background-size:contain; background-repeat:no-repeat; background-position:center; background-color:#0f172a">
-          <span class="badge-status ${status.cls}">${status.label}</span>
-          <button class="wishlist-btn" onclick="mpToggleWishlist(event, this)">
-            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-          </button>
-        </div>
-        <div class="product-body">
-          <span class="badge-cat ${mpCatClass(p.cat)}">${p.catLabel}</span>
-          <div class="product-name" onclick="mpOpenModal(${p.id})">${p.name}</div>
-          <div class="product-price">${mpFormatPrice(p.price)}</div>
-          <div class="product-cta">
-            <a class="btn-detail" onclick="mpOpenModal(${p.id})">Lihat Detail</a>
-            <a class="btn-wa" href="${mpWaLink(p.name)}" target="_blank" rel="noopener">
-              <svg viewBox="0 0 24 24"><path d="M17.5 14.4c-.3-.1-1.6-.8-1.8-.9-.2-.1-.4-.1-.6.1-.2.2-.6.9-.8 1.1-.1.2-.3.2-.5.1-.7-.3-1.4-.7-2-1.3-.6-.6-1.1-1.3-1.5-2-.1-.2 0-.4.1-.5.3-.3.6-.6.8-.9.1-.2.1-.4 0-.6-.1-.2-.7-1.6-.9-2.1-.2-.4-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.7.7-1 1.6-1 2.6.1 1.2.6 2.4 1.4 3.5 1.6 2.2 3.5 3.7 6 4.5.6.2 1.1.3 1.6.2.7-.1 1.6-.6 1.8-1.3.3-.6.3-1.2.2-1.3-.1-.1-.3-.2-.5-.3z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.4c1.4.8 3.1 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.3c-1.5 0-3-.4-4.3-1.2l-.3-.2-3.2.8.9-3.1-.2-.3C4 14.9 3.6 13.5 3.6 12c0-4.6 3.8-8.4 8.4-8.4s8.4 3.8 8.4 8.4-3.8 8.3-8.4 8.3z"/></svg>
-              Pesan via WhatsApp
-            </a>
-            <a class="btn-email" href="${mpEmailLink(p.name)}">
-              <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
-              Pesan via Email
-            </a>
-          </div>
-        </div>
-      </div>`;
-    }).join('');
-
-    grid.querySelectorAll('.reveal').forEach(el => { el.classList.add('visible'); });
-  }
-
-  function mpFilterProducts() { mpRenderProducts(); }
-
-  function mpToggleWishlist(e, btn) {
-    e.stopPropagation();
-    btn.classList.toggle('active');
-    mpShowToast(btn.classList.contains('active') ? '❤️ Ditambahkan ke wishlist' : 'Dihapus dari wishlist');
-  }
-
-  let mpToastTimeout;
-  function mpShowToast(msg) {
-    const t = document.getElementById('mpToast');
-    if (!t) return;
-    t.textContent = msg;
-    t.classList.add('show');
-    clearTimeout(mpToastTimeout);
-    mpToastTimeout = setTimeout(() => t.classList.remove('show'), 2400);
-  }
-
-  function mpOpenModal(id) {
-    const p = mpProducts.find(x => x.id === id);
-    if (!p) return;
-    const status = mpStatusBadge(p.status);
-
-    document.getElementById('mpModalVisual').innerHTML = `
-      <div class="mp-modal-image" style="background-image:url('${p.image}'); background-size:contain; background-repeat:no-repeat; background-position:center; width:100%; height:100%; background-color:#0f172a"></div>
-    `;
-
-    const specsHtml = Object.entries(p.specs).map(([k, v]) => `
-      <div class="spec-item">
-        <div class="spec-label">${k}</div>
-        <div class="spec-value">${v}</div>
-      </div>`).join('');
-
-    const isDigital = p.status === 'digital';
-
-    document.getElementById('mpModalContent').innerHTML = `
-      <span class="badge-cat ${mpCatClass(p.cat)}">${p.catLabel}</span>
-      <span class="badge-status ${status.cls}" style="position:static;display:inline-block;margin-left:8px">${status.label}</span>
-      <div class="mp-modal-title">${p.name}</div>
-      <div class="mp-modal-price">${mpFormatPrice(p.price)}</div>
-      <div class="mp-modal-desc">${p.desc}</div>
-      <div class="spec-table">${specsHtml}</div>
-      ${isDigital ? `<div style="font-size:12px;color:var(--gray-text);background:var(--gray-light);padding:10px 14px;border-radius:10px;margin-bottom:14px">
-        🔑 Lisensi dikirim otomatis ke email setelah pembayaran berhasil dikonfirmasi.</div>` : ''}
-      <div class="mp-modal-cta">
-        <a class="btn-wa" style="padding:12px" href="${mpWaLink(p.name)}" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24"><path d="M17.5 14.4c-.3-.1-1.6-.8-1.8-.9-.2-.1-.4-.1-.6.1-.2.2-.6.9-.8 1.1-.1.2-.3.2-.5.1-.7-.3-1.4-.7-2-1.3-.6-.6-1.1-1.3-1.5-2-.1-.2 0-.4.1-.5.3-.3.6-.6.8-.9.1-.2.1-.4 0-.6-.1-.2-.7-1.6-.9-2.1-.2-.4-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.7.7-1 1.6-1 2.6.1 1.2.6 2.4 1.4 3.5 1.6 2.2 3.5 3.7 6 4.5.6.2 1.1.3 1.6.2.7-.1 1.6-.6 1.8-1.3.3-.6.3-1.2.2-1.3-.1-.1-.3-.2-.5-.3z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.4c1.4.8 3.1 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.3c-1.5 0-3-.4-4.3-1.2l-.3-.2-3.2.8.9-3.1-.2-.3C4 14.9 3.6 13.5 3.6 12c0-4.6 3.8-8.4 8.4-8.4s8.4 3.8 8.4 8.4-3.8 8.3-8.4 8.3z"/></svg>
-          WhatsApp
-        </a>
-        <a class="btn-email" style="padding:12px" href="${mpEmailLink(p.name)}">
-          <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
-          Email
-        </a>
-      </div>
-    `;
-
-    document.getElementById('mpModalOverlay').classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function mpCloseModal() {
-    document.getElementById('mpModalOverlay').classList.remove('open');
-    document.body.style.overflow = '';
-  }
-  function mpCloseModalOnOverlay(e) {
-    if (e.target.id === 'mpModalOverlay') mpCloseModal();
-  }
-
-  /* Init marketplace */
-  mpRenderProducts();
-</script>
 
 @endsection
