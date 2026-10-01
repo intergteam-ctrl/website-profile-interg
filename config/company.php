@@ -25,13 +25,6 @@ return [
     'website' => 'interg.co.id',
     'address' => "Perum Permata Jingga Blok AA No. 27,\nTunggulwulung, Lowokwaru, Kota Malang 65143",
 
-    // Hero facts. Only counts that can be backed by the company profile.
-    'facts' => [
-        ['value' => '5', 'suffix' => '', 'label' => 'Lini layanan Total IT Solution'],
-        ['value' => '9', 'suffix' => '', 'label' => 'Aplikasi untuk instansi & publik'],
-        ['value' => '10', 'suffix' => '', 'label' => 'Proyek control room & display'],
-    ],
-
     // Organisations named in the company profile's project pages.
     'clients' => [
         'Dishub Prov. Jawa Timur',

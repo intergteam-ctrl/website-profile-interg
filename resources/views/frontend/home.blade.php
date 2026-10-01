@@ -57,11 +57,11 @@
           <a href="#services" class="btn btn-ghost">Lihat Layanan {!! $arrow !!}</a>
         </div>
         <dl class="hero-facts">
-          @foreach ($c['facts'] as $fact)
+          @foreach ($facts as $fact)
             <div>
               <dt class="sr-only">{{ $fact['label'] }}</dt>
               <dd>
-                <div class="hero-fact-num">{{ $fact['value'] }}<span>{{ $fact['suffix'] }}</span></div>
+                <div class="hero-fact-num">{{ $fact['value'] }}</div>
                 <div class="hero-fact-label" aria-hidden="true">{{ $fact['label'] }}</div>
               </dd>
             </div>
@@ -212,13 +212,15 @@
       <a href="{{ route('portfolio') }}" class="btn btn-ghost reveal">Semua portfolio {!! $arrow !!}</a>
     </div>
     <div class="gallery">
-      @foreach ($c['display']['projects'] as $p)
+      @foreach ($displayProjects as $p)
         <figure class="gallery-item reveal">
-          <img src="{{ $img($p['image']) }}" alt="{{ $p['type'] }} {{ $p['client'] }}" loading="lazy">
+          @if ($p['image'])
+            <img src="{{ $p['image'] }}" alt="{{ $p['category'] }} {{ $p['title'] }}" loading="lazy">
+          @endif
           <figcaption>
-            <div class="g-type">{{ $p['type'] }}</div>
-            <div class="g-client">{{ $p['client'] }}</div>
-            <div class="g-tech">{{ $p['tech'] }}</div>
+            @if ($p['category'])<div class="g-type">{{ $p['category'] }}</div>@endif
+            <div class="g-client">{{ $p['title'] }}</div>
+            @if ($p['subtitle'])<div class="g-tech">{{ $p['subtitle'] }}</div>@endif
           </figcaption>
         </figure>
       @endforeach
@@ -239,16 +241,18 @@
       <p class="section-sub">Aplikasi yang telah kami bangun untuk instansi pemerintah dan sektor publik — dari transportasi hingga sumber daya air.</p>
     </div>
     <div class="apps-grid">
-      @foreach ($c['apps'] as $i => $app)
+      @foreach ($apps as $i => $app)
         <article class="app-card reveal">
           <div class="app-shot">
-            <img src="{{ $img($app['image']) }}" alt="Tampilan aplikasi {{ $app['name'] }}" loading="lazy">
+            @if ($app['image'])
+              <img src="{{ $app['image'] }}" alt="Tampilan aplikasi {{ $app['title'] }}" loading="lazy">
+            @endif
             <span class="app-num">{{ $i + 1 }}</span>
           </div>
           <div class="app-body">
-            <h3 class="app-name">{{ $app['name'] }}</h3>
-            <div class="app-client">{{ $app['client'] }}</div>
-            <p class="app-desc">{{ $app['desc'] }}</p>
+            <h3 class="app-name">{{ $app['title'] }}</h3>
+            @if ($app['subtitle'])<div class="app-client">{{ $app['subtitle'] }}</div>@endif
+            <p class="app-desc">{{ \Illuminate\Support\Str::limit((string) $app['desc'], 220) }}</p>
           </div>
         </article>
       @endforeach
@@ -277,12 +281,14 @@
     </div>
 
     <div class="iot-projects">
-      @foreach ($c['iot']['projects'] as $p)
+      @foreach ($iotProjects as $p)
         <article class="iot-card reveal">
-          <img src="{{ $img($p['image']) }}" alt="{{ $p['title'] }}" loading="lazy">
+          @if ($p['image'])
+            <img src="{{ $p['image'] }}" alt="{{ $p['title'] }}" loading="lazy">
+          @endif
           <div class="iot-card-body">
             <h3>{{ $p['title'] }}</h3>
-            <p>{{ $p['desc'] }}</p>
+            <p>{{ \Illuminate\Support\Str::limit((string) $p['desc'], 220) }}</p>
           </div>
         </article>
       @endforeach

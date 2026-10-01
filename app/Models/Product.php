@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
@@ -27,7 +28,7 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
-   public function getImageUrlAttribute(): ?string
+    public function getImageUrlAttribute(): ?string
     {
         if (! $this->image) {
             return null;
@@ -39,7 +40,7 @@ class Product extends Model
         }
 
         try {
-            /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+            /** @var FilesystemAdapter $disk */
             $disk = Storage::disk('s3');
 
             return $disk->url($this->image);

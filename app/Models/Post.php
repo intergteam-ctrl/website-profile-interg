@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
 
 class Post extends Model
@@ -32,7 +33,7 @@ class Post extends Model
             ->where('published_at', '<=', now());
     }
 
-   public function getImageUrlAttribute(): ?string
+    public function getImageUrlAttribute(): ?string
     {
         if (! $this->image) {
             return null;
@@ -44,7 +45,7 @@ class Post extends Model
         }
 
         try {
-            /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+            /** @var FilesystemAdapter $disk */
             $disk = Storage::disk('s3');
 
             return $disk->url($this->image);
