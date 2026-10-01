@@ -79,7 +79,7 @@ class ManageSiteSettings extends Page
                             ->label('WhatsApp')
                             ->tel()
                             ->placeholder('0812-3356-956')
-                            ->helperText('Otomatis dikonversi ke format wa.me di frontend.'),
+                            ->helperText('Kosongkan untuk menyembunyikan nomor dan semua tombol WhatsApp di situs.'),
 
                         TextInput::make('website')
                             ->label('Website')

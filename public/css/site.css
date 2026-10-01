@@ -462,6 +462,8 @@ select.form-input { cursor: pointer; appearance: none; background-image: url("da
 .btn-detail:hover { border-color: var(--ink); }
 .btn-wa svg, .btn-email svg { width: 15px; height: 15px; fill: currentColor; flex-shrink: 0; }
 .mp-cta-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.mp-cta-row > :only-child, .mp-cta-row > [hidden] + :last-child { grid-column: 1 / -1; }
+[hidden] { display: none !important; }
 
 .mp-modal { border: none; padding: 0; border-radius: var(--radius-lg); width: min(880px, 100% - 32px); max-height: 90vh; box-shadow: var(--shadow-lg); margin: auto; overflow: hidden; }
 .mp-modal::backdrop { background: rgba(28, 33, 48, 0.5); backdrop-filter: blur(4px); }

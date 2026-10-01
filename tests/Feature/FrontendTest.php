@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\ContactMessage;
 use App\Models\Post;
 use App\Models\Product;
+use App\Models\SiteSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -119,5 +120,20 @@ class FrontendTest extends TestCase
         ])->assertRedirect()->assertSessionHas('contact_success');
 
         $this->assertSame(0, ContactMessage::count());
+    }
+
+    public function test_whatsapp_number_is_not_published(): void
+    {
+        SiteSetting::query()->create(['whatsapp' => null, 'phone' => '+62 341 400 272']);
+        $category = Category::create(['name' => 'Aksesoris', 'slug' => 'aksesoris']);
+        Product::create(['category_id' => $category->id, 'name' => 'Mouse', 'slug' => 'mouse', 'brand' => 'Logitech', 'price' => 100000, 'stock' => 1, 'status' => 'baru', 'description' => 'Mouse.']);
+
+        foreach (['/', '/marketplace', '/blog', '/portfolio'] as $uri) {
+            $this->get($uri)
+                ->assertOk()
+                ->assertDontSee('wa.me', false)
+                ->assertDontSee('812-3356', false)
+                ->assertSee('+62 341 400 272');
+        }
     }
 }

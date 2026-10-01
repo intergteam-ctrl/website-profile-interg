@@ -21,7 +21,7 @@ class SiteContentSeeder extends Seeder
             'about_text' => null, // kosong = pakai teks dari Company Profile 2025 (config/company.php)
             'services_intro' => 'Solusi teknologi komprehensif yang dirancang khusus untuk kebutuhan pemerintahan dan perusahaan modern.',
             'phone' => '+62 341 400 272',
-            'whatsapp' => '+62 812-3356-956',
+            'whatsapp' => null,
             'website' => 'interg.co.id',
             'address' => "Perum Permata Jingga Blok AA No. 27,\nTunggulwulung, Lowokwaru, Kota Malang 65143",
         ]);
