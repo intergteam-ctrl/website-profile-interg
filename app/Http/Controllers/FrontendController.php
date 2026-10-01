@@ -13,7 +13,19 @@ class FrontendController extends Controller
 {
     public function home(): View
     {
+        $displayProjects = $this->portfolioGroup('display');
+        $apps = $this->portfolioGroup('software');
+
         return view('frontend.home', [
+            'displayProjects' => $displayProjects,
+            'apps' => $apps,
+            'iotProjects' => $this->portfolioGroup('iot'),
+            // Counts follow the data, so they stay true as projects are added.
+            'facts' => [
+                ['value' => count(config('company.services', [])), 'label' => 'Lini layanan Total IT Solution'],
+                ['value' => $apps->count(), 'label' => 'Aplikasi untuk instansi & publik'],
+                ['value' => $displayProjects->count(), 'label' => 'Proyek control room & display'],
+            ],
             'posts' => Post::query()->published()->latest('published_at')->take(3)->get(),
             'products' => $this->marketplaceProducts(),
             'categories' => $this->marketplaceCategories(),
@@ -51,6 +63,37 @@ class FrontendController extends Controller
             'products' => $this->marketplaceProducts(),
             'categories' => $this->marketplaceCategories(),
         ]);
+    }
+
+    /**
+     * Home-page project cards for one portfolio group, managed in the admin
+     * panel. Falls back to the bundled Company Profile content while the
+     * table has nothing for that group, so a section is never empty.
+     *
+     * @return Collection<int, array{title: string, category: ?string, subtitle: ?string, desc: ?string, image: ?string}>
+     */
+    private function portfolioGroup(string $group): Collection
+    {
+        $items = Portfolio::query()->inGroup($group)->get()->map(fn (Portfolio $p): array => [
+            'title' => $p->title,
+            'category' => $p->category,
+            'subtitle' => $p->subtitle,
+            'desc' => $p->description,
+            'image' => $p->image_url,
+        ]);
+
+        if ($items->isNotEmpty()) {
+            return $items;
+        }
+
+        $img = fn (string $file): string => asset('images/profile/'.$file);
+
+        return collect(match ($group) {
+            'display' => array_map(fn (array $p): array => ['title' => $p['client'], 'category' => $p['type'], 'subtitle' => $p['tech'], 'desc' => null, 'image' => $img($p['image'])], config('company.display.projects', [])),
+            'software' => array_map(fn (array $a): array => ['title' => $a['name'], 'category' => null, 'subtitle' => $a['client'], 'desc' => $a['desc'], 'image' => $img($a['image'])], config('company.apps', [])),
+            'iot' => array_map(fn (array $p): array => ['title' => $p['title'], 'category' => null, 'subtitle' => null, 'desc' => $p['desc'], 'image' => $img($p['image'])], config('company.iot.projects', [])),
+            default => [],
+        });
     }
 
     /**

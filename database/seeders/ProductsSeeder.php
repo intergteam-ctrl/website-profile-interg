@@ -256,7 +256,7 @@ class ProductsSeeder extends Seeder
                     'Connection' => 'USB 2.0',
                     'Field of View' => '78°',
                 ],
-            ]
+            ],
         ];
 
         foreach ($mpProducts as $item) {
@@ -264,10 +264,10 @@ class ProductsSeeder extends Seeder
             $specLines = [];
 
             foreach ($item['specs'] as $label => $value) {
-                $specLines[] = $label . ': ' . $value;
+                $specLines[] = $label.': '.$value;
             }
 
-            $description = $item['desc'] . PHP_EOL . PHP_EOL . implode(PHP_EOL, $specLines);
+            $description = $item['desc'].PHP_EOL.PHP_EOL.implode(PHP_EOL, $specLines);
 
             Product::query()->updateOrCreate(
                 ['slug' => Str::slug($item['name'])],

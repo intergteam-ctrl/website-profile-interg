@@ -28,6 +28,9 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            // Lets admins change their own name, email and password from the
+            // user menu (top right) without needing server/console access.
+            ->profile(isSimple: false)
             ->colors([
                 'primary' => Color::Amber,
             ])

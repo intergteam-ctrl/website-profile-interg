@@ -38,9 +38,9 @@ class SiteSetting extends Model
         $digits = preg_replace('/\D+/', '', $this->whatsapp);
 
         if (str_starts_with($digits, '0')) {
-            $digits = '62' . substr($digits, 1);
+            $digits = '62'.substr($digits, 1);
         }
 
-        return 'https://wa.me/' . $digits;
+        return 'https://wa.me/'.$digits;
     }
 }

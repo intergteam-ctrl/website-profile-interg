@@ -27,20 +27,20 @@ class ProductsTable
                 TextColumn::make('price')
                     ->money('idr', true)
                     ->sortable('Harga')
-                    ->formatStateUsing(fn($state) => 'Rp ' . number_format($state, 0, ',', '.')),
+                    ->formatStateUsing(fn ($state) => 'Rp '.number_format($state, 0, ',', '.')),
                 TextColumn::make('stock')
                     ->numeric()
                     ->sortable(),
                 ImageColumn::make('image'),
                 TextColumn::make('status')
                     ->badge()
-                    ->formatStateUsing(fn(?string $state) => match ($state) {
+                    ->formatStateUsing(fn (?string $state) => match ($state) {
                         'baru' => 'Baru',
                         'bekas' => 'Bekas',
                         'digital' => 'Digital License',
                         default => $state ?? '-',
                     })
-                    ->color(fn(?string $state) => match ($state) {
+                    ->color(fn (?string $state) => match ($state) {
                         'baru' => 'success',
                         'bekas' => 'danger',
                         'digital' => 'info',

@@ -5,10 +5,11 @@ namespace App\Filament\Resources\Posts\Schemas;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
@@ -53,9 +54,9 @@ class PostForm
                     ->imagePreviewHeight('100')
                     ->maxSize(5120)
                     ->saveUploadedFileUsing(function (TemporaryUploadedFile $file): string {
-                        \Illuminate\Support\Facades\Log::info('Upload diproses', ['file' => $file->getClientOriginalName()]);
+                        Log::info('Upload diproses', ['file' => $file->getClientOriginalName()]);
                         $maxWidth = 800;
-                        $quality  = 70;
+                        $quality = 70;
 
                         $img = @imagecreatefromstring(file_get_contents($file->getRealPath()));
 
@@ -69,7 +70,7 @@ class PostForm
                             $img = imagescale($img, $maxWidth, (int) round($h * $maxWidth / $w));
                         }
 
-                        $filename = 'posts/' . Str::uuid() . '.jpg';
+                        $filename = 'posts/'.Str::uuid().'.jpg';
 
                         ob_start();
                         imagejpeg($img, null, $quality);
