@@ -2,92 +2,83 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Portfolio;
 use App\Models\Post;
 use App\Models\Product;
-use App\Models\SiteSetting;
+use Illuminate\Support\Collection;
+use Illuminate\View\View;
 
 class FrontendController extends Controller
 {
-    public function home()
+    public function home(): View
     {
-        $setting = SiteSetting::first();
-
-        $portfolios = Portfolio::query()
-            ->latest('id')
-            ->take(6)
-            ->get();
-
-        $posts = Post::query()
-            ->published()
-            ->latest('published_at')
-            ->take(6)
-            ->get();
-
-        $products = $this->getMarketplaceProducts();
-
-        return view('frontend.home', compact('setting', 'portfolios', 'posts', 'products'));
+        return view('frontend.home', [
+            'posts' => Post::query()->published()->latest('published_at')->take(3)->get(),
+            'products' => $this->marketplaceProducts(),
+            'categories' => $this->marketplaceCategories(),
+        ]);
     }
 
-    public function blog()
+    public function blog(): View
     {
-        $setting = SiteSetting::first();
-
-        $posts = Post::query()
-            ->published()
-            ->latest('published_at')
-            ->paginate(9);
-
-        return view('frontend.blog', compact('setting', 'posts'));
+        return view('frontend.blog', [
+            'posts' => Post::query()->published()->latest('published_at')->paginate(9),
+        ]);
     }
 
-    public function portfolio()
+    public function blogShow(string $slug): View
     {
-        $setting = SiteSetting::first();
+        $post = Post::query()->published()->where('slug', $slug)->firstOrFail();
 
-        $portfolios = Portfolio::query()
-            ->latest('id')
-            ->paginate(9);
+        // Content comes from Filament's RichEditor (HTML). Sanitize before output
+        // so a compromised or careless admin account cannot inject scripts.
+        $content = str((string) $post->content)->sanitizeHtml();
 
-        return view('frontend.portfolio', compact('setting', 'portfolios'));
+        return view('frontend.blog-show', compact('post', 'content'));
     }
-    
-    public function marketplace()
-    {
-        $products = $this->getMarketplaceProducts();
 
-        return view('frontend.marketplace', compact('products'));
+    public function portfolio(): View
+    {
+        return view('frontend.portfolio', [
+            'portfolios' => Portfolio::query()->latest('id')->paginate(9),
+        ]);
+    }
+
+    public function marketplace(): View
+    {
+        return view('frontend.marketplace', [
+            'products' => $this->marketplaceProducts(),
+            'categories' => $this->marketplaceCategories(),
+        ]);
     }
 
     /**
-     * Build the marketplace product list used both on the standalone
-     * marketplace page and inline on the home page (below the Contact
-     * section), so both stay in sync.
+     * Categories that actually have products, for the marketplace filter.
      */
-    private function getMarketplaceProducts()
+    private function marketplaceCategories(): Collection
+    {
+        return Category::query()
+            ->whereHas('products')
+            ->orderBy('name')
+            ->get(['id', 'name', 'slug']);
+    }
+
+    /**
+     * Product list shared by the marketplace page and the home-page section.
+     *
+     * The description field is expected in the form:
+     *   "Summary paragraph\n\nKey: Value\nKey: Value"
+     * The first paragraph becomes the summary and "Key: Value" lines become specs.
+     */
+    private function marketplaceProducts(): Collection
     {
         return Product::query()
-            ->with('category')
+            ->with('category:id,name,slug')
             ->latest('id')
             ->get()
-            ->map(function (Product $product) {
-                $parts = preg_split("/\R\R/", (string) $product->description, 2);
-                $summary = trim($parts[0] ?? '');
-                $specLines = preg_split("/\R/", trim($parts[1] ?? '')) ?: [];
-
-                $specs = [];
-
-                foreach ($specLines as $line) {
-                    if (! str_contains($line, ':')) {
-                        continue;
-                    }
-
-                    [$key, $value] = array_map('trim', explode(':', $line, 2));
-                    $specs[$key] = $value;
-                }
-
-                $stock = (int) $product->stock;
-                $status = (string) $product->status;
+            ->map(function (Product $product): array {
+                [$summary, $specs] = $this->parseDescription((string) $product->description);
 
                 return [
                     'id' => $product->id,
@@ -95,15 +86,38 @@ class FrontendController extends Controller
                     'cat' => $product->category?->slug ?? 'other',
                     'catLabel' => $product->category?->name ?? 'Lainnya',
                     'price' => (int) $product->price,
-                    'status' => $status,
-                    'date' => $product->id,
+                    'status' => (string) $product->status,
                     'desc' => $summary,
                     'specs' => $specs,
                     'brand' => $product->brand,
-                    'stock' => $stock,
-                    'image' => $product->image_url ?: asset('images/placeholder.png'),
+                    'stock' => (int) $product->stock,
+                    'image' => $product->image_url,
                 ];
             })
             ->values();
+    }
+
+    /**
+     * @return array{0: string, 1: array<string, string>}
+     */
+    private function parseDescription(string $description): array
+    {
+        $parts = preg_split("/\R\R/", trim($description), 2);
+        $summary = trim($parts[0] ?? '');
+        $specs = [];
+
+        foreach (preg_split("/\R/", trim($parts[1] ?? '')) ?: [] as $line) {
+            if (! str_contains($line, ':')) {
+                continue;
+            }
+
+            [$key, $value] = array_map('trim', explode(':', $line, 2));
+
+            if ($key !== '') {
+                $specs[$key] = $value;
+            }
+        }
+
+        return [$summary, $specs];
     }
 }

@@ -19,7 +19,7 @@ class SiteContentSeeder extends Seeder
             'hero_tag'       => 'Total IT Solution Provider',
             'hero_title'     => "Akselerasi\nDigital 5.0\nTanpa Batas",
             'hero_subtitle'  => 'Membantu perusahaan dan pemerintahan bertransformasi melalui solusi teknologi modern — dari system integration, IoT, software development, hingga display solution profesional.',
-            'about_text'     => 'Seiring perkembangan revolusi teknologi 5.0, Inter G hadir menjawab tantangan dengan konsep Total IT Solution. Kami menyediakan berbagai solusi untuk memenuhi segala kebutuhan teknologi — baik pemerintahan maupun perusahaan — mulai dari otomasi, big data, IoT, hingga Artificial Intelligence.',
+            'about_text'     => null, // kosong = pakai teks dari Company Profile 2025 (config/company.php)
             'services_intro' => 'Solusi teknologi komprehensif yang dirancang khusus untuk kebutuhan pemerintahan dan perusahaan modern.',
             'phone'          => '+62 341 400 272',
             'whatsapp'       => '+62 812-3356-956',
