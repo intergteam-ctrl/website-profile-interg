@@ -13,7 +13,7 @@
     <a href="{{ route('blog') }}" class="article-back">← Semua Artikel</a>
 
     @if ($post->category)
-      <div class="section-label">{{ $post->category }}</div>
+      <div class="eyebrow">{{ $post->category }}</div>
     @endif
     <h1 class="section-title">{{ $post->title }}</h1>
 

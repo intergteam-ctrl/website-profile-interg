@@ -1,65 +1,50 @@
 @extends('layout.app')
 
 @php
-  $stats = config('company.stats');
+  $c = config('company');
+  $img = fn (string $file) => asset('images/profile/'.$file);
   $arrow = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>';
 
-  $services = [
-      ['title' => 'System Integrator', 'desc' => 'Solusi terpadu yang mengintegrasikan berbagai komponen sistem untuk meningkatkan efisiensi operasional dan kinerja bisnis Anda.',
-       'icon' => 'M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z'],
-      ['title' => 'Software & App Development', 'desc' => 'Tim ahli kami merancang solusi perangkat lunak inovatif — mulai dari aplikasi web, desktop, hingga mobile yang sesuai kebutuhan unik Anda.',
-       'icon' => 'M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z'],
-      ['title' => 'IoT Solution & Surveillance', 'desc' => 'Solusi IoT menghubungkan perangkat pintar dan mengoptimalkan proses bisnis. Dari kamera pengawas hingga sensor IoT terintegrasi.',
-       'icon' => 'M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z'],
-      ['title' => 'Display Solution', 'desc' => 'Videotron, VMS, LED Display untuk Control Room, Command Center, NOC, Traffic Control, Digital Signage, dan aplikasi display profesional lainnya.',
-       'icon' => 'M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z'],
-      ['title' => 'Hardware Service & Maintenance', 'desc' => 'Layanan perawatan dan pemeliharaan perangkat keras memastikan ketersediaan optimal dan kinerja stabil dari sistem IT perusahaan Anda.',
-       'icon' => 'M22 9V7h-2V5c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-2h2v-2h-2v-2h2v-2h-2V9h2zm-4 10H4V5h14v14zM6 13h5v4H6zm6-6h4v3h-4zM6 7h5v5H6zm6 4h4v6h-4z'],
-      ['title' => 'Digital Transformation Consulting', 'desc' => 'Konsultasi transformasi digital end-to-end yang membantu organisasi Anda beradaptasi dan unggul dalam era revolusi industri 5.0.',
-       'icon' => 'M13 2.05v2.02c3.95.49 7 3.85 7 7.93 0 3.21-1.81 6-4.72 7.72L13 17v5h5l-1.22-1.22C19.91 19.07 22 15.76 22 12c0-5.18-3.95-9.45-9-9.95zM11 2.05C5.95 2.55 2 6.82 2 12c0 3.76 2.09 7.07 5.22 8.78L6 22h5V2.05z'],
-  ];
-
-  $reasons = [
-      ['👥', 'Tim Profesional', 'Didukung tenaga ahli berpengalaman di bidang IT, system integration, dan transformasi digital.'],
-      ['⚡', 'Teknologi Terkini', 'Selalu mengadopsi teknologi terdepan — AI, IoT, Big Data — untuk memberikan solusi masa depan hari ini.'],
-      ['🚀', 'Implementasi Cepat', 'Metodologi delivery efisien memastikan project selesai tepat waktu tanpa mengorbankan kualitas.'],
-      ['🛡️', 'Keamanan Data', 'Standar keamanan enterprise-grade melindungi data dan sistem Anda dari ancaman siber.'],
-      ['🔧', 'Dukungan 24/7', 'Tim support siap membantu kapan saja — monitoring proaktif dan respons cepat untuk operasional tanpa gangguan.'],
-      ['🎯', 'Solusi Sesuai Kebutuhan', 'Setiap solusi dirancang khusus — bukan off-the-shelf — untuk memenuhi kebutuhan spesifik bisnis dan regulasi klien.'],
-  ];
-
-  // Shown only while no portfolio has been added in the admin panel.
-  $fallbackPortfolios = [
-      ['🖥️', 'Display Solution', 'Control Room Dinas SDA Jatim', 'Video wall system terintegrasi untuk monitoring sumber daya air Provinsi Jawa Timur secara real-time.'],
-      ['🚦', 'Software Development', 'JT Command Center (JTCC)', 'Platform monitoring lalu lintas real-time Dishub Jatim — analisis data, pengelolaan kejadian, modernisasi transportasi.'],
-      ['💧', 'IoT Solution', 'Telemetri AWLR', 'Sistem pemantauan ketinggian air jarak jauh berbasis telemetri dengan akses data real-time untuk Dinas SDA.'],
-      ['🛣️', 'Display Solution', 'VMS Traffic Info Kota Malang', 'Variable Message Sign outdoor terintegrasi sistem lalu lintas — estimasi waktu tempuh dan informasi kemacetan.'],
-      ['🗄️', 'Software Development', 'SINTA — Sistem Interoperabilitas JT & UPKB', 'Platform web terintegrasi untuk pertukaran data Jembatan Timbang dan UPKB di seluruh Jawa Timur.'],
-      ['📡', 'IoT Solution', 'Radar Traffic Counting', 'Sensor radar presisi tinggi untuk analisis kendaraan dan pola lalu lintas — mendukung keputusan berbasis data.'],
-  ];
+  $heroLines = $setting?->hero_title
+      ? array_values(array_filter(array_map('trim', preg_split('/\R/', $setting->hero_title))))
+      : ['Akselerasi', 'Digital 5.0', 'Tanpa Batas'];
 @endphp
 
 @section('content')
 
 {{-- ============================== HERO ============================== --}}
 <section id="hero">
-  <div class="hero-bg" aria-hidden="true">
-    <div class="hero-grid"></div>
-    <div class="hero-shape hero-shape-1"></div>
-    <div class="hero-shape hero-shape-2"></div>
-  </div>
-  <div class="hero-content">
-    <div class="container hero-layout">
+  <div class="hero-media" aria-hidden="true">
+    <div class="hero-photo">
+      <img src="{{ $img('hero-building.jpg') }}" alt="" fetchpriority="high">
+      <div class="hero-band"></div>
+      <div class="hero-band-white"></div>
+    </div>
+    <div class="hero-band-yellow"></div>
+    <div class="hero-card hero-card--1">
+      <img src="{{ $img('cr-dishub.jpg') }}" alt="">
       <div>
+        <div class="hero-card-title">Control Room</div>
+        <div class="hero-card-sub">Dishub Prov. Jawa Timur</div>
+      </div>
+    </div>
+    <div class="hero-card hero-card--2">
+      <img src="{{ $img('iot-awlr-site.jpg') }}" alt="">
+      <div>
+        <div class="hero-card-title">Telemetri AWLR</div>
+        <div class="hero-card-sub">Monitoring air real-time</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-content">
+    <div class="container">
+      <div class="hero-copy">
         <div class="hero-tag">{{ $setting?->hero_tag ?: 'Total IT Solution Provider' }}</div>
         <h1 class="hero-headline">
-          @if ($setting?->hero_title)
-            {!! nl2br(e($setting->hero_title)) !!}
-          @else
-            Akselerasi<br>
-            <span class="red-word">Digital 5.0</span><br>
-            <span class="accent-word">Tanpa Batas</span>
-          @endif
+          @foreach ($heroLines as $line)
+            <span class="line">{{ $line }}</span>
+          @endforeach
         </h1>
         <p class="hero-sub">
           {{ $setting?->hero_subtitle ?: 'Membantu perusahaan dan pemerintahan bertransformasi melalui solusi teknologi modern — dari system integration, IoT, software development, hingga display solution profesional.' }}
@@ -69,56 +54,33 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
             Konsultasi Sekarang
           </a>
-          <a href="#services" class="btn btn-outline">Lihat Layanan {!! $arrow !!}</a>
+          <a href="#services" class="btn btn-ghost">Lihat Layanan {!! $arrow !!}</a>
         </div>
-        <dl class="hero-stats">
-          @foreach ($stats as $stat)
+        <dl class="hero-facts">
+          @foreach ($c['facts'] as $fact)
             <div>
-              <dt class="sr-only">{{ $stat['label'] }}</dt>
+              <dt class="sr-only">{{ $fact['label'] }}</dt>
               <dd>
-                <div class="hero-stat-num">{{ $stat['value'] }}<span>{{ $stat['suffix'] }}</span></div>
-                <div class="hero-stat-label" aria-hidden="true">{{ $stat['label'] }}</div>
+                <div class="hero-fact-num">{{ $fact['value'] }}<span>{{ $fact['suffix'] }}</span></div>
+                <div class="hero-fact-label" aria-hidden="true">{{ $fact['label'] }}</div>
               </dd>
             </div>
           @endforeach
         </dl>
       </div>
-
-      <div class="hero-visual" aria-hidden="true">
-        <div class="hero-card-main">
-          <div class="hero-card-header">
-            <span class="hero-card-dot"></span><span class="hero-card-dot"></span><span class="hero-card-dot"></span>
-            <span class="hero-card-title">IGB Dashboard</span>
-          </div>
-          <div class="hero-card-screen">
-            <div class="hero-screen-bar"></div>
-            <div class="hero-screen-bar"></div>
-            <div class="hero-screen-bar"></div>
-            <div class="hero-screen-grid">
-              <div class="hero-screen-cell"><div class="hero-screen-cell-num">{{ $stats['projects']['value'].$stats['projects']['suffix'] }}</div><div class="hero-screen-cell-lbl">Projects</div></div>
-              <div class="hero-screen-cell"><div class="hero-screen-cell-num">{{ $stats['clients']['value'].$stats['clients']['suffix'] }}</div><div class="hero-screen-cell-lbl">Clients</div></div>
-              <div class="hero-screen-cell"><div class="hero-screen-cell-num">{{ $stats['years']['value'].$stats['years']['suffix'] }}</div><div class="hero-screen-cell-lbl">Years</div></div>
-              <div class="hero-screen-cell"><div class="hero-screen-cell-num">{{ $stats['support']['value'].$stats['support']['suffix'] }}</div><div class="hero-screen-cell-lbl">Support</div></div>
-            </div>
-          </div>
-          <div class="hero-progress"><span></span><span></span><span></span></div>
-        </div>
-        <div class="hero-float-card fc-1">
-          <div class="hero-float-card-icon">🔌</div>
-          <div>
-            <div class="hero-float-card-title">IoT Connected</div>
-            <div class="hero-float-card-val">Real-time monitoring aktif</div>
-          </div>
-        </div>
-        <div class="hero-float-card fc-2">
-          <div class="hero-float-card-icon">✅</div>
-          <div>
-            <div class="hero-float-card-title">Project Terkirim</div>
-            <div class="hero-float-card-val">Control Room Dishub Jatim</div>
-          </div>
-        </div>
-      </div>
     </div>
+  </div>
+</section>
+
+{{-- ============================== CLIENTS ============================== --}}
+<section class="clients" aria-label="Klien">
+  <div class="container clients-inner">
+    <div class="clients-label">Dipercaya instansi &amp; perusahaan</div>
+    <ul class="clients-list">
+      @foreach ($c['clients'] as $client)
+        <li>{{ $client }}</li>
+      @endforeach
+    </ul>
   </div>
 </section>
 
@@ -126,158 +88,250 @@
 <section id="about" class="section">
   <div class="container about-grid">
     <div class="about-visual reveal">
-      <div class="about-stripe" aria-hidden="true"></div>
-      <div class="about-img-wrap" aria-hidden="true">
-        <svg width="180" height="180" viewBox="0 0 180 180" fill="none">
-          <rect x="10" y="10" width="50" height="50" rx="8" fill="rgba(217,4,41,0.25)" stroke="rgba(217,4,41,0.4)" stroke-width="1.5"/>
-          <rect x="70" y="10" width="50" height="50" rx="8" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
-          <rect x="130" y="10" width="40" height="50" rx="8" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
-          <rect x="10" y="70" width="50" height="50" rx="8" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
-          <rect x="70" y="70" width="100" height="50" rx="8" fill="rgba(217,4,41,0.15)" stroke="rgba(217,4,41,0.3)" stroke-width="1.5"/>
-          <rect x="10" y="130" width="110" height="40" rx="8" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
-          <rect x="130" y="130" width="40" height="40" rx="8" fill="rgba(244,180,0,0.15)" stroke="rgba(244,180,0,0.3)" stroke-width="1.5"/>
-          <circle cx="90" cy="95" r="18" fill="rgba(217,4,41,0.3)" stroke="rgba(217,4,41,0.6)" stroke-width="1.5"/>
-          <path d="M93 84l-9 13h6l-1 9 9-13h-6l1-9z" fill="#fff"/>
-        </svg>
-        <div class="about-img-caption">TOTAL IT SOLUTION</div>
+      <span class="slash slash--red" aria-hidden="true"></span>
+      <span class="slash slash--blue" aria-hidden="true"></span>
+      <div class="about-photo">
+        <img src="{{ $img('proj-dishub-monitoring.jpg') }}" alt="Monitoring room Dinas Perhubungan Provinsi Jawa Timur" loading="lazy">
       </div>
-      <div class="about-badge">
-        <div class="about-badge-num">{{ $stats['years']['value'].$stats['years']['suffix'] }}</div>
-        <div class="about-badge-lbl">{{ $stats['years']['label'] }}</div>
+      <div class="about-quote">
+        <strong>Total IT Solution</strong>
+        <span>Satu mitra untuk integrasi sistem, software, IoT, dan display.</span>
       </div>
     </div>
 
     <div class="reveal">
-      <div class="section-label">Tentang Kami</div>
-      <h2 class="section-title">Inter G Queen<br><span>Bumindo</span></h2>
-      <p class="about-body">
+      <h2 class="hi-there">HI THERE!</h2>
+      <div class="about-body">
         @if ($setting?->about_text)
-          {!! nl2br(e($setting->about_text)) !!}
+          <p>{!! nl2br(e($setting->about_text)) !!}</p>
         @else
-          Seiring perkembangan revolusi teknologi 5.0, Inter G hadir menjawab tantangan dengan konsep <strong>Total IT Solution</strong>.
-          Kami menyediakan berbagai solusi untuk memenuhi kebutuhan teknologi — baik pemerintahan maupun perusahaan — mulai dari otomasi, big data, IoT,
-          hingga Artificial Intelligence.
+          @foreach ($c['intro'] as $paragraph)
+            <p>{{ $paragraph }}</p>
+          @endforeach
         @endif
-      </p>
-      <div class="about-stats">
-        @foreach (['projects', 'clients', 'support'] as $key)
-          <div class="about-stat">
-            <div class="about-stat-num">{{ $stats[$key]['value'].$stats[$key]['suffix'] }}</div>
-            <div class="about-stat-lbl">{{ $stats[$key]['label'] }}</div>
-          </div>
-        @endforeach
       </div>
-      <div class="vm-row">
-        <div class="vm-item">
-          <div class="vm-icon" aria-hidden="true">🎯</div>
-          <div>
-            <div class="vm-label">Visi</div>
-            <div class="vm-text">Menjadi mitra transformasi digital terpercaya yang mengakselerasi inovasi dan teknologi di Indonesia.</div>
-          </div>
-        </div>
-        <div class="vm-item">
-          <div class="vm-icon" aria-hidden="true">🚀</div>
-          <div>
-            <div class="vm-label">Misi</div>
-            <div class="vm-text">Menghadirkan solusi teknologi terpadu yang komprehensif, handal, dan berkelanjutan untuk meningkatkan daya saing klien.</div>
-          </div>
-        </div>
+      <p style="margin-top:18px;font-weight:700;color:var(--ink)">Namun membangun solusi teknologi punya banyak tantangan:</p>
+      <ul class="challenge-list">
+        @foreach ($c['challenges'] as $challenge)
+          <li>{{ $challenge }}</li>
+        @endforeach
+      </ul>
+      <div class="solution-box">
+        <strong>Inter G Technology</strong> hadir menjawab tantangan tersebut dengan konsep <strong>Total IT Solution</strong> — berbagai solusi untuk memenuhi seluruh kebutuhan teknologi, baik pemerintahan maupun perusahaan.
       </div>
     </div>
   </div>
 </section>
 
 {{-- ============================== SERVICES ============================== --}}
-<section id="services" class="section section--light">
+<section id="services" class="section section--tint">
   <div class="container">
     <div class="section-head section-head--center reveal">
-      <div class="section-label">Layanan Kami</div>
-      <h2 class="section-title">General <span>Services</span></h2>
-      <p class="section-sub">{{ $setting?->services_intro ?: 'Solusi teknologi komprehensif yang dirancang khusus untuk kebutuhan pemerintahan dan perusahaan modern.' }}</p>
+      <div class="eyebrow">Layanan Kami</div>
+      <h2 class="section-title"><span class="lite">General</span><em>Services</em></h2>
+      <p class="section-sub">{{ $setting?->services_intro ?: 'Lima lini layanan yang saling melengkapi — dari perencanaan, implementasi, hingga pemeliharaan.' }}</p>
     </div>
-    <div class="grid-3">
-      @foreach ($services as $service)
+    <div class="services-grid">
+      @foreach ($c['services'] as $i => $service)
         <article class="service-card reveal">
-          <div class="service-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="{{ $service['icon'] }}"/></svg>
-          </div>
+          <span class="service-num">0{{ $i + 1 }}</span>
+          <div class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="{{ $service['icon'] }}"/></svg></div>
           <h3 class="service-title">{{ $service['title'] }}</h3>
           <p class="service-desc">{{ $service['desc'] }}</p>
-          <a href="#contact" class="service-link" data-service="{{ $service['title'] }}">
-            Konsultasikan {!! $arrow !!}
-          </a>
+          @if ($service['anchor'] === 'contact')
+            <a href="#contact" class="link-arrow" data-service="{{ $service['title'] }}">Konsultasikan {!! $arrow !!}</a>
+          @else
+            <a href="#{{ $service['anchor'] }}" class="link-arrow">Lihat solusi &amp; proyek {!! $arrow !!}</a>
+          @endif
         </article>
       @endforeach
     </div>
   </div>
 </section>
 
-{{-- ============================== WHY US ============================== --}}
-<section id="why" class="section section--dark">
+{{-- ============================== DISPLAY SOLUTION ============================== --}}
+<section id="display" class="section">
+  <div class="container">
+    <div class="feature">
+      <div class="feature-media reveal">
+        <span class="slash slash--red" aria-hidden="true"></span>
+        <span class="slash slash--blue" aria-hidden="true"></span>
+        <img src="{{ $img('display-videowall.jpg') }}" alt="Ilustrasi video wall multi-panel" loading="lazy">
+      </div>
+      <div class="feature-text reveal">
+        <div class="eyebrow">Solusi</div>
+        <h2 class="section-title"><span class="lite">Professional Integrated</span><em>Display Solution</em></h2>
+        <p class="section-sub">Solusi display profesional untuk aplikasi bisnis dan pemerintahan. Setiap produk berbasis teknologi yang telah terbukti untuk operasi tanpa henti (24×7), multi-sumber, resolusi besar, dan arsitektur yang sepenuhnya redundan.</p>
+        <ul class="chip-list">
+          @foreach ($c['display']['applications'] as $app)
+            <li>{{ $app }}</li>
+          @endforeach
+        </ul>
+      </div>
+    </div>
+
+    <div class="solution-columns">
+      <div class="solution-col reveal">
+        <h3>Product Solution</h3>
+        <ul class="check-list">
+          @foreach ($c['display']['products'] as $item)<li>{{ $item }}</li>@endforeach
+        </ul>
+      </div>
+      <div class="solution-col reveal">
+        <h3>Service Solution</h3>
+        <ul class="check-list">
+          @foreach ($c['display']['services'] as $item)<li>{{ $item }}</li>@endforeach
+        </ul>
+      </div>
+    </div>
+
+    <div class="realisation">
+      <h3 class="realisation-title reveal">Dari desain menjadi ruang kendali nyata</h3>
+      <div class="realisation-grid">
+        @foreach ($c['display']['realisations'] as $r)
+          <div class="realisation-card reveal">
+            <div class="realisation-pair">
+              <figure><img src="{{ $img($r['design']) }}" alt="Desain {{ $r['title'] }}" loading="lazy"><figcaption>Desain</figcaption></figure>
+              <figure><img src="{{ $img($r['built']) }}" alt="Realisasi {{ $r['title'] }}" loading="lazy"><figcaption>Realisasi</figcaption></figure>
+            </div>
+            <p>{{ $r['title'] }}</p>
+          </div>
+        @endforeach
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects" class="section section--cream">
+  <div class="container">
+    <div class="section-head section-head--split">
+      <div class="reveal">
+        <div class="eyebrow">Portfolio</div>
+        <h2 class="section-title">Proyek <em>Display</em></h2>
+      </div>
+      <a href="{{ route('portfolio') }}" class="btn btn-ghost reveal">Semua portfolio {!! $arrow !!}</a>
+    </div>
+    <div class="gallery">
+      @foreach ($c['display']['projects'] as $p)
+        <figure class="gallery-item reveal">
+          <img src="{{ $img($p['image']) }}" alt="{{ $p['type'] }} {{ $p['client'] }}" loading="lazy">
+          <figcaption>
+            <div class="g-type">{{ $p['type'] }}</div>
+            <div class="g-client">{{ $p['client'] }}</div>
+            <div class="g-tech">{{ $p['tech'] }}</div>
+          </figcaption>
+        </figure>
+      @endforeach
+    </div>
+    <figure class="wide-photo reveal">
+      <img src="{{ $img('vms-collage.jpg') }}" alt="Pemasangan videotron dan VMS di jalan raya" loading="lazy">
+      <figcaption><strong>Videotron &amp; VMS</strong><span>Informasi lalu lintas dan waktu tempuh di ruas jalan</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+{{-- ============================== SOFTWARE ============================== --}}
+<section id="software" class="section">
   <div class="container">
     <div class="section-head section-head--center reveal">
-      <div class="section-label">Keunggulan Kami</div>
-      <h2 class="section-title">Mengapa Memilih <span>IGB?</span></h2>
-      <p class="section-sub">Kami menghadirkan kombinasi teknologi mutakhir, tim berpengalaman, dan komitmen penuh terhadap kesuksesan klien.</p>
+      <div class="eyebrow">Solusi</div>
+      <h2 class="section-title"><span class="lite">Software &amp; App</span><em>Development</em></h2>
+      <p class="section-sub">Aplikasi yang telah kami bangun untuk instansi pemerintah dan sektor publik — dari transportasi hingga sumber daya air.</p>
     </div>
-    <div class="grid-3">
-      @foreach ($reasons as [$icon, $title, $desc])
-        <div class="why-card reveal">
-          <div class="why-icon" aria-hidden="true">{{ $icon }}</div>
-          <h3 class="why-title">{{ $title }}</h3>
-          <p class="why-desc">{{ $desc }}</p>
-        </div>
+    <div class="apps-grid">
+      @foreach ($c['apps'] as $i => $app)
+        <article class="app-card reveal">
+          <div class="app-shot">
+            <img src="{{ $img($app['image']) }}" alt="Tampilan aplikasi {{ $app['name'] }}" loading="lazy">
+            <span class="app-num">{{ $i + 1 }}</span>
+          </div>
+          <div class="app-body">
+            <h3 class="app-name">{{ $app['name'] }}</h3>
+            <div class="app-client">{{ $app['client'] }}</div>
+            <p class="app-desc">{{ $app['desc'] }}</p>
+          </div>
+        </article>
       @endforeach
     </div>
   </div>
 </section>
 
-{{-- ============================== PORTFOLIO ============================== --}}
-<section id="portfolio" class="section">
+{{-- ============================== IOT ============================== --}}
+<section id="iot" class="section section--tint">
   <div class="container">
-    <div class="section-head section-head--split">
-      <div class="reveal">
-        <div class="section-label">Portfolio</div>
-        <h2 class="section-title">Project <span>Unggulan</span></h2>
+    <div class="feature">
+      <div class="feature-text reveal">
+        <div class="eyebrow">Solusi</div>
+        <h2 class="section-title"><em>IoT</em> Solution</h2>
+        <p class="section-sub">{{ $c['iot']['intro'] }}</p>
+        <p style="margin-top:22px;font-weight:700;color:var(--ink)">Arsitektur sistem telemetri kami:</p>
+        <ol class="layer-stack">
+          @foreach ($c['iot']['layers'] as $layer)<li>{{ $layer }}</li>@endforeach
+        </ol>
       </div>
-      @if ($portfolios->isNotEmpty())
-        <a href="{{ route('portfolio') }}" class="btn btn-navy reveal">Lihat Semua Project →</a>
-      @endif
+      <div class="feature-media reveal">
+        <span class="slash slash--red" aria-hidden="true"></span>
+        <span class="slash slash--yellow" aria-hidden="true"></span>
+        <img src="{{ $img('iot-awlr-install.jpg') }}" alt="Teknisi IGB memasang perangkat telemetri di lapangan" loading="lazy">
+      </div>
     </div>
-    <div class="grid-3">
-      @forelse ($portfolios as $item)
-        @include('partials.portfolio-card', ['item' => $item])
-      @empty
-        @foreach ($fallbackPortfolios as [$icon, $category, $title, $desc])
-          <article class="media-card reveal">
-            <div class="media-thumb">
-              <div class="media-thumb-inner">
-                <div class="media-thumb-icon" aria-hidden="true">{{ $icon }}</div>
-                <div class="media-thumb-label">{{ $category }}</div>
-              </div>
-            </div>
-            <div class="media-body">
-              <div class="media-cat">{{ $category }}</div>
-              <h3 class="media-title">{{ $title }}</h3>
-              <p class="media-desc">{{ $desc }}</p>
-            </div>
-          </article>
-        @endforeach
-      @endforelse
+
+    <div class="iot-projects">
+      @foreach ($c['iot']['projects'] as $p)
+        <article class="iot-card reveal">
+          <img src="{{ $img($p['image']) }}" alt="{{ $p['title'] }}" loading="lazy">
+          <div class="iot-card-body">
+            <h3>{{ $p['title'] }}</h3>
+            <p>{{ $p['desc'] }}</p>
+          </div>
+        </article>
+      @endforeach
+    </div>
+  </div>
+</section>
+
+{{-- ============================== SURVEILLANCE ============================== --}}
+<section id="surveillance" class="section">
+  <div class="container">
+    <div class="feature feature--flip">
+      <div class="feature-media reveal">
+        <span class="slash slash--red" aria-hidden="true"></span>
+        <span class="slash slash--blue" aria-hidden="true"></span>
+        <img src="{{ $img('cctv-ai-counting.jpg') }}" alt="Kamera AI menghitung dan mengklasifikasi kendaraan" loading="lazy">
+      </div>
+      <div class="feature-text reveal">
+        <div class="eyebrow">Solusi</div>
+        <h2 class="section-title">Surveillance <em>Camera</em></h2>
+        <p class="section-sub">{{ $c['surveillance']['intro'] }} Sistem visi kamera berbasis AI kami dapat diterapkan untuk:</p>
+        <ul class="ai-grid">
+          @foreach ($c['surveillance']['ai'] as $cap)<li>{{ $cap }}</li>@endforeach
+        </ul>
+      </div>
+    </div>
+    <div class="feature">
+      <div class="feature-media reveal">
+        <span class="slash slash--yellow" aria-hidden="true"></span>
+        <div class="media-frame"><img src="{{ $img('cctv-central.jpg') }}" alt="Dashboard monitoring kamera terpusat" loading="lazy"></div>
+      </div>
+      <div class="feature-text reveal">
+        <h3 class="section-title" style="font-size:clamp(24px,3vw,32px)">Monitoring <em>terpusat</em>, multi-vendor</h3>
+        <p class="section-sub">{{ $c['surveillance']['central'] }}</p>
+        <a href="#contact" class="btn btn-red" style="margin-top:24px" data-service="IoT Solution &amp; Surveillance Camera">Diskusikan kebutuhan Anda {!! $arrow !!}</a>
+      </div>
     </div>
   </div>
 </section>
 
 {{-- ============================== BLOG ============================== --}}
 @if ($posts->isNotEmpty())
-<section id="blog" class="section section--light">
+<section id="blog" class="section section--tint">
   <div class="container">
     <div class="section-head section-head--split">
       <div class="reveal">
-        <div class="section-label">Blog &amp; Insight</div>
-        <h2 class="section-title">Artikel <span>Terkini</span></h2>
+        <div class="eyebrow">Blog &amp; Insight</div>
+        <h2 class="section-title">Artikel <em>Terkini</em></h2>
       </div>
-      <a href="{{ route('blog') }}" class="btn btn-navy reveal">Semua Artikel →</a>
+      <a href="{{ route('blog') }}" class="btn btn-ghost reveal">Semua artikel {!! $arrow !!}</a>
     </div>
     <div class="grid-3">
       @foreach ($posts as $post)
@@ -289,50 +343,62 @@
 @endif
 
 {{-- ============================== CONTACT ============================== --}}
-<section id="contact" class="section section--dark">
+<section id="contact" class="section">
+  <span class="slash slash--red" aria-hidden="true"></span>
+  <span class="slash slash--yellow" aria-hidden="true"></span>
   <div class="container contact-grid">
-    <div>
-      <div class="section-label">Hubungi Kami</div>
-      <h2 class="section-title">Mari Mulai<br><span>Bersama Kami</span></h2>
-      <p class="section-sub">Siap membantu Anda bertransformasi digital. Ceritakan kebutuhan Anda dan kami siapkan solusi terbaik.</p>
+    <div class="reveal">
+      <h2 class="get-in-touch">GET IN <em>TOUCH</em></h2>
+      <p class="contact-intro">Untuk menjalin kemitraan, mengajukan pertanyaan, atau mendapatkan informasi lebih lanjut tentang layanan kami, jangan ragu menghubungi tim kami. Kami siap memberikan solusi yang sesuai dengan kebutuhan bisnis Anda.</p>
 
-      <div class="contact-info-list">
-        <div class="contact-info-item">
-          <div class="contact-info-icon" aria-hidden="true">📞</div>
-          <div>
-            <div class="contact-info-label">Telepon</div>
-            <div class="contact-info-val"><a href="tel:{{ preg_replace('/[^\d+]/', '', $site['phone']) }}">{{ $site['phone'] }}</a></div>
-          </div>
-        </div>
-        @if ($site['whatsapp_link'])
+      <div class="contact-card">
+        <h3>Contact Us</h3>
+        <div class="contact-info-list">
           <div class="contact-info-item">
-            <div class="contact-info-icon" aria-hidden="true">💬</div>
+            <div class="contact-info-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg></div>
             <div>
-              <div class="contact-info-label">WhatsApp</div>
-              <div class="contact-info-val"><a href="{{ $site['whatsapp_link'] }}" target="_blank" rel="noopener">{{ $site['whatsapp'] }}</a></div>
+              <div class="contact-info-label">Telepon</div>
+              <div class="contact-info-val"><a href="tel:{{ preg_replace('/[^\d+]/', '', $site['phone']) }}">{{ $site['phone'] }}</a></div>
             </div>
           </div>
-        @endif
-        <div class="contact-info-item">
-          <div class="contact-info-icon" aria-hidden="true">✉️</div>
-          <div>
-            <div class="contact-info-label">Email</div>
-            <div class="contact-info-val"><a href="mailto:{{ $site['email'] }}">{{ $site['email'] }}</a></div>
+          @if ($site['whatsapp_link'])
+            <div class="contact-info-item">
+              <div class="contact-info-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.4c1.4.8 3.1 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2zm5.5 12.4c-.2.7-1.1 1.2-1.8 1.3-.5.1-1.1 0-1.6-.2-2.5-.8-4.4-2.3-6-4.5-.8-1.1-1.3-2.3-1.4-3.5 0-1 .3-1.9 1-2.6.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .6.4.2.5.8 1.9.9 2.1.1.2.1.4 0 .6-.2.3-.5.6-.8.9-.1.1-.2.3-.1.5.4.7.9 1.4 1.5 2 .6.6 1.3 1 2 1.3.2.1.4.1.5-.1.2-.2.6-.9.8-1.1.2-.2.4-.2.6-.1.2.1 1.5.8 1.8.9.2.1.4.2.5.3.1.1.1.7-.2 1.3z"/></svg></div>
+              <div>
+                <div class="contact-info-label">WhatsApp</div>
+                <div class="contact-info-val"><a href="{{ $site['whatsapp_link'] }}" target="_blank" rel="noopener">{{ $site['whatsapp'] }}</a></div>
+              </div>
+            </div>
+          @endif
+          <div class="contact-info-item">
+            <div class="contact-info-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
+            <div>
+              <div class="contact-info-label">Email</div>
+              <div class="contact-info-val"><a href="mailto:{{ $site['email'] }}">{{ $site['email'] }}</a></div>
+            </div>
           </div>
-        </div>
-        <div class="contact-info-item">
-          <div class="contact-info-icon" aria-hidden="true">📍</div>
-          <div>
-            <div class="contact-info-label">Alamat</div>
-            <div class="contact-info-val">{!! nl2br(e($site['address'])) !!}</div>
+          <div class="contact-info-item">
+            <div class="contact-info-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg></div>
+            <div>
+              <div class="contact-info-label">Alamat</div>
+              <div class="contact-info-val">{!! nl2br(e($site['address'])) !!}</div>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <div class="contact-info-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm6.9 6h-2.9a15.7 15.7 0 0 0-1.4-3.6A8 8 0 0 1 18.9 8zM12 4c.8 1.2 1.5 2.5 1.9 4h-3.8c.4-1.5 1.1-2.8 1.9-4zM4.3 14a8.2 8.2 0 0 1 0-4h3.4a16.5 16.5 0 0 0 0 4H4.3zm.8 2h2.9c.3 1.3.8 2.5 1.4 3.6A8 8 0 0 1 5.1 16zM8 8H5.1a8 8 0 0 1 4.3-3.6C8.8 5.5 8.3 6.7 8 8zm4 12c-.8-1.2-1.5-2.5-1.9-4h3.8c-.4 1.5-1.1 2.8-1.9 4zm2.3-6H9.7a14.7 14.7 0 0 1 0-4h4.6a14.7 14.7 0 0 1 0 4zm.3 5.6c.6-1.1 1.1-2.3 1.4-3.6h2.9a8 8 0 0 1-4.3 3.6zm1.8-5.6a16.5 16.5 0 0 0 0-4h3.4a8.2 8.2 0 0 1 0 4h-3.4z"/></svg></div>
+            <div>
+              <div class="contact-info-label">Website</div>
+              <div class="contact-info-val"><a href="https://{{ preg_replace('#^https?://#', '', $site['website']) }}" target="_blank" rel="noopener">{{ $site['website'] }}</a></div>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <form class="contact-form" method="POST" action="{{ route('contact.store') }}" novalidate data-contact-form>
+    <form class="contact-form reveal" method="POST" action="{{ route('contact.store') }}" novalidate data-contact-form>
       @csrf
       <h3 class="contact-form-title">Kirim Pesan</h3>
+      <p class="contact-form-sub">Ceritakan kebutuhan Anda, tim kami akan segera menghubungi.</p>
 
       @if (session('contact_success'))
         <div class="alert alert-success" role="status">{{ session('contact_success') }}</div>
@@ -340,7 +406,6 @@
         <div class="alert alert-error" role="alert">Mohon periksa kembali isian yang ditandai.</div>
       @endif
 
-      {{-- Honeypot (hidden from humans) --}}
       <div class="form-hp" aria-hidden="true">
         <label for="website_url">Jangan diisi</label>
         <input type="text" id="website_url" name="website_url" tabindex="-1" autocomplete="off">
@@ -361,7 +426,7 @@
 
       <div class="form-group">
         <label class="form-label" for="cf-company">Perusahaan / Instansi</label>
-        <input class="form-input" id="cf-company" name="company" type="text" placeholder="Nama perusahaan Anda" value="{{ old('company') }}" maxlength="190" autocomplete="organization">
+        <input class="form-input" id="cf-company" name="company" type="text" placeholder="Nama perusahaan atau instansi" value="{{ old('company') }}" maxlength="190" autocomplete="organization">
         @error('company')<span class="form-error">{{ $message }}</span>@enderror
       </div>
 
@@ -392,7 +457,7 @@
 </section>
 
 {{-- ============================== MARKETPLACE ============================== --}}
-<section id="marketplace" class="section section--light">
+<section id="marketplace" class="section section--tint">
   <div class="container">
     @include('partials.marketplace', ['heading' => 'h2'])
   </div>

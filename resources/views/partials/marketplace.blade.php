@@ -18,8 +18,8 @@
 @endphp
 
 <div class="section-head section-head--center reveal">
-  <div class="section-label">Tech Marketplace</div>
-  <{{ $heading }} class="section-title">Tech <span>Marketplace</span></{{ $heading }}>
+  <div class="eyebrow">Tech Marketplace</div>
+  <{{ $heading }} class="section-title">Tech <em>Marketplace</em></{{ $heading }}>
   <p class="section-sub">Jual-beli komputer, hardware, dan software — produk teknologi terpercaya untuk kebutuhan personal maupun bisnis Anda.</p>
 </div>
 

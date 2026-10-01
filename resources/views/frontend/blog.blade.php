@@ -8,8 +8,8 @@
 <section class="section section--page">
   <div class="container">
     <div class="section-head section-head--center reveal">
-      <div class="section-label">Blog &amp; Insight</div>
-      <h1 class="section-title">Semua <span>Artikel</span></h1>
+      <div class="eyebrow">Blog &amp; Insight</div>
+      <h1 class="section-title">Semua <em>Artikel</em></h1>
       <p class="section-sub">Kumpulan artikel, wawasan, dan update teknologi terbaru dari tim kami.</p>
     </div>
 

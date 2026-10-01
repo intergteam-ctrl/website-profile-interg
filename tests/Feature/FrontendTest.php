@@ -84,14 +84,14 @@ class FrontendTest extends TestCase
             'name' => 'Budi',
             'email' => 'budi@example.com',
             'company' => 'Dishub',
-            'service' => 'Display Solution',
+            'service' => 'Professional Integrated Display Solution',
             'message' => 'Kami butuh video wall untuk control room.',
         ])->assertRedirect(url('/#contact'))
             ->assertSessionHas('contact_success');
 
         $this->assertDatabaseHas('contact_messages', [
             'email' => 'budi@example.com',
-            'service' => 'Display Solution',
+            'service' => 'Professional Integrated Display Solution',
             'read_at' => null,
         ]);
     }

@@ -14,8 +14,8 @@
 <section id="testimonials" class="section">
   <div class="container">
     <div class="section-head section-head--center reveal">
-      <div class="section-label">Testimoni</div>
-      <h2 class="section-title">Apa Kata <span>Klien Kami</span></h2>
+      <div class="eyebrow">Testimoni</div>
+      <h2 class="section-title">Apa Kata <em>Klien Kami</em></h2>
       <p class="section-sub">Kepercayaan klien adalah cerminan kualitas kerja kami.</p>
     </div>
     <div class="grid-3">

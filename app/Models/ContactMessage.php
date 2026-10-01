@@ -14,10 +14,10 @@ class ContactMessage extends Model
     public const SERVICES = [
         'System Integrator',
         'Software & App Development',
-        'IoT Solution & Surveillance',
-        'Display Solution',
+        'IoT Solution & Surveillance Camera',
+        'Professional Integrated Display Solution',
         'Hardware Service & Maintenance',
-        'Digital Transformation Consulting',
+        'Lainnya',
     ];
 
     protected $fillable = [

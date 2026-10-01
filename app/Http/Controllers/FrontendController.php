@@ -14,7 +14,6 @@ class FrontendController extends Controller
     public function home(): View
     {
         return view('frontend.home', [
-            'portfolios' => Portfolio::query()->latest('id')->take(6)->get(),
             'posts' => Post::query()->published()->latest('published_at')->take(3)->get(),
             'products' => $this->marketplaceProducts(),
             'categories' => $this->marketplaceCategories(),

@@ -3,12 +3,12 @@
   $section = fn (string $id) => $onHome ? '#'.$id : route('home').'#'.$id;
 
   $navItems = [
-      ['label' => 'Home',        'href' => $section('hero')],
-      ['label' => 'About Us',    'href' => $section('about')],
-      ['label' => 'Services',    'href' => $section('services')],
-      ['label' => 'Portfolio',   'href' => $onHome ? '#portfolio' : route('portfolio'), 'active' => request()->routeIs('portfolio')],
-      ['label' => 'Blog',        'href' => $onHome ? '#blog' : route('blog'),           'active' => request()->routeIs('blog', 'blog.show')],
-      ['label' => 'Contact',     'href' => $section('contact')],
+      ['label' => 'Beranda',     'href' => $section('hero')],
+      ['label' => 'Tentang',     'href' => $section('about')],
+      ['label' => 'Layanan',     'href' => $section('services')],
+      ['label' => 'Proyek',      'href' => $section('display')],
+      ['label' => 'Blog',        'href' => $onHome ? '#blog' : route('blog'), 'active' => request()->routeIs('blog', 'blog.show')],
+      ['label' => 'Kontak',      'href' => $section('contact')],
       ['label' => 'Marketplace', 'href' => $onHome ? '#marketplace' : route('marketplace'), 'active' => request()->routeIs('marketplace')],
   ];
 
@@ -26,7 +26,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ $fullTitle }}</title>
   <meta name="description" content="{{ $metaDescription }}">
-  <meta name="theme-color" content="#0F172A">
+  <meta name="theme-color" content="#FFFFFF">
   <link rel="canonical" href="{{ url()->current() }}">
 
   <meta property="og:type" content="website">
@@ -41,7 +41,7 @@
   <link rel="icon" href="{{ asset('favicon.ico') }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,600;1,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ $assetVersion('css/site.css') }}">
   <script>document.documentElement.classList.add('js');</script>
 </head>
@@ -61,11 +61,8 @@
   <header id="navbar" class="{{ $onHome ? '' : 'solid' }}">
     <div class="container nav-inner">
       <a href="{{ $section('hero') }}" class="brand" aria-label="{{ config('company.name') }} — beranda">
-        <span class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-        </span>
         <span class="brand-name">IG<span>&amp;</span>B</span>
-        <span class="brand-tag">Accelerating<br>Innovation &amp;<br>Technology</span>
+        <span class="brand-tag">Accelerating<br>Innovation and<br>Technology</span>
       </a>
 
       <ul class="nav-links">
@@ -92,13 +89,11 @@
       <div class="footer-grid">
         <div>
           <a href="{{ $section('hero') }}" class="brand">
-            <span class="brand-mark" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-            </span>
             <span class="brand-name">IG<span>&amp;</span>B</span>
+            <span class="brand-tag">Accelerating<br>Innovation and<br>Technology</span>
           </a>
           <p class="footer-desc">
-            Solusi teknologi terpadu untuk pemerintahan dan perusahaan modern. Kami hadir menjawab tantangan transformasi digital 5.0 Indonesia.
+            {{ config('company.name') }} — Total IT Solution untuk pemerintahan dan perusahaan: system integrator, software, IoT, surveillance, dan display solution.
           </p>
           @php($socials = array_filter(config('company.socials', [])))
           @if ($socials)
@@ -122,8 +117,8 @@
         <div>
           <div class="footer-col-title">Layanan</div>
           <ul class="footer-links">
-            @foreach (\App\Models\ContactMessage::SERVICES as $service)
-              <li><a href="{{ $section('services') }}">{{ $service }}</a></li>
+            @foreach (config('company.services') as $service)
+              <li><a href="{{ $section($service['anchor'] === 'contact' ? 'services' : $service['anchor']) }}">{{ $service['title'] }}</a></li>
             @endforeach
           </ul>
         </div>

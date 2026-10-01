@@ -8,8 +8,8 @@
 <section class="section section--page">
   <div class="container">
     <div class="section-head section-head--center reveal">
-      <div class="section-label">Portfolio</div>
-      <h1 class="section-title">Semua <span>Project</span></h1>
+      <div class="eyebrow">Portfolio</div>
+      <h1 class="section-title">Semua <em>Project</em></h1>
       <p class="section-sub">Berbagai project yang telah kami kerjakan — dari display solution, IoT, hingga software development.</p>
     </div>
 
