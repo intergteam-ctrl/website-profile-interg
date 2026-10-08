@@ -21,6 +21,7 @@ class Portfolio extends Model
         'description',
         'image',
         'sort_order',
+        'url',
     ];
 
     /** Where a project is shown on the home page. */

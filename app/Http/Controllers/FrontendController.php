@@ -70,7 +70,7 @@ class FrontendController extends Controller
      * panel. Falls back to the bundled Company Profile content while the
      * table has nothing for that group, so a section is never empty.
      *
-     * @return Collection<int, array{title: string, category: ?string, subtitle: ?string, desc: ?string, image: ?string}>
+     * @return Collection<int, array{title: string, category: ?string, subtitle: ?string, desc: ?string, image: ?string, url: ?string}>
      */
     private function portfolioGroup(string $group): Collection
     {
@@ -80,6 +80,7 @@ class FrontendController extends Controller
             'subtitle' => $p->subtitle,
             'desc' => $p->description,
             'image' => $p->image_url,
+            'url' => $p->url,
         ]);
 
         if ($items->isNotEmpty()) {
@@ -89,9 +90,9 @@ class FrontendController extends Controller
         $img = fn (string $file): string => asset('images/profile/'.$file);
 
         return collect(match ($group) {
-            'display' => array_map(fn (array $p): array => ['title' => $p['client'], 'category' => $p['type'], 'subtitle' => $p['tech'], 'desc' => null, 'image' => $img($p['image'])], config('company.display.projects', [])),
-            'software' => array_map(fn (array $a): array => ['title' => $a['name'], 'category' => null, 'subtitle' => $a['client'], 'desc' => $a['desc'], 'image' => $img($a['image'])], config('company.apps', [])),
-            'iot' => array_map(fn (array $p): array => ['title' => $p['title'], 'category' => null, 'subtitle' => null, 'desc' => $p['desc'], 'image' => $img($p['image'])], config('company.iot.projects', [])),
+            'display' => array_map(fn (array $p): array => ['title' => $p['client'], 'category' => $p['type'], 'subtitle' => $p['tech'], 'desc' => null, 'image' => $img($p['image']), 'url' => null], config('company.display.projects', [])),
+            'software' => array_map(fn (array $a): array => ['title' => $a['name'], 'category' => null, 'subtitle' => $a['client'], 'desc' => $a['desc'], 'image' => $img($a['image']), 'url' => $a['url'] ?? null], config('company.apps', [])),
+            'iot' => array_map(fn (array $p): array => ['title' => $p['title'], 'category' => null, 'subtitle' => null, 'desc' => $p['desc'], 'image' => $img($p['image']), 'url' => null], config('company.iot.projects', [])),
             default => [],
         });
     }

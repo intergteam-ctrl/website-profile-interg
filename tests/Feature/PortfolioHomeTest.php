@@ -17,7 +17,7 @@ class PortfolioHomeTest extends TestCase
     public function test_migration_loads_company_profile_projects(): void
     {
         $this->assertSame(9, Portfolio::where('group', 'display')->count());
-        $this->assertSame(9, Portfolio::where('group', 'software')->count());
+        $this->assertSame(10, Portfolio::where('group', 'software')->count());
         $this->assertSame(3, Portfolio::where('group', 'iot')->count());
 
         $this->get('/')
@@ -70,5 +70,15 @@ class PortfolioHomeTest extends TestCase
 
         $this->get('/')->assertDontSee('Proyek Internal X');
         $this->get('/portfolio')->assertSee('Proyek Internal X');
+    }
+
+    public function test_mavens_app_is_listed_with_logo_and_link(): void
+    {
+        $this->get('/')
+            ->assertSee('Mavens Cash Advance &amp; Reimbursement', false)
+            ->assertSee('PT Mavens Mitra Perkasa')
+            ->assertSee(asset('images/profile/app-mavens.jpg'), false)
+            ->assertSee('href="https://mavens.interg.co.id/"', false)
+            ->assertSee('Kunjungi aplikasi');
     }
 }

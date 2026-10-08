@@ -253,6 +253,9 @@
             <h3 class="app-name">{{ $app['title'] }}</h3>
             @if ($app['subtitle'])<div class="app-client">{{ $app['subtitle'] }}</div>@endif
             <p class="app-desc">{{ \Illuminate\Support\Str::limit((string) $app['desc'], 220) }}</p>
+            @if (! empty($app['url']))
+              <a href="{{ $app['url'] }}" class="link-arrow app-link" target="_blank" rel="noopener">Kunjungi aplikasi {!! $arrow !!}</a>
+            @endif
           </div>
         </article>
       @endforeach

@@ -111,6 +111,7 @@ return [
         ['name' => 'EWT', 'client' => 'Estimasi Waktu Tempuh', 'image' => 'app-ewt.jpg', 'desc' => 'Memprediksi durasi perjalanan antar titik dengan mempertimbangkan jarak, kondisi lalu lintas, cuaca, dan rute — membantu pengguna memilih rute paling efisien.'],
         ['name' => 'SISWA', 'client' => 'Sistem Informasi Sungai & Waduk', 'image' => 'app-siswa.jpg', 'desc' => 'Menampilkan data waduk, embung, ranu, dan sungai di Jawa Timur sehingga kondisi dan lokasi sumber daya air bisa dipantau dengan mudah.'],
         ['name' => 'Lab Data Sungram', 'client' => 'Dishub Jatim', 'image' => 'app-labdata.jpg', 'desc' => 'Portal data Dinas Perhubungan Prov. Jawa Timur yang menyajikan informasi transportasi dan infrastruktur.'],
+        ['name' => 'Mavens Cash Advance & Reimbursement', 'client' => 'PT Mavens Mitra Perkasa', 'image' => 'app-mavens.jpg', 'url' => 'https://mavens.interg.co.id/', 'desc' => 'Aplikasi web untuk pengajuan, persetujuan, dan pelaporan cash advance (uang muka) serta reimbursement karyawan PT Mavens Mitra Perkasa.'],
     ],
 
     'iot' => [

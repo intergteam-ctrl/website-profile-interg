@@ -70,6 +70,13 @@ class PortfolioForm
                         default => '',
                     }),
 
+                TextInput::make('url')
+                    ->label('Link aplikasi / proyek')
+                    ->url()
+                    ->maxLength(255)
+                    ->placeholder('https://…')
+                    ->helperText('Opsional. Menampilkan tombol "Kunjungi aplikasi" di kartu. Pastikan klien setuju sebelum menautkan sistem mereka.'),
+
                 Textarea::make('description')
                     ->label('Deskripsi')
                     ->rows(4)

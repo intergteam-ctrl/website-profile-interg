@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Portfolio;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 /**
@@ -37,6 +38,7 @@ class PortfolioSeeder extends Seeder
                 'subtitle' => $a['client'],
                 'description' => $a['desc'],
                 'image' => 'images/profile/'.$a['image'],
+                'url' => $a['url'] ?? null,
                 'sort_order' => $i + 1,
             ];
         }
@@ -53,7 +55,14 @@ class PortfolioSeeder extends Seeder
             ];
         }
 
+        // Older migrations run this seeder before the `url` column exists.
+        $hasUrl = Schema::hasColumn('portfolios', 'url');
+
         foreach ($rows as $row) {
+            if (! $hasUrl) {
+                unset($row['url']);
+            }
+
             $slug = Str::slug($row['group'].'-'.$row['title']);
             Portfolio::query()->firstOrCreate(['slug' => $slug], $row + ['slug' => $slug]);
         }

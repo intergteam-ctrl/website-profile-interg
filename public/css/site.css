@@ -300,6 +300,8 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
 .app-name { font-family: var(--font-head); font-weight: 700; font-size: 19px; color: var(--ink); text-transform: uppercase; letter-spacing: 0.02em; line-height: 1.2; }
 .app-client { font-size: 13px; font-weight: 700; color: var(--blue); margin: 3px 0 8px; }
 .app-desc { font-size: 15px; color: var(--muted); }
+.app-body { display: flex; flex-direction: column; flex: 1; }
+.app-link { margin-top: 12px; font-size: 14.5px; }
 
 /* ==========================================================================
    IOT / SURVEILLANCE
