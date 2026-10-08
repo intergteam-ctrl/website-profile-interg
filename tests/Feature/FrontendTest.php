@@ -136,4 +136,14 @@ class FrontendTest extends TestCase
                 ->assertSee('+62 341 400 272');
         }
     }
+
+    public function test_contact_email_is_shown_on_public_pages(): void
+    {
+        foreach (['/', '/marketplace'] as $uri) {
+            $this->get($uri)
+                ->assertOk()
+                ->assertSee('mailto:interg.team@gmail.com', false)
+                ->assertDontSee('sales@interg.co.id', false);
+        }
+    }
 }

@@ -23,7 +23,7 @@ return [
     // Empty = no WhatsApp number/buttons anywhere on the site. Can be set
     // again from Admin → Pengaturan Situs (that value takes precedence).
     'whatsapp' => env('COMPANY_WHATSAPP'),
-    'email' => env('COMPANY_EMAIL', 'sales@interg.co.id'),
+    'email' => env('COMPANY_EMAIL', 'interg.team@gmail.com'),
     'website' => 'interg.co.id',
     'address' => "Perum Permata Jingga Blok AA No. 27,\nTunggulwulung, Lowokwaru, Kota Malang 65143",
 
