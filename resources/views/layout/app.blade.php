@@ -96,10 +96,16 @@
             {{ config('company.name') }} — Total IT Solution untuk pemerintahan dan perusahaan: system integrator, software, IoT, surveillance, dan display solution.
           </p>
           @php($socials = array_filter(config('company.socials', [])))
+          @php($socialIcons = [
+              'instagram' => '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 8.2a3.2 3.2 0 1 1 0-6.4 3.2 3.2 0 0 1 0 6.4zM17.3 5.5a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4zM21.9 7.3c-.1-1.6-.4-3-1.6-4.2S17.6 1.6 16 1.5C14.4 1.4 9.6 1.4 8 1.5c-1.6.1-3 .4-4.2 1.6S2.2 5.7 2.1 7.3C2 8.9 2 13.7 2.1 15.3c.1 1.6.4 3 1.6 4.2s2.6 1.5 4.2 1.6c1.6.1 6.4.1 8 0 1.6-.1 3-.4 4.2-1.6s1.5-2.6 1.6-4.2c.1-1.6.1-6.4.2-8zM19.8 17.3a3.3 3.3 0 0 1-1.8 1.8c-1.3.5-4.3.4-5.7.4s-4.4.1-5.7-.4a3.3 3.3 0 0 1-1.8-1.8c-.5-1.3-.4-4.3-.4-5.7s-.1-4.4.4-5.7A3.3 3.3 0 0 1 6.6 4.1c1.3-.5 4.3-.4 5.7-.4s4.4-.1 5.7.4a3.3 3.3 0 0 1 1.8 1.8c.5 1.3.4 4.3.4 5.7s.1 4.4-.4 5.7z"/></svg>',
+              'linkedin' => 'in',
+              'facebook' => 'f',
+              'youtube' => '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15.1V8.9l5.8 3.1-5.8 3.1z"/></svg>',
+          ])
           @if ($socials)
             <div class="footer-socials">
               @foreach ($socials as $network => $url)
-                <a href="{{ $url }}" class="footer-social" target="_blank" rel="noopener" aria-label="{{ ucfirst($network) }}">{{ substr($network, 0, 2) }}</a>
+                <a href="{{ $url }}" class="footer-social" target="_blank" rel="noopener" aria-label="{{ ucfirst($network) }}">{!! $socialIcons[$network] ?? e(strtoupper(substr($network, 0, 2))) !!}</a>
               @endforeach
             </div>
           @endif

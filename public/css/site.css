@@ -496,6 +496,7 @@ body.modal-open { overflow: hidden; }
 .footer-desc { font-size: 15px; max-width: 300px; margin: 16px 0 18px; }
 .footer-socials { display: flex; gap: 8px; }
 .footer-social { width: 38px; height: 38px; border-radius: 10px; background: #fff; border: 1px solid var(--line); display: grid; place-items: center; font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--ink-2); transition: var(--transition); }
+.footer-social svg { width: 17px; height: 17px; fill: currentColor; }
 .footer-social:hover { background: var(--red); border-color: var(--red); color: #fff; }
 .footer-col-title { font-family: var(--font-head); font-weight: 600; font-size: 17px; color: var(--ink); margin-bottom: 14px; }
 .footer-links { list-style: none; display: grid; gap: 8px; font-size: 15px; }
