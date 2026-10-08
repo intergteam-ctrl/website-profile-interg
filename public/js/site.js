@@ -36,6 +36,38 @@
     if (e.key === 'Escape' && mobileNav && mobileNav.classList.contains('open')) setMobileNav(false);
   });
 
+  /* ---------- Instagram side panel ---------- */
+  var igTab = document.getElementById('igTab');
+  var igDrawer = document.getElementById('igDrawer');
+  var igScrim = document.getElementById('igScrim');
+
+  function setInstagram(open) {
+    if (!igTab || !igDrawer) return;
+    igDrawer.classList.toggle('open', open);
+    igDrawer.setAttribute('aria-hidden', String(!open));
+    igDrawer.inert = !open;
+    igTab.setAttribute('aria-expanded', String(open));
+    if (igScrim) igScrim.hidden = !open;
+    if (open) {
+      // Wait a frame so the panel is no longer inert/hidden when focusing.
+      requestAnimationFrame(function () {
+        var close = igDrawer.querySelector('[data-ig-close]');
+        if (close) close.focus({ preventScroll: true });
+      });
+    } else {
+      igTab.focus({ preventScroll: true });
+    }
+  }
+
+  if (igTab) igTab.addEventListener('click', function () { setInstagram(true); });
+  if (igScrim) igScrim.addEventListener('click', function () { setInstagram(false); });
+  document.querySelectorAll('[data-ig-close]').forEach(function (el) {
+    el.addEventListener('click', function () { setInstagram(false); });
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && igDrawer && igDrawer.classList.contains('open')) setInstagram(false);
+  });
+
   /* ---------- Reveal on scroll ---------- */
   var revealEls = document.querySelectorAll('.reveal');
   if ('IntersectionObserver' in window) {

@@ -82,6 +82,8 @@
     @yield('content')
   </main>
 
+  @include('partials.instagram-drawer')
+
   {{-- Footer --}}
   <footer id="footer">
     <div class="container">

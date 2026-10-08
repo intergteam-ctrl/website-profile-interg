@@ -129,10 +129,17 @@ return [
         'central' => 'Sistem monitoring terpusat yang mengintegrasikan kamera dari berbagai merek vendor ke dalam satu tampilan — sekaligus memantau apakah setiap perangkat bekerja pada performa terbaiknya.',
     ],
 
+    // Instagram side panel (posts are picked in Admin → Instagram).
+    'instagram' => [
+        'handle' => 'intergqueenbumindo',
+        'url' => env('SOCIAL_INSTAGRAM', 'https://www.instagram.com/intergqueenbumindo/'),
+        'limit' => 9,
+    ],
+
     // Leave a URL empty to hide that icon instead of showing a dead "#" link.
     'socials' => [
         'linkedin' => env('SOCIAL_LINKEDIN'),
-        'instagram' => env('SOCIAL_INSTAGRAM'),
+        'instagram' => env('SOCIAL_INSTAGRAM', 'https://www.instagram.com/intergqueenbumindo/'),
         'facebook' => env('SOCIAL_FACEBOOK'),
         'youtube' => env('SOCIAL_YOUTUBE'),
     ],

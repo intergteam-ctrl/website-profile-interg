@@ -505,6 +505,47 @@ body.modal-open { overflow: hidden; }
 .footer-tagline { font-style: italic; }
 
 /* ==========================================================================
+   INSTAGRAM SIDE PANEL
+   ========================================================================== */
+.ig-tab { position: fixed; right: 0; top: 50%; z-index: 900; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 14px 9px; background: var(--ink); color: #fff; border-radius: 12px 0 0 12px; box-shadow: var(--shadow-md); transition: padding var(--transition), background var(--transition); }
+.ig-tab:hover { background: #000; padding-right: 13px; }
+.ig-tab svg { width: 18px; height: 18px; fill: currentColor; }
+.ig-tab span { writing-mode: vertical-rl; transform: rotate(180deg); font-family: var(--font-head); font-weight: 600; font-size: 13px; letter-spacing: 0.08em; }
+.ig-tab[aria-expanded="true"] { opacity: 0; pointer-events: none; }
+
+.ig-drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 1050; width: min(360px, 88vw); background: #fff; border-left: 1px solid var(--line); box-shadow: -20px 0 60px rgba(29, 31, 35, 0.12); padding: 22px 20px 28px; overflow-y: auto; transform: translateX(105%); visibility: hidden; transition: transform 0.35s var(--ease), visibility 0.35s; display: flex; flex-direction: column; gap: 16px; }
+.ig-drawer.open { transform: none; visibility: visible; transition: transform 0.35s var(--ease), visibility 0s; }
+.ig-scrim { position: fixed; inset: 0; z-index: 1040; background: rgba(29, 31, 35, 0.28); }
+
+.ig-head { display: flex; align-items: center; gap: 12px; }
+.ig-avatar { width: 52px; height: 52px; border-radius: 50%; padding: 2px; background: conic-gradient(from 210deg, #4A4A4A, #A6A9AF, #4A4A4A); flex-shrink: 0; }
+.ig-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: contain; background: #fff; padding: 9px 4px; border: 2px solid #fff; }
+.ig-who { flex: 1; min-width: 0; line-height: 1.25; }
+.ig-handle { display: block; font-family: var(--font-head); font-weight: 600; font-size: 16px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ig-handle:hover { text-decoration: underline; }
+.ig-name { font-size: 13px; color: var(--muted); }
+.ig-close { width: 38px; height: 38px; border-radius: 50%; background: var(--paper-2); display: grid; place-items: center; font-size: 16px; color: var(--ink); flex-shrink: 0; }
+.ig-close:hover { background: var(--line); }
+.ig-follow { width: 100%; padding: 11px 18px; font-size: 15px; }
+
+.ig-grid { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+.ig-item { position: relative; display: block; aspect-ratio: 1; overflow: hidden; background: var(--cream); border-radius: 4px; }
+.ig-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+.ig-item:hover img, .ig-item:focus-visible img { transform: scale(1.06); }
+.ig-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; padding: 6px; background: linear-gradient(transparent 35%, rgba(0, 0, 0, 0.72)); color: #fff; opacity: 0; transition: opacity var(--transition); }
+.ig-item:hover .ig-overlay, .ig-item:focus-visible .ig-overlay { opacity: 1; }
+.ig-caption { font-size: 10.5px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.ig-date { font-size: 9.5px; opacity: 0.8; }
+.ig-more { align-self: center; font-size: 14px; }
+.ig-empty { font-size: 14.5px; color: var(--muted); text-align: center; background: var(--paper-2); border: 1px dashed var(--line); border-radius: var(--radius-sm); padding: 18px 14px; }
+
+@media (max-width: 640px) {
+  .ig-tab { top: auto; bottom: 18px; transform: none; padding: 10px; border-radius: 12px 0 0 12px; }
+  .ig-tab span { display: none; }
+  .ig-tab svg { width: 20px; height: 20px; }
+}
+
+/* ==========================================================================
    RESPONSIVE
    ========================================================================== */
 @media (max-width: 1140px) {

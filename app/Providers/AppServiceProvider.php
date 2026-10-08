@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\InstagramPost;
 use App\Models\SiteSetting;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -26,6 +28,24 @@ class AppServiceProvider extends ServiceProvider
         View::composer(['layout.app', 'frontend.*', 'partials.*'], function ($view): void {
             $view->with('setting', $this->siteSetting())
                 ->with('site', $this->siteContact());
+        });
+
+        View::composer('layout.app', function ($view): void {
+            $view->with('instagramPosts', $this->instagramPosts());
+        });
+    }
+
+    /**
+     * @return Collection<int, InstagramPost>
+     */
+    private function instagramPosts(): Collection
+    {
+        return once(function (): Collection {
+            try {
+                return InstagramPost::query()->visible()->take((int) config('company.instagram.limit', 9))->get();
+            } catch (\Throwable) {
+                return collect();
+            }
         });
     }
 
