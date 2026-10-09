@@ -28,6 +28,9 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->favicon(asset('favicon-32.png').'?v='.(@filemtime(public_path('favicon-32.png')) ?: '1'))
+            ->brandLogo(asset('images/logo-igb.png'))
+            ->brandLogoHeight('2.25rem')
             // Lets admins change their own name, email and password from the
             // user menu (top right) without needing server/console access.
             ->profile(isSimple: false)

@@ -146,4 +146,14 @@ class FrontendTest extends TestCase
                 ->assertDontSee('sales@interg.co.id', false);
         }
     }
+
+    public function test_favicon_is_linked_and_not_empty(): void
+    {
+        $this->get('/')
+            ->assertSee('rel="icon"', false)
+            ->assertSee('favicon-32.png', false)
+            ->assertSee('apple-touch-icon.png', false);
+
+        $this->assertGreaterThan(1000, filesize(public_path('favicon.ico')));
+    }
 }

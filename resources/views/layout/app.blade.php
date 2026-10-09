@@ -38,7 +38,9 @@
     <meta property="og:image" content="@yield('og_image')">
   @endif
 
-  <link rel="icon" href="{{ asset('favicon.ico') }}">
+  <link rel="icon" href="{{ $assetVersion('favicon.ico') }}" sizes="any">
+  <link rel="icon" type="image/png" href="{{ $assetVersion('favicon-32.png') }}" sizes="32x32">
+  <link rel="apple-touch-icon" href="{{ $assetVersion('apple-touch-icon.png') }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,600;1,800&display=swap" rel="stylesheet">
