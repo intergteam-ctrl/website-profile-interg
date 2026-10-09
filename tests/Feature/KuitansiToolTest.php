@@ -29,7 +29,8 @@ class KuitansiToolTest extends TestCase
             ->assertOk()
             ->assertHeader('X-Robots-Tag', 'noindex, nofollow')
             ->assertSee('Bukti Penerimaan Pembayaran')
-            ->assertSee('Kembali ke Admin');
+            ->assertSee('Kembali ke Admin')
+            ->assertSee('Tanda Tangan Penerima');
     }
 
     public function test_tool_is_not_publicly_reachable_as_a_static_file(): void
