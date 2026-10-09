@@ -1,0 +1,499 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Kuitansi — Admin IG&amp;B</title>
+<link rel="icon" href="/favicon-32.png">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--color-background-tertiary,#f0f0f0);padding:20px;color:var(--color-text-primary,#111);}
+
+.back-link{position:absolute;left:20px;font-size:11px;font-weight:600;letter-spacing:0.3px;text-transform:none;color:#2563eb;text-decoration:none;}
+.back-link:hover{text-decoration:underline;}
+.page-title{position:relative;text-align:center;font-size:13px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--color-text-secondary,#666);margin-bottom:18px;}
+
+.layout{display:grid;grid-template-columns:280px 1fr;gap:20px;max-width:1000px;margin:0 auto;align-items:start;}
+
+/* PANEL FORM */
+.panel{background:var(--color-background-primary,#fff);border:0.5px solid var(--color-border-tertiary,rgba(0,0,0,0.12));border-radius:12px;overflow:hidden;}
+.panel-header{padding:14px 18px;border-bottom:0.5px solid var(--color-border-tertiary,rgba(0,0,0,0.1));background:var(--color-background-secondary,#f8f8f8);}
+.panel-header h2{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--color-text-secondary,#777);}
+.panel-body{padding:16px 18px;display:flex;flex-direction:column;gap:13px;}
+
+.field{display:flex;flex-direction:column;gap:5px;}
+.field label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.7px;color:var(--color-text-secondary,#888);}
+.field input,.field textarea{border:0.5px solid var(--color-border-secondary,rgba(0,0,0,0.2));border-radius:7px;padding:7px 10px;font-size:12px;font-family:'Inter',sans-serif;background:var(--color-background-primary,#fff);color:var(--color-text-primary,#111);outline:none;transition:border-color 0.2s,box-shadow 0.2s;}
+.field input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,0.1);}
+
+.terbilang-badge{background:#eff6ff;border:0.5px solid #bfdbfe;border-radius:7px;padding:7px 10px;font-size:11px;font-style:italic;color:#1d4ed8;line-height:1.5;}
+
+.upload-zone{border:1.5px dashed var(--color-border-secondary,rgba(0,0,0,0.2));border-radius:8px;padding:12px;text-align:center;cursor:pointer;position:relative;min-height:54px;display:flex;align-items:center;justify-content:center;transition:border-color 0.2s;}
+.upload-zone:hover{border-color:#2563eb;}
+.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.upload-zone span{font-size:10px;color:var(--color-text-secondary,#aaa);pointer-events:none;}
+.upload-zone img{max-height:40px;max-width:100%;pointer-events:none;}
+
+.btn-row{display:flex;flex-wrap:wrap;gap:7px;padding:14px 18px;border-top:0.5px solid var(--color-border-tertiary,rgba(0,0,0,0.1));background:var(--color-background-secondary,#f8f8f8);}
+.btn{padding:7px 13px;font-size:10px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;border:none;border-radius:6px;cursor:pointer;transition:opacity 0.15s,transform 0.1s;font-family:'Inter',sans-serif;}
+.btn:active{transform:scale(0.96);}
+.btn:hover{opacity:0.85;}
+.b-red{background:#dc2626;color:#fff;}
+.b-blue{background:#1d4ed8;color:#fff;}
+.b-gray{background:#374151;color:#fff;}
+
+/* PREVIEW AREA */
+.preview-wrap{display:flex;flex-direction:column;gap:10px;}
+.preview-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.7px;color:var(--color-text-secondary,#888);}
+
+/* KUITANSI — A5 Landscape 210×148mm */
+#kuitansi{
+  background:#fff;
+  width:210mm;
+  height:148mm;
+  border:0.5px solid var(--color-border-tertiary,rgba(0,0,0,0.15));
+  border-radius:4px;
+  box-shadow:0 4px 24px rgba(0,0,0,0.1);
+  font-family:'Inter',sans-serif;
+  overflow:hidden;
+  position:relative;
+  transform-origin:top left;
+  color:#111;
+}
+
+.doc-inner{
+  margin:7mm;
+  height:calc(148mm - 14mm);
+  border:1px solid #d1d5db;
+  display:flex;
+  flex-direction:column;
+  border-radius:2px;
+  overflow:hidden;
+}
+
+/* HEADER BAR */
+.doc-header{
+  display:flex;
+  align-items:stretch;
+  border-bottom:1px solid #e5e7eb;
+  flex-shrink:0;
+}
+
+.logo-col{
+  width:34mm;
+  min-width:34mm;
+  border-right:1px solid #e5e7eb;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:4mm 3mm;
+  background:#fafbff;
+  gap:2px;
+}
+
+.logo-col img{max-width:100%;max-height:16mm;object-fit:contain;}
+
+.company-brand{font-family:'Playfair Display',serif;font-size:13pt;font-weight:600;color:#1e3a8a;letter-spacing:0.5px;line-height:1;}
+.company-tagline{font-size:4.5pt;color:#6b7280;font-style:italic;text-align:center;margin-top:2px;line-height:1.4;}
+.company-details{font-size:4pt;color:#9ca3af;text-align:center;line-height:1.6;margin-top:3px;}
+
+/* TITLE BAR */
+.title-col{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:flex-end;
+  padding:3mm 5mm;
+  background:#fafbff;
+  gap:1mm;
+}
+
+.doc-title{font-size:14pt;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#1e3a8a;}
+.doc-subtitle{font-size:6pt;letter-spacing:1px;color:#9ca3af;text-transform:uppercase;}
+
+/* BODY */
+.doc-body{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  padding:4mm 5mm 3mm;
+  gap:2.5mm;
+  min-height:0;
+}
+
+.field-row{display:flex;align-items:baseline;gap:2.5mm;font-size:7.5pt;}
+.f-label{color:#6b7280;white-space:nowrap;font-size:7pt;}
+.f-line{flex:1;border-bottom:0.5px solid #d1d5db;padding:0 2mm 0.8mm;min-width:0;}
+.f-bold{font-weight:600;color:#111;font-size:8pt;}
+
+.no-row{display:flex;align-items:center;gap:2mm;}
+.no-badge{background:#1e3a8a;color:#fff;font-size:7pt;font-weight:600;padding:1mm 3mm;border-radius:2px;letter-spacing:0.5px;}
+.no-val{font-size:9pt;font-weight:700;color:#1e3a8a;letter-spacing:2px;}
+
+.terbilang-field{
+  border:0.5px solid #d1d5db;
+  border-radius:2px;
+  padding:2mm 3mm;
+  font-size:7.5pt;
+  font-style:italic;
+  font-weight:600;
+  color:#111;
+  background:#f9fafb;
+  display:flex;
+  align-items:center;
+  min-width:0;
+  flex:1;
+  line-height:1.4;
+}
+
+.untuk-text{font-size:7.5pt;color:#374151;}
+.penerima-item{display:flex;gap:1.5mm;align-items:flex-start;font-size:7pt;color:#6b7280;margin-top:0.5mm;}
+
+/* FOOTER */
+.doc-footer{
+  display:flex;
+  align-items:flex-end;
+  padding:2.5mm 5mm 3mm;
+  gap:4mm;
+  border-top:0.5px solid #e5e7eb;
+  flex-shrink:0;
+  background:#fafbff;
+}
+
+.nominal-badge{
+  border:1.5px solid #1e3a8a;
+  padding:2mm 5mm;
+  font-size:10pt;
+  font-weight:700;
+  color:#1e3a8a;
+  white-space:nowrap;
+  border-radius:3px;
+  letter-spacing:0.5px;
+  flex-shrink:0;
+}
+
+.sig-area{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:2mm;
+}
+
+.sig-date{font-size:7pt;color:#9ca3af;font-style:italic;}
+
+.signatories{display:flex;gap:6mm;justify-content:flex-end;}
+.signatory{display:flex;flex-direction:column;align-items:center;gap:0;}
+.s-role{font-size:5.5pt;color:#9ca3af;letter-spacing:0.5px;margin-bottom:1mm;}
+.s-space{height:11mm;}
+.s-name{min-width:24mm;border-top:0.5px solid #374151;padding-top:1mm;font-size:7.5pt;font-weight:600;color:#111;text-align:center;}
+
+@media print{
+  body{background:#fff;padding:0;}
+  .layout{display:block;}
+  .panel,.btn-row,.preview-label,.page-title,.back-link{display:none!important;}
+  .preview-wrap{all:unset;}
+  #kuitansi{box-shadow:none;border:none;transform:none!important;width:210mm;height:148mm;margin:0;}
+  @page{size:210mm 148mm;margin:0;}
+}
+</style>
+</head>
+<body>
+
+<p class="page-title"><a href="/admin" class="back-link">← Kembali ke Admin</a>Kuitansi IG&amp;B</p>
+
+<div class="layout">
+
+<!-- FORM PANEL -->
+<div class="panel">
+  <div class="panel-header"><h2>Data Kuitansi</h2></div>
+  <div class="panel-body">
+
+    <div class="field">
+      <label>No. Kuitansi</label>
+      <input type="text" id="i-no" value="012026">
+    </div>
+
+    <div class="field">
+      <label>Tanggal</label>
+      <input type="date" id="i-tgl" value="">
+    </div>
+
+    <div class="field">
+      <label>Telah Terima Dari</label>
+      <input type="text" id="i-dari" value="Inter G Quen Bumindo">
+    </div>
+
+    <div class="field">
+      <label>Nominal (Rp)</label>
+      <input type="number" id="i-nominal" value="315000" min="0" step="1000">
+    </div>
+
+    <div class="field">
+      <label>Terbilang</label>
+      <div class="terbilang-badge" id="tb-display">Tiga ratus lima belas ribu rupiah</div>
+    </div>
+
+    <div class="field">
+      <label>Untuk Pembayaran</label>
+      <input type="text" id="i-bayar" value="Uang Makan Survey Telemetri SITUBONDO">
+    </div>
+
+    <div class="field">
+      <label>Penerima (pisah koma)</label>
+      <input type="text" id="i-penerima" value="Terasoka, Ilham">
+    </div>
+
+    <div class="field">
+      <label>Kota</label>
+      <input type="text" id="i-kota" value="Malang">
+    </div>
+
+    <div class="field">
+      <label>Upload Logo</label>
+      <div class="upload-zone">
+        <input type="file" id="logo-file" accept="image/*">
+        <div id="logo-thumb"><span>Klik atau seret logo (PNG/JPG)</span></div>
+      </div>
+    </div>
+
+  </div>
+  <div class="btn-row">
+    <button class="btn b-red" onclick="exportPDF('a5')">PDF A5</button>
+    <button class="btn b-red" onclick="exportPDF('a4')">PDF A4</button>
+    <button class="btn b-blue" onclick="exportWord('a5')">Word A5</button>
+    <button class="btn b-blue" onclick="exportWord('a4')">Word A4</button>
+    <button class="btn b-gray" onclick="window.print()">Cetak</button>
+  </div>
+</div>
+
+<!-- PREVIEW -->
+<div class="preview-wrap">
+  <p class="preview-label">Pratinjau — A5 Landscape</p>
+  <div style="overflow:auto;">
+  <div id="kuitansi">
+    <div class="doc-inner">
+
+      <div class="doc-header">
+        <div class="logo-col" id="logo-col">
+          <img id="logo-img" src="" style="display:none;">
+          <div id="brand-block">
+            <div class="company-brand">IG&amp;B</div>
+            <div class="company-tagline">Accelerating Innovation<br>and Technology</div>
+            <div class="company-details">CV Inter G Quen Bumindo<br>Permata Jingga AA27<br>Malang, 65142<br>+62 341 400272</div>
+          </div>
+        </div>
+        <div class="title-col">
+          <div class="doc-title">Kuitansi</div>
+          <div class="doc-subtitle">Bukti Penerimaan Pembayaran</div>
+        </div>
+      </div>
+
+      <div class="doc-body">
+
+        <div class="no-row">
+          <span class="no-badge">No.</span>
+          <span class="no-val" id="o-no">012026</span>
+        </div>
+
+        <div class="field-row">
+          <span class="f-label">Telah Terima Dari</span>
+          <span class="f-line f-bold" id="o-dari">Inter G Quen Bumindo</span>
+        </div>
+
+        <div class="field-row" style="align-items:stretch;">
+          <span class="f-label" style="padding-right:2mm;align-self:center;">Uang Sejumlah</span>
+          <div class="terbilang-field" id="o-terbilang"># Tiga ratus lima belas ribu rupiah #</div>
+        </div>
+
+        <div>
+          <span class="untuk-text"><span style="color:#6b7280;font-size:7pt;">Untuk Pembayaran &nbsp;</span><span id="o-bayar" style="font-weight:500;">Uang Makan Survey Telemetri SITUBONDO</span></span>
+          <div id="o-penerima-list"></div>
+        </div>
+
+      </div>
+
+      <div class="doc-footer">
+        <div class="nominal-badge" id="o-nominal">Rp.315.000,-</div>
+        <div class="sig-area">
+          <div class="sig-date" id="o-date">Malang, 20 April 2025</div>
+          <div class="signatories" id="o-signatories"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const SAT=['','satu','dua','tiga','empat','lima','enam','tujuh','delapan','sembilan','sepuluh','sebelas','dua belas','tiga belas','empat belas','lima belas','enam belas','tujuh belas','delapan belas','sembilan belas'];
+function ratusan(n){if(n===0)return '';if(n<20)return SAT[n];if(n<100){const t=Math.floor(n/10),s=n%10;return(t===1?'se':SAT[t])+' puluh'+(s?' '+SAT[s]:'');}const r=Math.floor(n/100),s=n%100;return(r===1?'se':SAT[r])+' ratus'+(s?' '+ratusan(s):'');}
+function terbilang(n){n=Math.round(n);if(n===0)return 'nol rupiah';let h='';if(n>=1e12){h+=ratusan(Math.floor(n/1e12))+' triliun ';n%=1e12;}if(n>=1e9){h+=ratusan(Math.floor(n/1e9))+' miliar ';n%=1e9;}if(n>=1e6){h+=ratusan(Math.floor(n/1e6))+' juta ';n%=1e6;}if(n>=1000){const rb=Math.floor(n/1000);h+=(rb===1?'se':ratusan(rb))+' ribu ';n%=1000;}if(n>0)h+=ratusan(n);return h.trim()+' rupiah';}
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function formatRp(n){return 'Rp.'+Number(n).toLocaleString('id-ID')+',-';}
+function formatTgl(v){if(!v)return '';return new Date(v+'T12:00:00').toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});}
+
+function update(){
+  const no=document.getElementById('i-no').value;
+  const dari=document.getElementById('i-dari').value;
+  const nominal=parseFloat(document.getElementById('i-nominal').value)||0;
+  const bayar=document.getElementById('i-bayar').value;
+  const penRaw=document.getElementById('i-penerima').value;
+  const kota=document.getElementById('i-kota').value||'Malang';
+  const tgl=document.getElementById('i-tgl').value;
+  const tb=cap(terbilang(nominal));
+
+  document.getElementById('tb-display').textContent=tb;
+  document.getElementById('o-no').textContent=no;
+  document.getElementById('o-dari').textContent=dari;
+  document.getElementById('o-terbilang').textContent='# '+tb+' #';
+  document.getElementById('o-bayar').textContent=bayar;
+  document.getElementById('o-nominal').textContent=formatRp(nominal);
+  document.getElementById('o-date').textContent=kota+', '+formatTgl(tgl);
+
+  const pens=penRaw.split(',').map(p=>p.trim()).filter(Boolean);
+  document.getElementById('o-penerima-list').innerHTML=pens.map(p=>`<div class="penerima-item"><span>—</span><span>${esc(p)}</span></div>`).join('');
+  document.getElementById('o-signatories').innerHTML=pens.map(p=>`<div class="signatory"><span class="s-role">Penerima</span><div class="s-space"></div><span class="s-name">${esc(p)}</span></div>`).join('');
+}
+
+document.getElementById('logo-file').addEventListener('change',function(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    const src=ev.target.result;
+    document.getElementById('logo-thumb').innerHTML=`<img src="${src}" style="max-height:40px;max-width:100%;object-fit:contain;">`;
+    const img=document.getElementById('logo-img');img.src=src;img.style.display='block';
+    document.getElementById('brand-block').style.display='none';
+  };
+  r.readAsDataURL(f);
+});
+
+(function(){const t=document.getElementById('i-tgl');if(!t.value){const d=new Date();t.value=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}})();
+['i-no','i-dari','i-nominal','i-bayar','i-penerima','i-kota','i-tgl'].forEach(id=>document.getElementById(id).addEventListener('input',update));
+update();
+
+// Scale preview to fit
+function scalePreview(){
+  const el=document.getElementById('kuitansi');
+  const wrap=el.parentElement;
+  const avail=wrap.offsetWidth;
+  const natural=794;
+  const scale=Math.min(1,avail/natural);
+  el.style.transform=`scale(${scale})`;
+  wrap.style.height=(559*scale)+'px';
+}
+window.addEventListener('resize',scalePreview);
+setTimeout(scalePreview,100);
+
+async function exportPDF(sz){
+  const btn=event.target,orig=btn.textContent;
+  btn.textContent='...';btn.disabled=true;
+  const el=document.getElementById('kuitansi');
+  const prev=el.style.transform;
+  el.style.transform='scale(1)';
+  await new Promise(r=>setTimeout(r,300));
+  const canvas=await html2canvas(el,{scale:3,useCORS:true,logging:false});
+  el.style.transform=prev;
+  const{jsPDF}=window.jspdf;
+  const pdf=new jsPDF({orientation:'landscape',unit:'mm',format:sz==='a4'?'a4':'a5'});
+  const pw=pdf.internal.pageSize.getWidth(),ph=pdf.internal.pageSize.getHeight();
+  const ratio=canvas.width/canvas.height;
+  let iw=pw-6,ih=iw/ratio;
+  if(ih>ph-6){ih=ph-6;iw=ih*ratio;}
+  pdf.addImage(canvas.toDataURL('image/png'),'PNG',(pw-iw)/2,(ph-ih)/2,iw,ih);
+  pdf.save(`kuitansi-igb-${sz.toUpperCase()}.pdf`);
+  btn.textContent=orig;btn.disabled=false;
+}
+
+function exportWord(sz){
+  const no=document.getElementById('i-no').value;
+  const dari=document.getElementById('i-dari').value;
+  const nominal=parseFloat(document.getElementById('i-nominal').value)||0;
+  const bayar=document.getElementById('i-bayar').value;
+  const penRaw=document.getElementById('i-penerima').value;
+  const kota=document.getElementById('i-kota').value||'Malang';
+  const tgl=document.getElementById('i-tgl').value;
+  const pens=penRaw.split(',').map(p=>p.trim()).filter(Boolean);
+  const tb=cap(terbilang(nominal));
+  const tglFmt=formatTgl(tgl);
+  const nomFmt=formatRp(nominal);
+  const ps=sz==='a5'?'210mm 148mm':'297mm 210mm';
+  const fs=sz==='a5'?'8.5pt':'10pt';
+
+  const signCols=pens.map(p=>`<td style="width:25%;text-align:center;vertical-align:bottom;padding:3pt 8pt;"><p style="margin:0;font-size:6pt;color:#9ca3af;letter-spacing:0.5pt;">Penerima</p><p style="margin:0;height:28pt;"></p><p style="margin:0;border-top:0.5pt solid #374151;font-weight:600;font-size:${fs};padding-top:2pt;">${esc(p)}</p></td>`).join('');
+  const penList=pens.map(p=>`<tr><td colspan="2" style="padding:0 0 1pt 60pt;font-size:${fs};color:#6b7280;">— ${esc(p)}</td></tr>`).join('');
+
+  const doc=`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="UTF-8"><style>
+@page{size:${ps};margin:12mm;}
+body{font-family:Calibri,Arial,sans-serif;font-size:${fs};color:#111;}
+table{border-collapse:collapse;width:100%;}td{vertical-align:top;}
+</style></head>
+<body>
+<table style="border:1pt solid #d1d5db;border-radius:4pt;">
+<tr>
+<td style="width:95pt;border-right:1pt solid #e5e7eb;text-align:center;vertical-align:middle;padding:8pt 5pt;background:#fafbff;">
+<p style="font-size:14pt;font-weight:700;color:#1e3a8a;margin:0 0 2pt;letter-spacing:1pt;">IG&amp;B</p>
+<p style="font-size:5.5pt;font-style:italic;color:#6b7280;margin:0 0 4pt;">Accelerating Innovation<br>and Technology</p>
+<p style="font-size:5pt;color:#9ca3af;margin:0;line-height:1.6;">CV Inter G Quen Bumindo<br>Permata Jingga AA27<br>Malang, 65142<br>+62 341 400272</p>
+</td>
+<td style="padding:0;">
+<table style="width:100%;border-bottom:none;">
+<tr><td colspan="3" style="text-align:right;padding:5pt 9pt 3pt;background:#fafbff;border-bottom:1pt solid #e5e7eb;">
+<p style="font-size:13pt;font-weight:700;color:#1e3a8a;margin:0;letter-spacing:3pt;">KUITANSI</p>
+<p style="font-size:6pt;color:#9ca3af;margin:0;letter-spacing:1pt;">Bukti Penerimaan Pembayaran</p>
+</td></tr>
+<tr><td colspan="3" style="padding:6pt 9pt 3pt;">
+<table style="width:100%;">
+<tr><td style="font-size:7pt;color:#6b7280;white-space:nowrap;padding:2pt 0;">No.</td>
+<td style="font-weight:700;font-size:9pt;color:#1e3a8a;letter-spacing:2pt;padding:2pt 6pt;">${esc(no)}</td></tr>
+<tr><td colspan="2" style="height:3pt;"></td></tr>
+<tr><td style="font-size:7pt;color:#6b7280;white-space:nowrap;padding:2pt 0;">Telah Terima Dari</td>
+<td style="border-bottom:0.5pt solid #d1d5db;font-weight:600;font-size:${fs};padding:2pt 6pt;">${esc(dari)}</td></tr>
+<tr><td colspan="2" style="height:3pt;"></td></tr>
+<tr><td style="font-size:7pt;color:#6b7280;white-space:nowrap;padding:2pt 0;">Uang Sejumlah</td>
+<td style="border:0.5pt solid #d1d5db;font-style:italic;font-weight:600;font-size:${fs};padding:3pt 5pt;background:#f9fafb;"># ${tb} #</td></tr>
+<tr><td colspan="2" style="height:3pt;"></td></tr>
+<tr><td colspan="2" style="font-size:${fs};">Untuk Pembayaran &nbsp;${esc(bayar)}</td></tr>
+${penList}
+</table>
+</td></tr>
+<tr style="border-top:0.5pt solid #e5e7eb;background:#fafbff;"><td colspan="3" style="padding:5pt 9pt;">
+<table style="width:100%;">
+<tr>
+<td style="vertical-align:middle;white-space:nowrap;">
+<span style="border:1.5pt solid #1e3a8a;padding:3pt 10pt;font-weight:700;font-size:10pt;color:#1e3a8a;">${nomFmt}</span>
+</td>
+<td style="text-align:right;vertical-align:bottom;">
+<p style="text-align:right;font-size:7pt;color:#9ca3af;font-style:italic;margin:0 0 5pt;">${esc(kota)}, ${tglFmt}</p>
+<table style="margin-left:auto;border:none;width:auto;"><tr>${signCols}</tr></table>
+</td>
+</tr>
+</table>
+</td></tr>
+</table>
+</td>
+</tr>
+</table>
+</body></html>`;
+
+  const blob=new Blob(['\ufeff'+doc],{type:'application/msword'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`kuitansi-igb-${sz.toUpperCase()}.doc`;
+  a.click();
+}
+</script>
+</body>
+</html>

@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\ToolController;
 use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\FrontendController;
+use App\Http\Middleware\EnsureAdmin;
 use Illuminate\Support\Facades\Route;
 
 // Frontend
@@ -28,3 +30,8 @@ Route::get('/contact', fn () => redirect('/#contact', 301))->name('contact');
 // All content management now happens in the authenticated Filament panel.
 Route::get('/editor/dashboard', fn () => redirect('/admin', 301))->name('editor.dashboard');
 Route::get('/Editor/dashboard', fn () => redirect('/admin', 301));
+
+// Internal tools — admin login required (same accounts as /admin).
+Route::middleware(EnsureAdmin::class)->prefix('admin/tools')->name('admin.tools.')->group(function () {
+    Route::get('/kuitansi', [ToolController::class, 'kuitansi'])->name('kuitansi');
+});

@@ -6,6 +6,7 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationItem;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -39,6 +40,13 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
+            ->navigationItems([
+                NavigationItem::make('Kuitansi')
+                    ->url(fn (): string => route('admin.tools.kuitansi'), shouldOpenInNewTab: true)
+                    ->icon('heroicon-o-document-text')
+                    ->group('Alat')
+                    ->sort(1),
+            ])
             ->pages([
                 Dashboard::class,
             ])
