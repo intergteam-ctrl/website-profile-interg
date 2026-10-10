@@ -115,7 +115,7 @@ return [
     ],
 
     'apps' => [
-        ['name' => 'Mudik Gratis', 'client' => 'Program pemerintah', 'image' => 'app-mudik.jpg', 'desc' => 'Pendaftaran dan pemantauan program mudik gratis: registrasi, pemilihan jadwal keberangkatan, serta informasi rute dan fasilitas perjalanan.'],
+        ['name' => 'Mudik Gratis', 'client' => 'Program pemerintah', 'image' => 'app-mudik-2026.jpg', 'desc' => 'Pendaftaran dan pemantauan program mudik gratis: registrasi, pemilihan jadwal keberangkatan, serta informasi rute dan fasilitas perjalanan.'],
         ['name' => 'Ruang Perintis', 'client' => 'Coworking space', 'image' => 'app-ruang-perintis.jpg', 'desc' => 'Sistem pengelolaan coworking space, mulai dari pendaftaran hingga layanan berlangganan anggota.'],
         ['name' => 'Jembatan Timbang', 'client' => 'Perhubungan', 'image' => 'app-jembatan-timbang.jpg', 'desc' => 'Mengukur berat kendaraan yang melintas agar tidak melebihi batas muatan — menjaga keamanan jalan, mendukung penegakan hukum, dan mengumpulkan data infrastruktur.'],
         ['name' => 'JT Command Center', 'client' => 'Dishub Jatim', 'image' => 'app-jtcc.jpg', 'desc' => 'Pemantauan kondisi lalu lintas secara real-time, analisis data lalu lintas, dan pengelolaan kejadian untuk transportasi Jawa Timur yang lebih efektif dan transparan.'],
@@ -125,6 +125,8 @@ return [
         ['name' => 'SISWA', 'client' => 'Sistem Informasi Sungai & Waduk', 'image' => 'app-siswa.jpg', 'desc' => 'Menampilkan data waduk, embung, ranu, dan sungai di Jawa Timur sehingga kondisi dan lokasi sumber daya air bisa dipantau dengan mudah.'],
         ['name' => 'Lab Data Sungram', 'client' => 'Dishub Jatim', 'image' => 'app-labdata.jpg', 'desc' => 'Portal data Dinas Perhubungan Prov. Jawa Timur yang menyajikan informasi transportasi dan infrastruktur.'],
         ['name' => 'Mavens Cash Advance & Reimbursement', 'client' => 'PT Mavens Mitra Perkasa', 'image' => 'app-mavens.jpg', 'url' => 'https://mavens.interg.co.id/', 'desc' => 'Aplikasi web untuk pengajuan, persetujuan, dan pelaporan cash advance (uang muka) serta reimbursement karyawan PT Mavens Mitra Perkasa.'],
+        ['name' => 'Monitoring PU SDA', 'client' => 'Dinas PU SDA Prov. Jawa Timur', 'image' => 'app-monitoring-pusda.jpg', 'url' => 'https://metri.dpuair.jatimprov.info/', 'desc' => 'Dashboard pemantauan telemetri dan CCTV sungai di wilayah kerja Dinas PU Sumber Daya Air Provinsi Jawa Timur: ketinggian air dan status setiap titik pantau secara real-time, peta lokasi, serta riwayat perubahan status.'],
+        ['name' => 'SIBB — Sistem Informasi Bencana Banjir', 'client' => 'Dinas PU SDA Prov. Jawa Timur', 'image' => 'app-sibb.jpg', 'desc' => 'Aplikasi pelaporan banjir yang praktis, cepat, dan tepat di wilayah kerja Dinas PU Sumber Daya Air Provinsi Jawa Timur, dilengkapi peta sebaran kejadian per kabupaten/kota dan daftar kejadian terbaru.'],
     ],
 
     'iot' => [

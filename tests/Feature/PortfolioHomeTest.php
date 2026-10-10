@@ -17,7 +17,7 @@ class PortfolioHomeTest extends TestCase
     public function test_migration_loads_company_profile_projects(): void
     {
         $this->assertSame(9, Portfolio::where('group', 'display')->count());
-        $this->assertSame(10, Portfolio::where('group', 'software')->count());
+        $this->assertSame(12, Portfolio::where('group', 'software')->count());
         $this->assertSame(3, Portfolio::where('group', 'iot')->count());
 
         $this->get('/')
@@ -80,5 +80,20 @@ class PortfolioHomeTest extends TestCase
             ->assertSee(asset('images/profile/app-mavens.jpg'), false)
             ->assertSee('href="https://mavens.interg.co.id/"', false)
             ->assertSee('Kunjungi aplikasi');
+    }
+
+    public function test_pu_sda_apps_and_updated_mudik_image_are_shown(): void
+    {
+        $this->get('/')
+            ->assertSee('Monitoring PU SDA')
+            ->assertSee('href="https://metri.dpuair.jatimprov.info/"', false)
+            ->assertSee(asset('images/profile/app-monitoring-pusda.jpg'), false)
+            ->assertSee('SIBB — Sistem Informasi Bencana Banjir')
+            ->assertSee(asset('images/profile/app-sibb.jpg'), false)
+            ->assertSee(asset('images/profile/app-mudik-2026.jpg'), false)
+            ->assertDontSee(asset('images/profile/app-mudik.jpg').'"', false);
+
+        $this->assertSame(1, Portfolio::where('slug', 'software-monitoring-pu-sda')->count());
+        $this->assertSame(1, Portfolio::where('slug', 'software-sibb-sistem-informasi-bencana-banjir')->count());
     }
 }
