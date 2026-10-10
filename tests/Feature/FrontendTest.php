@@ -167,4 +167,21 @@ class FrontendTest extends TestCase
             ->assertSee('"latitude":-7.9313085', false)
             ->assertSee('"@type":"LocalBusiness"', false);
     }
+
+    public function test_cctv_and_network_service_is_offered(): void
+    {
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('Instalasi &amp; Pemeliharaan CCTV dan Jaringan', false)
+            ->assertSee('data-service="Instalasi &amp; Pemeliharaan CCTV dan Jaringan"', false);
+
+        $this->post('/contact', [
+            'name' => 'Andi',
+            'email' => 'andi@example.com',
+            'service' => 'Instalasi & Pemeliharaan CCTV dan Jaringan',
+            'message' => 'Butuh pemasangan 16 kamera dan jaringan kantor.',
+        ])->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('contact_messages', ['service' => 'Instalasi & Pemeliharaan CCTV dan Jaringan']);
+    }
 }

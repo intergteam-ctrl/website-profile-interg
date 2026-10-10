@@ -216,7 +216,6 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
    ========================================================================== */
 .services-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 22px; }
 .service-card { grid-column: span 2; background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: 30px 28px; position: relative; overflow: hidden; transition: var(--transition); display: flex; flex-direction: column; }
-.service-card:nth-child(4), .service-card:nth-child(5) { grid-column: span 3; }
 .service-card::after { content: ''; position: absolute; right: -40px; top: -30px; width: 120px; height: 30px; background: var(--yellow); transform: skewY(-18deg) translateY(-60px); transition: transform 0.35s var(--ease); }
 .service-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); border-color: transparent; }
 .service-card:hover::after { transform: skewY(-18deg) translateY(0); }
@@ -578,8 +577,7 @@ body.modal-open { overflow: hidden; }
 @media (max-width: 1024px) {
   .grid-3, .apps-grid, .gallery, .iot-projects { grid-template-columns: repeat(2, 1fr); }
   .services-grid { grid-template-columns: repeat(2, 1fr); }
-  .service-card, .service-card:nth-child(4), .service-card:nth-child(5) { grid-column: span 1; }
-  .service-card:nth-child(5) { grid-column: span 2; }
+  .service-card { grid-column: span 1; }
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
   .about-grid, .feature, .contact-grid { gap: 48px; }
   .hero-card--2 { right: 20%; }
@@ -606,7 +604,6 @@ body.modal-open { overflow: hidden; }
   :root { --nav-h: 66px; }
   .brand img { height: 34px; }
   .grid-3, .apps-grid, .gallery, .iot-projects, .services-grid { grid-template-columns: 1fr; }
-  .service-card:nth-child(5) { grid-column: span 1; }
   .hero-facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
   .hero-fact-num { font-size: 30px; }
   .hero-fact-label { font-size: 12.5px; }

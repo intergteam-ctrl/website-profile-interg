@@ -129,7 +129,7 @@
     <div class="section-head section-head--center reveal">
       <div class="eyebrow">Layanan Kami</div>
       <h2 class="section-title"><span class="lite">General</span><em>Services</em></h2>
-      <p class="section-sub">{{ $setting?->services_intro ?: 'Lima lini layanan yang saling melengkapi — dari perencanaan, implementasi, hingga pemeliharaan.' }}</p>
+      <p class="section-sub">{{ $setting?->services_intro ?: 'Layanan yang saling melengkapi — dari perencanaan, implementasi, hingga pemeliharaan.' }}</p>
     </div>
     <div class="services-grid">
       @foreach ($c['services'] as $i => $service)

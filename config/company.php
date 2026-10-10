@@ -85,6 +85,12 @@ return [
             'desc' => 'Perawatan dan pemeliharaan perangkat keras untuk memastikan ketersediaan optimal dan kinerja stabil sistem IT Anda, dengan dukungan teknis yang handal dan pemeliharaan rutin untuk menjaga investasi teknologi.',
             'icon' => 'M22 9V7h-2V5c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-2h2v-2h-2v-2h2v-2h-2V9h2zm-4 10H4V5h14v14zM6 13h5v4H6zm6-6h4v3h-4zM6 7h5v5H6zm6 4h4v6h-4z',
         ],
+        [
+            'title' => 'Instalasi & Pemeliharaan CCTV dan Jaringan',
+            'anchor' => 'contact',
+            'desc' => 'Layanan menyeluruh untuk sistem CCTV dan infrastruktur jaringan: survei lokasi, perancangan titik kamera dan topologi, instalasi kabel terstruktur, serta konfigurasi NVR, router, switch, dan access point. Kami juga menyediakan pemeliharaan berkala dan penanganan gangguan agar pemantauan dan konektivitas Anda tetap andal.',
+            'icon' => 'M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z',
+        ],
     ],
 
     'display' => [

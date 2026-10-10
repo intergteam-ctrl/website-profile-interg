@@ -17,6 +17,7 @@ class ContactMessage extends Model
         'IoT Solution & Surveillance Camera',
         'Professional Integrated Display Solution',
         'Hardware Service & Maintenance',
+        'Instalasi & Pemeliharaan CCTV dan Jaringan',
         'Lainnya',
     ];
 
