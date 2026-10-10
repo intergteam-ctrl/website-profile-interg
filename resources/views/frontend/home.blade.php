@@ -532,11 +532,5 @@
   <script type="application/ld+json">{!! json_encode($localBusiness, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}</script>
 </section>
 
-{{-- ============================== MARKETPLACE ============================== --}}
-<section id="marketplace" class="section section--tint">
-  <div class="container">
-    @include('partials.marketplace', ['heading' => 'h2'])
-  </div>
-</section>
 
 @endsection

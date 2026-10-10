@@ -14,6 +14,7 @@ class SiteSetting extends Model
         'services_intro',
         'phone',
         'whatsapp',
+        'marketplace_whatsapp',
         'website',
         'address',
     ];

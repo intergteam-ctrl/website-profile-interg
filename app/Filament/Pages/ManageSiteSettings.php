@@ -79,7 +79,13 @@ class ManageSiteSettings extends Page
                             ->label('WhatsApp')
                             ->tel()
                             ->placeholder('0812-3356-956')
-                            ->helperText('Kosongkan untuk menyembunyikan nomor dan semua tombol WhatsApp di situs.'),
+                            ->helperText('Ditampilkan di bagian kontak & footer. Kosongkan untuk menyembunyikan.'),
+
+                        TextInput::make('marketplace_whatsapp')
+                            ->label('WhatsApp Marketplace')
+                            ->tel()
+                            ->placeholder('0812-5203-2058')
+                            ->helperText('Tujuan pesanan keranjang & tombol chat di halaman Marketplace saja. Kosongkan untuk memakai nomor bawaan (0812-5203-2058).'),
 
                         TextInput::make('website')
                             ->label('Website')

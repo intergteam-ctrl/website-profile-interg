@@ -23,6 +23,11 @@ return [
     // Empty = no WhatsApp number/buttons anywhere on the site. Can be set
     // again from Admin → Pengaturan Situs (that value takes precedence).
     'whatsapp' => env('COMPANY_WHATSAPP'),
+
+    // Used only by the marketplace (cart checkout + chat button). Not shown in
+    // the contact section or footer. Admin → Pengaturan Situs can override it.
+    'marketplace_whatsapp' => env('MARKETPLACE_WHATSAPP', '081252032058'),
+    'marketplace_greeting' => 'Halo, ada yang bisa dibantu?',
     'email' => env('COMPANY_EMAIL', 'interg.team@gmail.com'),
     'website' => 'interg.co.id',
     'address' => "Perum Permata Jingga Blok AA No. 27,\nTunggulwulung, Lowokwaru, Kota Malang 65143",

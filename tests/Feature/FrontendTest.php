@@ -128,13 +128,21 @@ class FrontendTest extends TestCase
         $category = Category::create(['name' => 'Aksesoris', 'slug' => 'aksesoris']);
         Product::create(['category_id' => $category->id, 'name' => 'Mouse', 'slug' => 'mouse', 'brand' => 'Logitech', 'price' => 100000, 'stock' => 1, 'status' => 'baru', 'description' => 'Mouse.']);
 
-        foreach (['/', '/marketplace', '/blog', '/portfolio'] as $uri) {
+        // General pages: no mobile/WhatsApp number at all.
+        foreach (['/', '/blog', '/portfolio'] as $uri) {
             $this->get($uri)
                 ->assertOk()
                 ->assertDontSee('wa.me', false)
                 ->assertDontSee('812-3356', false)
                 ->assertSee('+62 341 400 272');
         }
+
+        // Marketplace uses only its own number; the old number never appears.
+        $this->get('/marketplace')
+            ->assertOk()
+            ->assertSee('https://wa.me/6281252032058', false)
+            ->assertDontSee('6281233569', false)
+            ->assertDontSee('812-3356', false);
     }
 
     public function test_contact_email_is_shown_on_public_pages(): void
@@ -183,5 +191,42 @@ class FrontendTest extends TestCase
         ])->assertSessionHasNoErrors();
 
         $this->assertDatabaseHas('contact_messages', ['service' => 'Instalasi & Pemeliharaan CCTV dan Jaringan']);
+    }
+
+    public function test_marketplace_is_its_own_page_not_on_home(): void
+    {
+        $category = Category::create(['name' => 'Aksesoris', 'slug' => 'aksesoris']);
+        Product::create(['category_id' => $category->id, 'name' => 'Mouse Wireless X', 'slug' => 'mouse-x', 'brand' => 'Logitech', 'price' => 150000, 'stock' => 3, 'status' => 'baru', 'description' => 'Mouse.']);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertDontSee('id="marketplace"', false)
+            ->assertDontSee('Mouse Wireless X')
+            ->assertSee('href="'.route('marketplace').'"', false);
+
+        $this->get('/marketplace')
+            ->assertOk()
+            ->assertSee('Mouse Wireless X')
+            ->assertSee('data-add-to-cart=', false)
+            ->assertSee('id="cartDrawer"', false)
+            ->assertSee('Halo, ada yang bisa dibantu?')
+            ->assertSee('js/marketplace.js', false);
+    }
+
+    public function test_sold_out_product_cannot_be_added_to_cart(): void
+    {
+        $category = Category::create(['name' => 'Aksesoris', 'slug' => 'aksesoris']);
+        Product::create(['category_id' => $category->id, 'name' => 'Habis Item', 'slug' => 'habis', 'brand' => 'X', 'price' => 1000, 'stock' => 0, 'status' => 'baru', 'description' => 'x']);
+
+        $this->get('/marketplace')->assertSee('Stok habis')->assertSee('disabled', false);
+    }
+
+    public function test_marketplace_whatsapp_can_be_overridden_in_settings(): void
+    {
+        SiteSetting::query()->create(['marketplace_whatsapp' => '0811-2222-333']);
+
+        $this->get('/marketplace')
+            ->assertSee('https://wa.me/628112222333', false)
+            ->assertDontSee('6281252032058', false);
     }
 }

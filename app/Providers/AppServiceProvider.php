@@ -70,20 +70,28 @@ class AppServiceProvider extends ServiceProvider
             $setting = $this->siteSetting();
             $whatsapp = $setting?->whatsapp ?: config('company.whatsapp');
 
-            $digits = preg_replace('/\D+/', '', (string) $whatsapp);
-            if (str_starts_with($digits, '0')) {
-                $digits = '62'.substr($digits, 1);
-            }
+            $digits = $this->waDigits($whatsapp);
+            $mpWhatsapp = $setting?->marketplace_whatsapp ?: config('company.marketplace_whatsapp');
 
             return [
                 'phone' => $setting?->phone ?: config('company.phone'),
                 'whatsapp' => $whatsapp,
                 'whatsapp_number' => $digits,
                 'whatsapp_link' => $digits ? 'https://wa.me/'.$digits : null,
+                'mp_whatsapp' => $mpWhatsapp,
+                'mp_whatsapp_number' => $this->waDigits($mpWhatsapp),
                 'email' => config('company.email'),
                 'website' => $setting?->website ?: config('company.website'),
                 'address' => $setting?->address ?: config('company.address'),
             ];
         });
+    }
+
+    /** "0812-3456" / "+62 812 3456" → "628123456" (wa.me format). */
+    private function waDigits(?string $number): string
+    {
+        $digits = preg_replace('/\D+/', '', (string) $number);
+
+        return str_starts_with($digits, '0') ? '62'.substr($digits, 1) : $digits;
     }
 }

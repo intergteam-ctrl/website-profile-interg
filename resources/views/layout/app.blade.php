@@ -9,7 +9,7 @@
       ['label' => 'Proyek',      'href' => $section('display')],
       ['label' => 'Blog',        'href' => $onHome ? '#blog' : route('blog'), 'active' => request()->routeIs('blog', 'blog.show')],
       ['label' => 'Kontak',      'href' => $section('contact')],
-      ['label' => 'Marketplace', 'href' => $onHome ? '#marketplace' : route('marketplace'), 'active' => request()->routeIs('marketplace')],
+      ['label' => 'Marketplace', 'href' => route('marketplace'), 'active' => request()->routeIs('marketplace')],
   ];
 
   $assetVersion = fn (string $path) => asset($path).'?v='.(@filemtime(public_path($path)) ?: '1');
@@ -47,7 +47,7 @@
   <link rel="stylesheet" href="{{ $assetVersion('css/site.css') }}">
   <script>document.documentElement.classList.add('js');</script>
 </head>
-<body>
+<body class="@yield('body_class')">
   <a href="#main" class="skip-link">Lewati ke konten</a>
 
   {{-- Mobile navigation --}}

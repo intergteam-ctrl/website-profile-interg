@@ -27,8 +27,6 @@ class FrontendController extends Controller
                 ['value' => $displayProjects->count(), 'label' => 'Proyek control room & display'],
             ],
             'posts' => Post::query()->published()->latest('published_at')->take(3)->get(),
-            'products' => $this->marketplaceProducts(),
-            'categories' => $this->marketplaceCategories(),
         ]);
     }
 
@@ -109,7 +107,7 @@ class FrontendController extends Controller
     }
 
     /**
-     * Product list shared by the marketplace page and the home-page section.
+     * Product list for the marketplace page.
      *
      * The description field is expected in the form:
      *   "Summary paragraph\n\nKey: Value\nKey: Value"
@@ -134,7 +132,7 @@ class FrontendController extends Controller
                     'desc' => $summary,
                     'specs' => $specs,
                     'brand' => $product->brand,
-                    'stock' => (int) $product->stock,
+                    'stock' => max(0, (int) $product->stock),
                     'image' => $product->image_url,
                 ];
             })
