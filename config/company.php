@@ -157,12 +157,17 @@ return [
         'limit' => 9,
     ],
 
+    'youtube' => [
+        'handle' => 'InterGQueenBumindo',
+        'url' => env('SOCIAL_YOUTUBE', 'https://www.youtube.com/@InterGQueenBumindo'),
+    ],
+
     // Leave a URL empty to hide that icon instead of showing a dead "#" link.
     'socials' => [
         'linkedin' => env('SOCIAL_LINKEDIN'),
         'instagram' => env('SOCIAL_INSTAGRAM', 'https://www.instagram.com/intergqueenbumindo/'),
         'facebook' => env('SOCIAL_FACEBOOK'),
-        'youtube' => env('SOCIAL_YOUTUBE'),
+        'youtube' => env('SOCIAL_YOUTUBE', 'https://www.youtube.com/@InterGQueenBumindo'),
     ],
 
 ];

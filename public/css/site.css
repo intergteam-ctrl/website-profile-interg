@@ -528,11 +528,14 @@ body.modal-open { overflow: hidden; }
 /* ==========================================================================
    INSTAGRAM SIDE PANEL
    ========================================================================== */
-.ig-tab { position: fixed; right: 0; top: 50%; z-index: 900; transform: translateY(-50%); display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 14px 9px; background: var(--ink); color: #fff; border-radius: 12px 0 0 12px; box-shadow: var(--shadow-md); transition: padding var(--transition), background var(--transition); }
+.side-tabs { position: fixed; right: 0; top: 50%; z-index: 900; transform: translateY(-50%); display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.ig-tab { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 14px 9px; background: var(--ink); color: #fff; border-radius: 12px 0 0 12px; box-shadow: var(--shadow-md); transition: padding var(--transition), background var(--transition); }
 .ig-tab:hover { background: #000; padding-right: 13px; }
 .ig-tab svg { width: 18px; height: 18px; fill: currentColor; }
 .ig-tab span { writing-mode: vertical-rl; transform: rotate(180deg); font-family: var(--font-head); font-weight: 600; font-size: 13px; letter-spacing: 0.08em; }
-.ig-tab[aria-expanded="true"] { opacity: 0; pointer-events: none; }
+.side-tabs:has(.ig-tab[aria-expanded="true"]) { opacity: 0; pointer-events: none; }
+.yt-tab:hover { background: #000; }
+.yt-tab svg { width: 19px; height: 19px; }
 
 .ig-drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 1050; width: min(360px, 88vw); background: #fff; border-left: 1px solid var(--line); box-shadow: -20px 0 60px rgba(29, 31, 35, 0.12); padding: 22px 20px 28px; overflow-y: auto; transform: translateX(105%); visibility: hidden; transition: transform 0.35s var(--ease), visibility 0.35s; display: flex; flex-direction: column; gap: 16px; }
 .ig-drawer.open { transform: none; visibility: visible; transition: transform 0.35s var(--ease), visibility 0s; }
@@ -561,7 +564,8 @@ body.modal-open { overflow: hidden; }
 .ig-empty { font-size: 14.5px; color: var(--muted); text-align: center; background: var(--paper-2); border: 1px dashed var(--line); border-radius: var(--radius-sm); padding: 18px 14px; }
 
 @media (max-width: 640px) {
-  .ig-tab { top: auto; bottom: 18px; transform: none; padding: 10px; border-radius: 12px 0 0 12px; }
+  .side-tabs { top: auto; bottom: 18px; transform: none; gap: 6px; }
+  .ig-tab { padding: 10px; border-radius: 12px 0 0 12px; }
   .ig-tab span { display: none; }
   .ig-tab svg { width: 20px; height: 20px; }
 }
@@ -646,7 +650,7 @@ body.modal-open { overflow: hidden; }
 .wa-bubble-text { font-family: var(--font-head); font-weight: 600; font-size: 17px; color: var(--ink); margin: 8px 0 10px; }
 .wa-bubble-cta { font-size: 14px; font-weight: 700; color: #158A43; }
 .wa-bubble-cta:hover { text-decoration: underline; }
-.page-marketplace .ig-tab { top: 38%; }
+.page-marketplace .side-tabs { top: 38%; }
 @media (max-width: 640px) {
   .mp-steps { grid-template-columns: 1fr; gap: 8px; }
   .mp-toolbar--sticky { position: static; }
@@ -654,7 +658,7 @@ body.modal-open { overflow: hidden; }
   .product-cta { grid-template-columns: 1fr; }
   .wa-float { right: 14px; bottom: 14px; }
   .wa-bubble { width: min(260px, calc(100vw - 28px)); }
-  .page-marketplace .ig-tab { top: auto; bottom: 86px; }
+  .page-marketplace .side-tabs { top: auto; bottom: 86px; }
 }
 
 /* ==========================================================================

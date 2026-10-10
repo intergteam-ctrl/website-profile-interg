@@ -229,4 +229,14 @@ class FrontendTest extends TestCase
             ->assertSee('https://wa.me/628112222333', false)
             ->assertDontSee('6281252032058', false);
     }
+
+    public function test_youtube_link_is_shown_below_instagram_tab(): void
+    {
+        $html = $this->get('/')->assertOk()
+            ->assertSee('class="ig-tab yt-tab"', false)
+            ->assertSee('https://www.youtube.com/@InterGQueenBumindo', false)
+            ->getContent();
+
+        $this->assertLessThan(strpos($html, 'yt-tab'), strpos($html, 'id="igTab"'));
+    }
 }
