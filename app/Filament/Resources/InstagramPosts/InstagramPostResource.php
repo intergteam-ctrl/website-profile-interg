@@ -6,11 +6,13 @@ use App\Filament\Resources\InstagramPosts\Pages\CreateInstagramPost;
 use App\Filament\Resources\InstagramPosts\Pages\EditInstagramPost;
 use App\Filament\Resources\InstagramPosts\Pages\ListInstagramPosts;
 use App\Models\InstagramPost;
+use App\Support\ImageUploader;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\BaseFileUpload;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
@@ -23,8 +25,6 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class InstagramPostResource extends Resource
@@ -62,34 +62,7 @@ class InstagramPostResource extends Resource
                 ->directory('instagram')
                 ->visibility('public')
                 ->maxSize(5120)
-                ->saveUploadedFileUsing(function (TemporaryUploadedFile $file): string {
-                    $img = @imagecreatefromstring(file_get_contents($file->getRealPath()));
-
-                    if (! $img) {
-                        return $file->store('instagram', 's3');
-                    }
-
-                    // Square-crop from the centre and shrink to 600px.
-                    $w = imagesx($img);
-                    $h = imagesy($img);
-                    $side = min($w, $h);
-                    $square = imagecreatetruecolor(600, 600);
-                    imagecopyresampled($square, $img, 0, 0, (int) (($w - $side) / 2), (int) (($h - $side) / 2), 600, 600, $side, $side);
-
-                    ob_start();
-                    imagejpeg($square, null, 75);
-                    $binary = ob_get_clean();
-                    imagedestroy($img);
-                    imagedestroy($square);
-
-                    $filename = 'instagram/'.Str::uuid().'.jpg';
-
-                    if (Storage::disk('s3')->put($filename, $binary) === false) {
-                        throw new \RuntimeException('Gagal mengunggah gambar ke storage. Periksa konfigurasi Object Storage (S3).');
-                    }
-
-                    return $filename;
-                }),
+                ->saveUploadedFileUsing(fn (TemporaryUploadedFile $file, BaseFileUpload $component): string => ImageUploader::store($file, 'instagram', $component, maxWidth: 600, quality: 75, square: 600)),
 
             Textarea::make('caption')
                 ->label('Caption singkat')

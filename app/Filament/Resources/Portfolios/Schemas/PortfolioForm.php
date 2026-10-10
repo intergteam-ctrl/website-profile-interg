@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Portfolios\Schemas;
 
 use App\Models\Portfolio;
+use App\Support\ImageUploader;
 use Filament\Forms\Components\BaseFileUpload;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -11,7 +12,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
@@ -98,37 +98,7 @@ class PortfolioForm
                     ->visibility('public')
                     ->imagePreviewHeight('100')
                     ->maxSize(5120)
-                    ->saveUploadedFileUsing(function (TemporaryUploadedFile $file): string {
-                        $maxWidth = 800;
-                        $quality = 70;
-
-                        $img = @imagecreatefromstring(file_get_contents($file->getRealPath()));
-
-                        if (! $img) {
-                            return $file->store('portfolios', 's3');
-                        }
-
-                        $w = imagesx($img);
-                        $h = imagesy($img);
-                        if ($w > $maxWidth) {
-                            $img = imagescale($img, $maxWidth, (int) round($h * $maxWidth / $w));
-                        }
-
-                        $filename = 'portfolios/'.Str::uuid().'.jpg';
-
-                        ob_start();
-                        imagejpeg($img, null, $quality);
-                        $binary = ob_get_clean();
-                        imagedestroy($img);
-
-                        $saved = Storage::disk('s3')->put($filename, $binary);
-
-                        if ($saved === false) {
-                            throw new \RuntimeException('Gagal mengunggah gambar ke storage. Periksa konfigurasi Supabase.');
-                        }
-
-                        return $filename;
-                    }),
+                    ->saveUploadedFileUsing(fn (TemporaryUploadedFile $file, BaseFileUpload $component): string => ImageUploader::store($file, 'portfolios', $component, maxWidth: 1000, quality: 75)),
             ]);
     }
 }
