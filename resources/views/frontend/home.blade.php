@@ -463,6 +463,73 @@
       <p class="form-note">Data Anda hanya digunakan untuk menindaklanjuti pesan ini.</p>
     </form>
   </div>
+
+  @php
+    $geo = config('company.geo');
+    $ll = $geo['lat'].','.$geo['lng'];
+    $maps = [
+        'google' => 'https://www.google.com/maps/search/?api=1&query='.$ll,
+        'route' => 'https://www.google.com/maps/dir/?api=1&destination='.$ll,
+        'waze' => 'https://waze.com/ul?ll='.$ll.'&navigate=yes',
+        'apple' => 'https://maps.apple.com/?ll='.$ll.'&q='.rawurlencode(config('company.name')),
+        'osm' => 'https://www.openstreetmap.org/?mlat='.$geo['lat'].'&mlon='.$geo['lng'].'#map='.$geo['zoom'].'/'.$ll,
+    ];
+  @endphp
+  <div class="container">
+    <div class="map-card reveal" id="lokasi">
+      <div class="map-frame">
+        <iframe
+          src="https://maps.google.com/maps?q={{ $ll }}&z={{ $geo['zoom'] }}&hl=id&output=embed"
+          title="Peta lokasi kantor {{ config('company.name') }}"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen></iframe>
+      </div>
+      <div class="map-info">
+        <div class="eyebrow">Lokasi Kantor</div>
+        <h3 class="map-title">{{ config('company.name') }}</h3>
+        <p class="map-address">{!! nl2br(e($site['address'])) !!}</p>
+        <p class="map-coords">{{ number_format($geo['lat'], 6) }}, {{ number_format($geo['lng'], 6) }}</p>
+        <div class="map-actions">
+          <a href="{{ $maps['route'] }}" class="btn btn-red" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.7 11.3l-9-9a1 1 0 0 0-1.4 0l-9 9a1 1 0 0 0 0 1.4l9 9a1 1 0 0 0 1.4 0l9-9a1 1 0 0 0 0-1.4zM14 14.5V12h-4v3H8v-4a1 1 0 0 1 1-1h5V7.5l3.5 3.5-3.5 3.5z"/></svg>
+            Petunjuk Arah
+          </a>
+          <div class="map-alt">
+            <a href="{{ $maps['google'] }}" target="_blank" rel="noopener">Google Maps</a>
+            <a href="{{ $maps['waze'] }}" target="_blank" rel="noopener">Waze</a>
+            <a href="{{ $maps['apple'] }}" target="_blank" rel="noopener">Apple Maps</a>
+            <a href="{{ $maps['osm'] }}" target="_blank" rel="noopener">OpenStreetMap</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @php($localBusiness = [
+      '@context' => 'https://schema.org',
+      '@type' => 'LocalBusiness',
+      'name' => config('company.name'),
+      'alternateName' => 'IG&B',
+      'url' => url('/'),
+      'logo' => asset('images/logo-igb.png'),
+      'image' => asset('images/profile/hero-building.jpg'),
+      'telephone' => $site['phone'],
+      'email' => $site['email'],
+      'address' => [
+          '@type' => 'PostalAddress',
+          'streetAddress' => 'Perum Permata Jingga Blok AA No. 27, Tunggulwulung, Lowokwaru',
+          'addressLocality' => 'Kota Malang',
+          'addressRegion' => 'Jawa Timur',
+          'postalCode' => '65143',
+          'addressCountry' => 'ID',
+      ],
+      'geo' => ['@type' => 'GeoCoordinates', 'latitude' => $geo['lat'], 'longitude' => $geo['lng']],
+      'hasMap' => $maps['google'],
+      'sameAs' => array_values(array_filter([config('company.instagram.url')])),
+  ])
+  {{-- JSON_HEX_TAG keeps "</script>" sequences from breaking out of the tag. --}}
+  <script type="application/ld+json">{!! json_encode($localBusiness, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}</script>
 </section>
 
 {{-- ============================== MARKETPLACE ============================== --}}

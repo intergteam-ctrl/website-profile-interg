@@ -156,4 +156,15 @@ class FrontendTest extends TestCase
 
         $this->assertGreaterThan(1000, filesize(public_path('favicon.ico')));
     }
+
+    public function test_office_map_and_location_links_are_shown(): void
+    {
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('https://maps.google.com/maps?q=-7.9313085,112.6175407', false)
+            ->assertSee('https://www.google.com/maps/dir/?api=1&amp;destination=-7.9313085,112.6175407', false)
+            ->assertSee('https://waze.com/ul?ll=-7.9313085,112.6175407', false)
+            ->assertSee('"latitude":-7.9313085', false)
+            ->assertSee('"@type":"LocalBusiness"', false);
+    }
 }

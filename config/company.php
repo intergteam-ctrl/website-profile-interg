@@ -27,6 +27,13 @@ return [
     'website' => 'interg.co.id',
     'address' => "Perum Permata Jingga Blok AA No. 27,\nTunggulwulung, Lowokwaru, Kota Malang 65143",
 
+    // Office location (map in the contact section + structured data for search engines).
+    'geo' => [
+        'lat' => -7.9313085,
+        'lng' => 112.6175407,
+        'zoom' => 17,
+    ],
+
     // Organisations named in the company profile's project pages.
     'clients' => [
         'Dishub Prov. Jawa Timur',
