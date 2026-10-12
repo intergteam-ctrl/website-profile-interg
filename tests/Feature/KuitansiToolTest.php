@@ -44,7 +44,8 @@ class KuitansiToolTest extends TestCase
         $this->actingAs(User::factory()->create(['role' => 'admin']))
             ->get('/admin')
             ->assertOk()
-            ->assertSee(route('admin.tools.kuitansi'), false);
+            ->assertSee(route('admin.tools.kuitansi'), false)
+            ->assertSee('Kuitansi Inter G');
     }
 
     public function test_fcom_kuitansi_requires_admin_and_is_blank(): void

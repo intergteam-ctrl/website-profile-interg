@@ -41,7 +41,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->navigationItems([
-                NavigationItem::make('Kuitansi')
+                NavigationItem::make('Kuitansi Inter G')
                     ->url(fn (): string => route('admin.tools.kuitansi'), shouldOpenInNewTab: true)
                     ->icon('heroicon-o-document-text')
                     ->group('Alat')
