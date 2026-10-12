@@ -18,7 +18,7 @@ body{font-family:'Inter',sans-serif;background:var(--color-background-tertiary,#
 .back-link:hover{text-decoration:underline;}
 .page-title{position:relative;text-align:center;font-size:13px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--color-text-secondary,#666);margin-bottom:18px;}
 
-.layout{display:grid;grid-template-columns:280px 1fr;gap:20px;max-width:1000px;margin:0 auto;align-items:start;}
+.layout{display:grid;grid-template-columns:340px 1fr;gap:20px;max-width:1120px;margin:0 auto;align-items:start;}
 
 /* PANEL FORM */
 .panel{background:var(--color-background-primary,#fff);border:0.5px solid var(--color-border-tertiary,rgba(0,0,0,0.12));border-radius:12px;overflow:hidden;}
@@ -29,7 +29,11 @@ body{font-family:'Inter',sans-serif;background:var(--color-background-tertiary,#
 .field{display:flex;flex-direction:column;gap:5px;}
 .field label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.7px;color:var(--color-text-secondary,#888);}
 .field input,.field textarea{border:0.5px solid var(--color-border-secondary,rgba(0,0,0,0.2));border-radius:7px;padding:7px 10px;font-size:12px;font-family:'Inter',sans-serif;background:var(--color-background-primary,#fff);color:var(--color-text-primary,#111);outline:none;transition:border-color 0.2s,box-shadow 0.2s;}
-.field input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,0.1);}
+.field input:focus,.field textarea:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,0.1);}
+.field textarea{width:100%;resize:vertical;line-height:1.5;min-height:58px;}
+.field textarea.tall{min-height:96px;}
+.fit-warn{font-size:10px;color:#b45309;background:#fffbeb;border:0.5px solid #fde68a;border-radius:6px;padding:6px 8px;line-height:1.4;}
+.fit-warn[hidden]{display:none;}
 
 .terbilang-badge{background:#eff6ff;border:0.5px solid #bfdbfe;border-radius:7px;padding:7px 10px;font-size:11px;font-style:italic;color:#1d4ed8;line-height:1.5;}
 
@@ -124,14 +128,15 @@ body{font-family:'Inter',sans-serif;background:var(--color-background-tertiary,#
   display:flex;
   flex-direction:column;
   padding:4mm 5mm 3mm;
-  gap:2.5mm;
+  gap:calc(2.5mm*var(--k,1));
   min-height:0;
+  overflow:hidden;
 }
 
-.field-row{display:flex;align-items:baseline;gap:2.5mm;font-size:7.5pt;}
-.f-label{color:#6b7280;white-space:nowrap;font-size:7pt;}
+.field-row{display:flex;align-items:baseline;gap:2.5mm;font-size:calc(7.5pt*var(--k,1));}
+.f-label{color:#6b7280;white-space:nowrap;font-size:calc(7pt*var(--k,1));}
 .f-line{flex:1;border-bottom:0.5px solid #d1d5db;padding:0 2mm 0.8mm;min-width:0;}
-.f-bold{font-weight:600;color:#111;font-size:8pt;}
+.f-bold{font-weight:600;color:#111;font-size:calc(8pt*var(--k,1));}
 
 .no-row{display:flex;align-items:center;gap:2mm;}
 .no-badge{background:#1e3a8a;color:#fff;font-size:7pt;font-weight:600;padding:1mm 3mm;border-radius:2px;letter-spacing:0.5px;}
@@ -141,7 +146,7 @@ body{font-family:'Inter',sans-serif;background:var(--color-background-tertiary,#
   border:0.5px solid #d1d5db;
   border-radius:2px;
   padding:2mm 3mm;
-  font-size:7.5pt;
+  font-size:calc(7.5pt*var(--k,1));
   font-style:italic;
   font-weight:600;
   color:#111;
@@ -153,8 +158,13 @@ body{font-family:'Inter',sans-serif;background:var(--color-background-tertiary,#
   line-height:1.4;
 }
 
-.untuk-text{font-size:7.5pt;color:#374151;}
-.penerima-item{display:flex;gap:1.5mm;align-items:flex-start;font-size:7pt;color:#6b7280;margin-top:0.5mm;}
+.untuk-row{display:flex;align-items:flex-start;gap:2.5mm;}
+.untuk-row .f-label{padding-top:0.3mm;}
+.untuk-text{flex:1;min-width:0;font-size:calc(7.5pt*var(--k,1));font-weight:500;color:#111;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere;border-bottom:0.5px solid #d1d5db;padding:0 2mm 0.8mm;}
+.note-box{border:0.5px dashed #d1d5db;border-radius:2px;padding:1.5mm 2.5mm;font-size:calc(7pt*var(--k,1));color:#374151;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere;background:#fcfcfd;}
+.note-box b{display:block;font-size:calc(6pt*var(--k,1));letter-spacing:0.6px;text-transform:uppercase;color:#9ca3af;font-weight:600;margin-bottom:0.5mm;}
+.note-box[hidden]{display:none;}
+.penerima-item{display:flex;gap:1.5mm;align-items:flex-start;font-size:calc(7pt*var(--k,1));color:#6b7280;margin-top:0.5mm;}
 
 /* FOOTER */
 .doc-footer{
@@ -253,9 +263,15 @@ body{font-family:'Inter',sans-serif;background:var(--color-background-tertiary,#
     </div>
 
     <div class="field">
-      <label>Untuk Pembayaran</label>
-      <input type="text" id="i-bayar" value="Uang Makan Survey Telemetri SITUBONDO">
+      <label for="i-bayar">Untuk Pembayaran</label>
+      <textarea id="i-bayar" rows="3">Uang Makan Survey Telemetri SITUBONDO</textarea>
     </div>
+
+    <div class="field">
+      <label for="i-note">Catatan / Note <span style="text-transform:none;letter-spacing:0;font-weight:400;">(opsional)</span></label>
+      <textarea id="i-note" class="tall" rows="4" placeholder="Mis. rincian biaya, nomor PO/SPK, metode pembayaran, keterangan lain…"></textarea>
+    </div>
+    <p class="fit-warn" id="fit-warn" hidden>Teks terlalu panjang untuk 1 lembar A5. Ukuran huruf sudah diperkecil maksimal; persingkat teks agar tidak terpotong.</p>
 
     <div class="field">
       <label>Penerima (pisah koma)</label>
@@ -331,9 +347,14 @@ body{font-family:'Inter',sans-serif;background:var(--color-background-tertiary,#
         </div>
 
         <div>
-          <span class="untuk-text"><span style="color:#6b7280;font-size:7pt;">Untuk Pembayaran &nbsp;</span><span id="o-bayar" style="font-weight:500;">Uang Makan Survey Telemetri SITUBONDO</span></span>
+          <div class="untuk-row">
+            <span class="f-label">Untuk Pembayaran</span>
+            <span class="untuk-text" id="o-bayar">Uang Makan Survey Telemetri SITUBONDO</span>
+          </div>
           <div id="o-penerima-list"></div>
         </div>
+
+        <div class="note-box" id="o-note-box" hidden><b>Catatan</b><span id="o-note"></span></div>
 
       </div>
 
@@ -430,6 +451,9 @@ function update(){
   document.getElementById('o-dari').textContent=dari;
   document.getElementById('o-terbilang').textContent='# '+tb+' #';
   document.getElementById('o-bayar').textContent=bayar;
+  const note=document.getElementById('i-note').value.trim();
+  document.getElementById('o-note').textContent=note;
+  document.getElementById('o-note-box').hidden=!note;
   document.getElementById('o-nominal').textContent=formatRp(nominal);
   document.getElementById('o-date').textContent=kota+', '+formatTgl(tgl);
 
@@ -439,6 +463,16 @@ function update(){
   // Rebuild the upload slots only when the list of names changes, so typing elsewhere keeps uploads intact.
   const key=pens.join('\u0001');
   if(key!==sigNames){sigNames=key;renderSigInputs();}
+  fitBody();
+}
+
+// Keep everything on one A5 sheet: shrink body text step by step when the
+// "untuk pembayaran" / note text is long, down to 70%.
+function fitBody(){
+  const body=document.querySelector('.doc-body');
+  let k=1;body.style.setProperty('--k',k);
+  while(body.scrollHeight>body.clientHeight+1&&k>0.7){k=Math.round((k-0.05)*100)/100;body.style.setProperty('--k',k);}
+  document.getElementById('fit-warn').hidden=body.scrollHeight<=body.clientHeight+1;
 }
 
 document.getElementById('logo-file').addEventListener('change',function(e){
@@ -454,7 +488,7 @@ document.getElementById('logo-file').addEventListener('change',function(e){
 });
 
 (function(){const t=document.getElementById('i-tgl');if(!t.value){const d=new Date();t.value=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}})();
-['i-no','i-dari','i-nominal','i-bayar','i-penerima','i-kota','i-tgl'].forEach(id=>document.getElementById(id).addEventListener('input',update));
+['i-no','i-dari','i-nominal','i-bayar','i-note','i-penerima','i-kota','i-tgl'].forEach(id=>document.getElementById(id).addEventListener('input',update));
 update();
 
 // Scale preview to fit
@@ -495,6 +529,8 @@ function exportWord(sz){
   const dari=document.getElementById('i-dari').value;
   const nominal=parseFloat(document.getElementById('i-nominal').value)||0;
   const bayar=document.getElementById('i-bayar').value;
+  const note=document.getElementById('i-note').value.trim();
+  const br=t=>esc(t).replace(/\n/g,'<br>');
   const penRaw=document.getElementById('i-penerima').value;
   const kota=document.getElementById('i-kota').value||'Malang';
   const tgl=document.getElementById('i-tgl').value;
@@ -539,8 +575,10 @@ table{border-collapse:collapse;width:100%;}td{vertical-align:top;}
 <tr><td style="font-size:7pt;color:#6b7280;white-space:nowrap;padding:2pt 0;">Uang Sejumlah</td>
 <td style="border:0.5pt solid #d1d5db;font-style:italic;font-weight:600;font-size:${fs};padding:3pt 5pt;background:#f9fafb;"># ${tb} #</td></tr>
 <tr><td colspan="2" style="height:3pt;"></td></tr>
-<tr><td colspan="2" style="font-size:${fs};">Untuk Pembayaran &nbsp;${esc(bayar)}</td></tr>
+<tr><td style="font-size:7pt;color:#6b7280;white-space:nowrap;padding:2pt 0;">Untuk Pembayaran</td>
+<td style="border-bottom:0.5pt solid #d1d5db;font-weight:500;font-size:${fs};padding:2pt 6pt;">${br(bayar)}</td></tr>
 ${penList}
+${note?`<tr><td colspan="2" style="height:4pt;"></td></tr><tr><td colspan="2" style="border:0.5pt dashed #d1d5db;padding:4pt 6pt;font-size:${fs};color:#374151;background:#fcfcfd;"><span style="font-size:6pt;color:#9ca3af;letter-spacing:0.6pt;">CATATAN</span><br>${br(note)}</td></tr>`:''}
 </table>
 </td></tr>
 <tr style="border-top:0.5pt solid #e5e7eb;background:#fafbff;"><td colspan="3" style="padding:5pt 9pt;">
