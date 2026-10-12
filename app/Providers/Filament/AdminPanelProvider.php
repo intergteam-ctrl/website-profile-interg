@@ -46,6 +46,11 @@ class AdminPanelProvider extends PanelProvider
                     ->icon('heroicon-o-document-text')
                     ->group('Alat')
                     ->sort(1),
+                NavigationItem::make('Kuitansi FCom')
+                    ->url(fn (): string => route('admin.tools.kuitansi-fcom'), shouldOpenInNewTab: true)
+                    ->icon('heroicon-o-receipt-percent')
+                    ->group('Alat')
+                    ->sort(2),
             ])
             ->pages([
                 Dashboard::class,

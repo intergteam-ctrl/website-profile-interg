@@ -46,4 +46,22 @@ class KuitansiToolTest extends TestCase
             ->assertOk()
             ->assertSee(route('admin.tools.kuitansi'), false);
     }
+
+    public function test_fcom_kuitansi_requires_admin_and_is_blank(): void
+    {
+        $this->get('/admin/tools/kuitansi-fcom')->assertRedirect('/admin/login');
+
+        $this->actingAs(User::factory()->create(['role' => 'admin']))
+            ->get('/admin/tools/kuitansi-fcom')
+            ->assertOk()
+            ->assertHeader('X-Robots-Tag', 'noindex, nofollow')
+            ->assertSee('Kuitansi Fcom Nusantara')
+            ->assertSee('Telah Terima Dari')
+            ->assertSee('<input type="text" id="i-dari" placeholder="Nama pemberi uang">', false)
+            ->assertDontSee('Syaifullah');
+
+        $this->actingAs(User::factory()->create(['role' => 'admin']))
+            ->get('/admin')
+            ->assertSee(route('admin.tools.kuitansi-fcom'), false);
+    }
 }

@@ -13,7 +13,18 @@ class ToolController extends Controller
      */
     public function kuitansi(): Response
     {
-        return response(file_get_contents(resource_path('tools/kuitansi.html')))
+        return $this->tool('kuitansi.html');
+    }
+
+    /** Receipt in the FCom Nusantara format (blank by default). */
+    public function kuitansiFcom(): Response
+    {
+        return $this->tool('kuitansi-fcom.html');
+    }
+
+    private function tool(string $file): Response
+    {
+        return response(file_get_contents(resource_path('tools/'.$file)))
             ->header('Content-Type', 'text/html; charset=UTF-8')
             ->header('Cache-Control', 'private, no-store')
             ->header('X-Robots-Tag', 'noindex, nofollow');

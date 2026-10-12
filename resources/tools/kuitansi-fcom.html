@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Kuitansi Fcom Nusantara — Admin IG&amp;B</title>
+<link rel="icon" href="/favicon-32.png">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Tinos:ital,wght@0,400;0,700;1,400;1,700&family=Alfa+Slab+One&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:#f0f0f0;padding:20px;color:#111;}
+.page-title{position:relative;text-align:center;font-size:13px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#666;margin-bottom:18px;}
+.back-link{position:absolute;left:0;font-size:11px;font-weight:600;letter-spacing:0.3px;text-transform:none;color:#2563eb;text-decoration:none;}
+.back-link:hover{text-decoration:underline;}
+
+.layout{display:grid;grid-template-columns:360px 1fr;gap:20px;max-width:1400px;margin:0 auto;align-items:start;}
+@media (max-width:900px){.layout{grid-template-columns:1fr;}}
+
+/* FORM */
+.panel{background:#fff;border:0.5px solid rgba(0,0,0,0.12);border-radius:12px;overflow:hidden;}
+.panel-header{padding:14px 18px;border-bottom:0.5px solid rgba(0,0,0,0.1);background:#f8f8f8;}
+.panel-header h2{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#777;}
+.panel-body{padding:16px 18px;display:flex;flex-direction:column;gap:13px;}
+.field{display:flex;flex-direction:column;gap:5px;}
+.field label,.lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.7px;color:#888;}
+.field input,.field textarea,.items input{border:0.5px solid rgba(0,0,0,0.2);border-radius:7px;padding:7px 10px;font-size:12px;font-family:'Inter',sans-serif;background:#fff;color:#111;outline:none;width:100%;}
+.field textarea{resize:vertical;line-height:1.5;min-height:52px;}
+.field input:focus,.field textarea:focus,.items input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,0.1);}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.hint{font-size:9.5px;color:#9ca3af;line-height:1.4;}
+.terbilang-badge{background:#eff6ff;border:0.5px solid #bfdbfe;border-radius:7px;padding:7px 10px;font-size:11px;font-style:italic;color:#1d4ed8;line-height:1.5;min-height:30px;}
+
+.items{display:flex;flex-direction:column;gap:6px;}
+.item{display:grid;grid-template-columns:1fr 78px 44px 18px;gap:5px;align-items:center;}
+.items .head{font-size:9px;color:#9ca3af;text-transform:uppercase;letter-spacing:0.5px;}
+.item input{padding:6px 7px;font-size:11.5px;}
+.del{border:none;background:none;color:#dc2626;font-size:14px;cursor:pointer;line-height:1;}
+.add{align-self:flex-start;border:1px dashed #9ca3af;background:#fff;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:600;color:#374151;cursor:pointer;}
+.add:hover{border-color:#2563eb;color:#2563eb;}
+.total-line{font-size:11px;color:#374151;text-align:right;}
+
+.upload{position:relative;border:1.5px dashed rgba(0,0,0,0.2);border-radius:8px;min-height:46px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;padding:6px;}
+.upload:hover{border-color:#2563eb;}
+.upload input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.upload span{font-size:10px;color:#9ca3af;pointer-events:none;}
+.upload img{max-height:34px;max-width:120px;object-fit:contain;pointer-events:none;}
+.mini-del{border:none;background:none;color:#dc2626;font-size:11px;font-weight:600;cursor:pointer;align-self:flex-start;}
+
+.btn-row{display:flex;flex-wrap:wrap;gap:7px;padding:14px 18px;border-top:0.5px solid rgba(0,0,0,0.1);background:#f8f8f8;}
+.btn{padding:7px 13px;font-size:10px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;border:none;border-radius:6px;cursor:pointer;font-family:'Inter',sans-serif;}
+.btn:hover{opacity:0.85;}
+.b-red{background:#dc2626;color:#fff;}.b-blue{background:#1d4ed8;color:#fff;}.b-gray{background:#374151;color:#fff;}.b-light{background:#e5e7eb;color:#111;}
+
+.preview-wrap{display:flex;flex-direction:column;gap:10px;min-width:0;}
+.preview-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.7px;color:#888;}
+.scaler{overflow:hidden;}
+
+/* KUITANSI — 297 × 105 mm (sepertiga A4, 3 lembar per kertas A4) */
+#kuitansi{width:297mm;height:105mm;background:#fff;padding:5mm;transform-origin:top left;box-shadow:0 4px 24px rgba(0,0,0,0.1);font-family:'Tinos','Times New Roman',serif;color:#111;}
+.frame{height:100%;border:2.2px solid #333;padding:1mm;display:flex;}
+.frame-in{flex:1;border:0.8px solid #333;display:flex;min-width:0;}
+.left{width:58mm;border-right:2.2px solid #333;box-shadow:1.4mm 0 0 -1.1mm #fff,1.6mm 0 0 -1mm #333;margin-right:1.6mm;display:flex;flex-direction:column;justify-content:space-between;padding:5mm 3mm 3mm;}
+.logo{display:flex;justify-content:center;align-items:center;height:16mm;}
+.logo img{max-height:16mm;max-width:46mm;object-fit:contain;}
+.co-name{font-family:'Alfa Slab One',Georgia,serif;font-size:12.5pt;color:#111;letter-spacing:0.2px;line-height:1.1;}
+.co-addr{font-family:'Inter',Arial,sans-serif;font-size:7pt;line-height:1.35;color:#111;margin-top:1mm;white-space:pre-line;}
+
+.right{flex:1;min-width:0;padding:2.5mm 5mm 3mm 3mm;display:grid;grid-template-columns:1fr 62mm;grid-template-rows:auto 1fr auto;column-gap:4mm;}
+.main{grid-column:1 / -1;font-size:11pt;}
+.r-no{font-size:11.5pt;}
+.u{display:inline-block;min-width:28mm;border-bottom:0.8px solid #111;padding:0 2mm;}
+.r-row{display:flex;align-items:baseline;gap:2mm;margin-top:1mm;}
+.it{font-style:italic;}
+.r-label{font-style:italic;white-space:nowrap;}
+.r-val{flex:1;min-width:0;}
+.sejumlah{display:flex;align-items:stretch;gap:4mm;margin-top:3.5mm;}
+.sejumlah .r-label{width:30mm;line-height:1.25;white-space:normal;}
+.tb-box{flex:1;border:1.2px solid #111;padding:1.8mm 3mm;font-weight:700;font-style:italic;line-height:1.3;min-height:11mm;display:flex;align-items:center;}
+.untuk{display:flex;gap:2mm;margin-top:3mm;align-items:baseline;}
+.untuk .r-val{white-space:pre-wrap;overflow-wrap:anywhere;}
+.rincian{margin:0.6mm 0 0 30mm;border-collapse:collapse;font-style:italic;}
+.rincian td{padding:0 1.5mm 0 0;vertical-align:baseline;white-space:nowrap;}
+.rincian td.n{text-align:right;}
+.rincian tr.sum td{padding-top:0.6mm;}
+.rincian .tot{text-decoration:underline;}
+
+.bottom-left{grid-column:1;grid-row:3;align-self:end;}
+.nominal{display:inline-block;border:1.2px solid #111;padding:2.2mm 9mm;font-size:14pt;font-weight:700;min-width:50mm;text-align:center;}
+.sig{grid-column:2;grid-row:2 / 4;align-self:end;display:flex;flex-direction:column;align-items:center;text-align:center;font-size:10pt;}
+.sig .date{margin-bottom:2mm;}
+.sig .space{height:15mm;display:flex;align-items:flex-end;justify-content:center;}
+.sig .space img{max-height:17mm;max-width:52mm;object-fit:contain;margin-bottom:-2mm;}
+.sig .name{min-width:34mm;border-bottom:0.8px solid #111;padding:0 2mm;min-height:5.5mm;}
+.ph{color:#c4c4c4;}
+
+@media print{
+  body{background:#fff;padding:0;}
+  .layout{display:block;}
+  .panel,.preview-label,.page-title{display:none!important;}
+  .scaler{height:auto!important;overflow:visible;}
+  #kuitansi{box-shadow:none;transform:none!important;}
+  .ph{color:transparent;}
+  @page{size:297mm 105mm;margin:0;}
+}
+</style>
+</head>
+<body>
+
+<p class="page-title"><a href="/admin" class="back-link">← Kembali ke Admin</a>Kuitansi Fcom Nusantara</p>
+
+<div class="layout">
+
+<div class="panel">
+  <div class="panel-header"><h2>Data Kuitansi</h2></div>
+  <div class="panel-body">
+
+    <div class="two">
+      <div class="field"><label for="i-no">No. Kuitansi</label><input type="text" id="i-no" placeholder="0015002"></div>
+      <div class="field"><label for="i-tgl">Tanggal</label><input type="date" id="i-tgl"></div>
+    </div>
+
+    <div class="field"><label for="i-dari">Telah Terima Dari</label><input type="text" id="i-dari" placeholder="Nama pemberi uang"></div>
+
+    <div class="field">
+      <label for="i-bayar">Untuk Pembayaran</label>
+      <textarea id="i-bayar" rows="2" placeholder="Mis. Ongkos dan uang makan pekerjaan …"></textarea>
+    </div>
+
+    <div class="field">
+      <span class="lbl">Rincian (opsional)</span>
+      <div class="items" id="items">
+        <div class="item head"><span>Keterangan</span><span>Harga (Rp)</span><span>Qty</span><span></span></div>
+      </div>
+      <button type="button" class="add" id="add-item">+ Tambah baris</button>
+      <div class="total-line" id="total-line"></div>
+      <p class="hint">Jika rincian diisi, nominal dihitung otomatis dari jumlah rincian. Qty boleh desimal (mis. 5,5).</p>
+    </div>
+
+    <div class="field">
+      <label for="i-nominal">Nominal (Rp)</label>
+      <input type="number" id="i-nominal" min="0" step="1" placeholder="0">
+    </div>
+
+    <div class="field">
+      <span class="lbl">Terbilang</span>
+      <div class="terbilang-badge" id="tb-display"></div>
+    </div>
+
+    <div class="two">
+      <div class="field"><label for="i-penerima">Nama Penerima</label><input type="text" id="i-penerima" placeholder="Nama penerima"></div>
+      <div class="field"><label for="i-kota">Kota</label><input type="text" id="i-kota" value="Malang"></div>
+    </div>
+
+    <div class="field">
+      <span class="lbl">Tanda Tangan Penerima</span>
+      <label class="upload"><input type="file" id="sig-file" accept="image/*"><span id="sig-thumb">+ Upload tanda tangan (PNG/JPG)</span></label>
+      <button type="button" class="mini-del" id="sig-del" hidden>Hapus tanda tangan</button>
+      <p class="hint">Latar putih otomatis dibuat transparan. Gambar tidak dikirim ke server.</p>
+    </div>
+
+    <div class="field">
+      <label for="i-coname">Nama Perusahaan</label>
+      <input type="text" id="i-coname" value="FCom Nusantara">
+    </div>
+    <div class="field">
+      <label for="i-coaddr">Alamat Perusahaan</label>
+      <textarea id="i-coaddr" rows="3">Perum Griya Santha
+Jl. Candi Sawentar III Blok E-209
+Malang</textarea>
+    </div>
+    <div class="field">
+      <span class="lbl">Logo</span>
+      <label class="upload"><input type="file" id="logo-file" accept="image/*"><span>Ganti logo (opsional, disarankan PNG resolusi tinggi)</span></label>
+    </div>
+
+  </div>
+  <div class="btn-row">
+    <button class="btn b-red" onclick="exportPDF('strip',event)">PDF</button>
+    <button class="btn b-red" onclick="exportPDF('a4',event)">PDF A4</button>
+    <button class="btn b-blue" onclick="exportWord()">Word</button>
+    <button class="btn b-gray" onclick="window.print()">Cetak</button>
+    <button class="btn b-light" onclick="resetForm()">Kosongkan</button>
+  </div>
+</div>
+
+<div class="preview-wrap">
+  <p class="preview-label">Pratinjau — 297 × 105 mm (⅓ A4)</p>
+  <div class="scaler" id="scaler">
+    <div id="kuitansi">
+      <div class="frame"><div class="frame-in">
+        <div class="left">
+          <div class="logo"><img id="o-logo" alt="Logo FCom Nusantara" src="data:image/png;base64,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"></div>
+          <div>
+            <div class="co-name" id="o-coname">FCom Nusantara</div>
+            <div class="co-addr" id="o-coaddr"></div>
+          </div>
+        </div>
+        <div class="right">
+          <div class="main">
+            <div class="r-no">No. <span class="u" id="o-no"></span></div>
+            <div class="r-row"><span class="r-label">Telah Terima Dari :</span><span class="r-val" id="o-dari"></span></div>
+            <div class="sejumlah"><span class="r-label">Uang Sejumlah</span><div class="tb-box" id="o-tb"></div></div>
+            <div class="untuk"><span class="r-label">Untuk Pembayaran :</span><span class="r-val" id="o-bayar"></span></div>
+            <table class="rincian" id="o-rincian"></table>
+          </div>
+          <div class="bottom-left"><span class="nominal" id="o-nominal">Rp.</span></div>
+          <div class="sig">
+            <div class="date" id="o-date"></div>
+            <div>Penerima</div>
+            <div class="space" id="o-sig"></div>
+            <div class="name" id="o-penerima"></div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const SAT=['','satu','dua','tiga','empat','lima','enam','tujuh','delapan','sembilan','sepuluh','sebelas','dua belas','tiga belas','empat belas','lima belas','enam belas','tujuh belas','delapan belas','sembilan belas'];
+function ratusan(n){if(n===0)return '';if(n<20)return SAT[n];if(n<100){const t=Math.floor(n/10),s=n%10;return(t===1?'se':SAT[t])+' puluh'+(s?' '+SAT[s]:'');}const r=Math.floor(n/100),s=n%100;return(r===1?'se':SAT[r])+' ratus'+(s?' '+ratusan(s):'');}
+function terbilang(n){n=Math.round(n);if(n===0)return 'nol rupiah';let h='';if(n>=1e12){h+=ratusan(Math.floor(n/1e12))+' triliun ';n%=1e12;}if(n>=1e9){h+=ratusan(Math.floor(n/1e9))+' miliar ';n%=1e9;}if(n>=1e6){h+=ratusan(Math.floor(n/1e6))+' juta ';n%=1e6;}if(n>=1000){const rb=Math.floor(n/1000);h+=(rb===1?'se':ratusan(rb))+' ribu ';n%=1000;}if(n>0)h+=ratusan(n);return h.trim()+' rupiah';}
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $=id=>document.getElementById(id);
+const num=v=>{const n=parseFloat(String(v).replace(/\s/g,'').replace(',','.'));return isFinite(n)?n:0;};
+const fmt=n=>Number(n).toLocaleString('id-ID',{maximumFractionDigits:2});
+function formatTgl(v){if(!v)return '';return new Date(v+'T12:00:00').toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});}
+
+let sig=null;
+const DEFAULT_LOGO=$('o-logo').src;
+
+function addItem(ket='',harga='',qty=''){
+  const row=document.createElement('div');row.className='item';
+  row.innerHTML='<input type="text" placeholder="Ongkos / Honour" class="k"><input type="text" inputmode="decimal" placeholder="200000" class="h"><input type="text" inputmode="decimal" placeholder="5" class="q"><button type="button" class="del" title="Hapus baris">✕</button>';
+  row.querySelector('.k').value=ket;row.querySelector('.h').value=harga;row.querySelector('.q').value=qty;
+  row.querySelectorAll('input').forEach(i=>i.addEventListener('input',update));
+  row.querySelector('.del').addEventListener('click',()=>{row.remove();update();});
+  $('items').appendChild(row);
+}
+function items(){
+  return [...document.querySelectorAll('#items .item:not(.head)')].map(r=>({k:r.querySelector('.k').value.trim(),h:num(r.querySelector('.h').value),q:r.querySelector('.q').value.trim()===''?1:num(r.querySelector('.q').value),hasQ:r.querySelector('.q').value.trim()!==''})).filter(i=>i.k||i.h);
+}
+
+function update(){
+  const its=items();
+  const total=its.reduce((s,i)=>s+i.h*i.q,0);
+  const nomInput=$('i-nominal');
+  if(its.length){nomInput.value=Math.round(total);nomInput.readOnly=true;$('total-line').textContent='Jumlah rincian: Rp '+fmt(total);}
+  else{nomInput.readOnly=false;$('total-line').textContent='';}
+  const nominal=num(nomInput.value);
+  const tb=nominal>0?cap(terbilang(nominal)):'';
+
+  $('tb-display').textContent=tb||'—';
+  $('o-no').textContent=$('i-no').value;
+  $('o-dari').textContent=$('i-dari').value;
+  $('o-tb').textContent=tb?': # '+tb+' #':'';
+  $('o-bayar').textContent=$('i-bayar').value;
+  $('o-nominal').textContent=nominal>0?'Rp.'+fmt(Math.round(nominal))+',-':'Rp.';
+  const kota=$('i-kota').value.trim(),tgl=formatTgl($('i-tgl').value);
+  $('o-date').textContent=[kota,tgl].filter(Boolean).join(', ');
+  $('o-penerima').textContent=$('i-penerima').value;
+  $('o-sig').innerHTML=sig?'<img src="'+sig+'" alt="">':'';
+  $('o-coname').textContent=$('i-coname').value;
+  $('o-coaddr').textContent=$('i-coaddr').value;
+
+  // Rincian: "Ongkos / Honour : 200.000 x 5 = 1.000.000", lalu baris Jumlah.
+  $('o-rincian').innerHTML=its.map(i=>`<tr><td>${esc(i.k)}</td><td>:</td><td class="n">${fmt(i.h)}</td><td>${i.hasQ?'x '+fmt(i.q):''}</td><td>=</td><td class="n">${fmt(i.h*i.q)}</td></tr>`).join('')
+    +(its.length?`<tr class="sum"><td>Jumlah</td><td></td><td></td><td></td><td>=</td><td class="n tot">${fmt(total)}</td></tr>`:'');
+}
+
+function cleanSignature(dataUrl){
+  return new Promise(resolve=>{
+    const img=new Image();
+    img.onload=()=>{
+      const k=Math.min(1,700/img.width);
+      const c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);
+      const x=c.getContext('2d');x.drawImage(img,0,0,c.width,c.height);
+      const d=x.getImageData(0,0,c.width,c.height),p=d.data;
+      for(let i=0;i<p.length;i+=4){const l=(p[i]+p[i+1]+p[i+2])/3;if(l>215)p[i+3]=0;else if(l>170)p[i+3]=Math.round(p[i+3]*(215-l)/45);}
+      x.putImageData(d,0,0);resolve(c.toDataURL('image/png'));
+    };
+    img.onerror=()=>resolve(dataUrl);img.src=dataUrl;
+  });
+}
+function readFile(input,cb){const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>cb(e.target.result);r.readAsDataURL(f);}
+
+$('sig-file').addEventListener('change',e=>readFile(e.target,async src=>{
+  sig=await cleanSignature(src);
+  $('sig-thumb').innerHTML='<img src="'+sig+'" alt="">';$('sig-del').hidden=false;e.target.value='';update();
+}));
+$('sig-del').addEventListener('click',()=>{sig=null;$('sig-thumb').textContent='+ Upload tanda tangan (PNG/JPG)';$('sig-del').hidden=true;update();});
+$('logo-file').addEventListener('change',e=>readFile(e.target,src=>{$('o-logo').src=src;}));
+$('add-item').addEventListener('click',()=>{addItem();document.querySelector('#items .item:last-child .k').focus();});
+['i-no','i-tgl','i-dari','i-bayar','i-nominal','i-penerima','i-kota','i-coname','i-coaddr'].forEach(id=>$(id).addEventListener('input',update));
+
+function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function resetForm(){
+  ['i-no','i-dari','i-bayar','i-nominal','i-penerima'].forEach(id=>$(id).value='');
+  $('i-tgl').value=today();
+  document.querySelectorAll('#items .item:not(.head)').forEach(r=>r.remove());
+  addItem();addItem();
+  sig=null;$('sig-thumb').textContent='+ Upload tanda tangan (PNG/JPG)';$('sig-del').hidden=true;
+  update();
+}
+resetForm();
+
+function scalePreview(){
+  const el=$('kuitansi'),wrap=$('scaler');
+  const natural=el.offsetWidth,scale=Math.min(1,wrap.clientWidth/natural);
+  el.style.transform='scale('+scale+')';wrap.style.height=(el.offsetHeight*scale)+'px';
+}
+window.addEventListener('resize',scalePreview);
+document.fonts.ready.then(scalePreview);setTimeout(scalePreview,100);
+
+async function capture(){
+  const el=$('kuitansi'),prev=el.style.transform;
+  el.style.transform='none';
+  const phs=[...el.querySelectorAll('.ph')];phs.forEach(p=>p.style.color='transparent');
+  await new Promise(r=>setTimeout(r,250));
+  const canvas=await html2canvas(el,{scale:3,useCORS:true,logging:false,backgroundColor:'#ffffff'});
+  phs.forEach(p=>p.style.color='');el.style.transform=prev;
+  return canvas;
+}
+async function exportPDF(kind,ev){
+  const btn=ev.target,orig=btn.textContent;btn.textContent='...';btn.disabled=true;
+  try{
+    const canvas=await capture();
+    const{jsPDF}=window.jspdf;
+    const name='kuitansi-fcom-'+($('i-no').value||'baru').replace(/[^\w-]+/g,'');
+    if(kind==='strip'){
+      const pdf=new jsPDF({orientation:'landscape',unit:'mm',format:[297,105]});
+      pdf.addImage(canvas.toDataURL('image/png'),'PNG',0,0,297,105);pdf.save(name+'.pdf');
+    }else{
+      // A4 landscape, kuitansi di bagian atas (ukuran asli, siap potong).
+      const pdf=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+      pdf.addImage(canvas.toDataURL('image/png'),'PNG',0,0,297,105);pdf.save(name+'-A4.pdf');
+    }
+  }finally{btn.textContent=orig;btn.disabled=false;}
+}
+
+function exportWord(){
+  const its=items(),total=its.reduce((s,i)=>s+i.h*i.q,0);
+  const nominal=num($('i-nominal').value),tb=nominal>0?cap(terbilang(nominal)):'';
+  const br=t=>esc(t).replace(/\n/g,'<br>');
+  const logo=$('o-logo').src;
+  const rinc=its.length?`<table style="margin-left:80pt;font-style:italic;">${its.map(i=>`<tr><td>${esc(i.k)}</td><td>:</td><td align="right">${fmt(i.h)}</td><td>${i.hasQ?'x '+fmt(i.q):''}</td><td>=</td><td align="right">${fmt(i.h*i.q)}</td></tr>`).join('')}<tr><td>Jumlah</td><td></td><td></td><td></td><td>=</td><td align="right"><u>${fmt(total)}</u></td></tr></table>`:'';
+  const doc=`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><style>
+@page{size:297mm 105mm;margin:6mm;}body{font-family:'Times New Roman',serif;font-size:11pt;}table{border-collapse:collapse;}td{vertical-align:top;padding:0 3pt;}
+</style></head><body>
+<table style="width:100%;border:2.25pt double #333;"><tr>
+<td style="width:150pt;border-right:2.25pt double #333;padding:10pt 8pt;">
+<p style="text-align:center;margin:0 0 30pt;"><img src="${logo}" width="120"></p>
+<p style="font-family:'Rockwell Extra Bold','Arial Black',serif;font-size:12pt;font-weight:bold;margin:0;">${esc($('i-coname').value)}</p>
+<p style="font-family:Arial,sans-serif;font-size:7pt;margin:2pt 0 0;">${br($('i-coaddr').value)}</p></td>
+<td style="padding:6pt 10pt;">
+<p style="margin:0;">No. <u>&nbsp;${esc($('i-no').value)}&nbsp;</u></p>
+<p style="margin:2pt 0 0;"><i>Telah Terima Dari :</i> &nbsp;${esc($('i-dari').value)}</p>
+<table style="width:100%;margin-top:8pt;"><tr><td style="width:80pt;"><i>Uang Sejumlah</i></td><td style="border:1pt solid #111;padding:4pt 6pt;"><b><i>${tb?': # '+esc(tb)+' #':''}</i></b></td></tr></table>
+<p style="margin:8pt 0 0;"><i>Untuk Pembayaran :</i> &nbsp;${br($('i-bayar').value)}</p>
+${rinc}
+<table style="width:100%;margin-top:6pt;"><tr>
+<td style="vertical-align:bottom;"><span style="border:1pt solid #111;padding:5pt 18pt;font-size:14pt;font-weight:bold;">${nominal>0?'Rp.'+fmt(Math.round(nominal))+',-':'Rp.'}</span></td>
+<td style="width:170pt;text-align:center;vertical-align:bottom;">${esc([$('i-kota').value.trim(),formatTgl($('i-tgl').value)].filter(Boolean).join(', '))}<br>Penerima<br>${sig?`<img src="${sig}" height="40">`:'<br><br><br>'}<br><u>&nbsp;${esc($('i-penerima').value)}&nbsp;</u></td>
+</tr></table>
+</td></tr></table></body></html>`;
+  const blob=new Blob(['﻿'+doc],{type:'application/msword'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='kuitansi-fcom-'+($('i-no').value||'baru').replace(/[^\w-]+/g,'')+'.doc';a.click();
+}
+</script>
+</body>
+</html>

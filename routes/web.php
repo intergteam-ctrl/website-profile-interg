@@ -34,4 +34,5 @@ Route::get('/Editor/dashboard', fn () => redirect('/admin', 301));
 // Internal tools — admin login required (same accounts as /admin).
 Route::middleware(EnsureAdmin::class)->prefix('admin/tools')->name('admin.tools.')->group(function () {
     Route::get('/kuitansi', [ToolController::class, 'kuitansi'])->name('kuitansi');
+    Route::get('/kuitansi-fcom', [ToolController::class, 'kuitansiFcom'])->name('kuitansi-fcom');
 });
