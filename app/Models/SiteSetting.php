@@ -17,7 +17,18 @@ class SiteSetting extends Model
         'marketplace_whatsapp',
         'website',
         'address',
+        'instagram_access_token',
     ];
+
+    protected $hidden = ['instagram_access_token'];
+
+    protected function casts(): array
+    {
+        return [
+            'instagram_access_token' => 'encrypted',
+            'instagram_token_refreshed_at' => 'datetime',
+        ];
+    }
 
     /**
      * Ambil satu-satunya baris settings (buat jika belum ada).

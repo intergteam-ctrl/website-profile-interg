@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\InstagramPost;
 use App\Models\SiteSetting;
+use App\Support\SocialFeeds;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
@@ -31,22 +32,38 @@ class AppServiceProvider extends ServiceProvider
         });
 
         View::composer('layout.app', function ($view): void {
-            $view->with('instagramPosts', $this->instagramPosts());
+            $view->with('instagramPosts', $this->instagramPosts())
+                ->with('youtubeVideos', $this->youtubeVideos());
         });
     }
 
     /**
-     * @return Collection<int, InstagramPost>
+     * Posts pulled live from Instagram when a token is set in Pengaturan
+     * Situs; otherwise the posts curated by hand in Admin → Instagram.
+     *
+     * @return Collection<int, InstagramPost|object>
      */
     private function instagramPosts(): Collection
     {
         return once(function (): Collection {
+            $limit = (int) config('company.instagram.limit', 9);
+            $live = SocialFeeds::instagram($limit);
+
+            if ($live->isNotEmpty()) {
+                return $live;
+            }
+
             try {
                 return InstagramPost::query()->visible()->take((int) config('company.instagram.limit', 9))->get();
             } catch (\Throwable) {
                 return collect();
             }
         });
+    }
+
+    private function youtubeVideos(): Collection
+    {
+        return once(fn (): Collection => SocialFeeds::youtube((int) config('company.youtube.limit', 8)));
     }
 
     private function siteSetting(): ?SiteSetting

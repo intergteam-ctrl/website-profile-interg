@@ -36,36 +36,70 @@
     if (e.key === 'Escape' && mobileNav && mobileNav.classList.contains('open')) setMobileNav(false);
   });
 
-  /* ---------- Instagram side panel ---------- */
-  var igTab = document.getElementById('igTab');
-  var igDrawer = document.getElementById('igDrawer');
+  /* ---------- Instagram & YouTube side panels ---------- */
   var igScrim = document.getElementById('igScrim');
+  var panels = [
+    { tab: document.getElementById('igTab'), drawer: document.getElementById('igDrawer'), close: '[data-ig-close]' },
+    { tab: document.getElementById('ytTab'), drawer: document.getElementById('ytDrawer'), close: '[data-yt-close]' }
+  ].filter(function (p) { return p.tab && p.drawer; });
+  var ytPlayer = document.getElementById('ytPlayer');
 
-  function setInstagram(open) {
-    if (!igTab || !igDrawer) return;
-    igDrawer.classList.toggle('open', open);
-    igDrawer.setAttribute('aria-hidden', String(!open));
-    igDrawer.inert = !open;
-    igTab.setAttribute('aria-expanded', String(open));
+  function stopVideo() {
+    if (!ytPlayer) return;
+    ytPlayer.innerHTML = '';
+    ytPlayer.hidden = true;
+    document.querySelectorAll('.yt-item.is-playing').forEach(function (a) { a.classList.remove('is-playing'); });
+  }
+
+  function setPanel(panel, open) {
+    panel.drawer.classList.toggle('open', open);
+    panel.drawer.setAttribute('aria-hidden', String(!open));
+    panel.drawer.inert = !open;
+    panel.tab.setAttribute('aria-expanded', String(open));
     if (igScrim) igScrim.hidden = !open;
     if (open) {
       // Wait a frame so the panel is no longer inert/hidden when focusing.
       requestAnimationFrame(function () {
-        var close = igDrawer.querySelector('[data-ig-close]');
+        var close = panel.drawer.querySelector(panel.close);
         if (close) close.focus({ preventScroll: true });
       });
     } else {
-      igTab.focus({ preventScroll: true });
+      if (panel.drawer.id === 'ytDrawer') stopVideo();
+      panel.tab.focus({ preventScroll: true });
     }
   }
+  function openPanel() { return panels.filter(function (p) { return p.drawer.classList.contains('open'); })[0]; }
 
-  if (igTab) igTab.addEventListener('click', function () { setInstagram(true); });
-  if (igScrim) igScrim.addEventListener('click', function () { setInstagram(false); });
-  document.querySelectorAll('[data-ig-close]').forEach(function (el) {
-    el.addEventListener('click', function () { setInstagram(false); });
+  panels.forEach(function (panel) {
+    panel.tab.addEventListener('click', function () { setPanel(panel, true); });
+    panel.drawer.querySelectorAll(panel.close).forEach(function (el) {
+      el.addEventListener('click', function () { setPanel(panel, false); });
+    });
   });
+  if (igScrim) igScrim.addEventListener('click', function () { var p = openPanel(); if (p) setPanel(p, false); });
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && igDrawer && igDrawer.classList.contains('open')) setInstagram(false);
+    var p = openPanel();
+    if (e.key === 'Escape' && p) setPanel(p, false);
+  });
+
+  // Play a video inside the panel instead of leaving the site.
+  document.querySelectorAll('[data-yt-id]').forEach(function (link) {
+    link.addEventListener('click', function (e) {
+      if (!ytPlayer || e.ctrlKey || e.metaKey || e.shiftKey) return;
+      e.preventDefault();
+      var id = link.getAttribute('data-yt-id');
+      var frame = document.createElement('iframe');
+      frame.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(id) + '?autoplay=1&rel=0';
+      frame.title = link.getAttribute('data-yt-title') || 'Video YouTube';
+      frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      frame.allowFullscreen = true;
+      ytPlayer.innerHTML = '';
+      ytPlayer.appendChild(frame);
+      ytPlayer.hidden = false;
+      document.querySelectorAll('.yt-item.is-playing').forEach(function (a) { a.classList.remove('is-playing'); });
+      link.classList.add('is-playing');
+      ytPlayer.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    });
   });
 
   /* ---------- Reveal on scroll ---------- */

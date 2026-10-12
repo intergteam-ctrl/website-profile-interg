@@ -159,6 +159,9 @@ return [
 
     'youtube' => [
         'handle' => 'InterGQueenBumindo',
+        // Public RSS feed of this channel is used to show the latest videos.
+        'channel_id' => env('YOUTUBE_CHANNEL_ID', 'UCxWjOSBhFU92A7jxELWc-0w'),
+        'limit' => 8,
         'url' => env('SOCIAL_YOUTUBE', 'https://www.youtube.com/@InterGQueenBumindo'),
     ],
 

@@ -15,10 +15,17 @@
     {!! $igIcon !!}
     <span>Instagram</span>
   </button>
-  <a href="{{ $yt['url'] }}" class="ig-tab yt-tab" target="_blank" rel="noopener" aria-label="YouTube {{ '@'.$yt['handle'] }} (buka di tab baru)">
-    {!! $ytIcon !!}
-    <span>YouTube</span>
-  </a>
+  @if (($youtubeVideos ?? collect())->isNotEmpty())
+    <button type="button" class="ig-tab yt-tab" id="ytTab" aria-controls="ytDrawer" aria-expanded="false">
+      {!! $ytIcon !!}
+      <span>YouTube</span>
+    </button>
+  @else
+    <a href="{{ $yt['url'] }}" class="ig-tab yt-tab" target="_blank" rel="noopener" aria-label="YouTube {{ '@'.$yt['handle'] }} (buka di tab baru)">
+      {!! $ytIcon !!}
+      <span>YouTube</span>
+    </a>
+  @endif
 </div>
 
 <aside class="ig-drawer" id="igDrawer" aria-label="Instagram {{ '@'.$ig['handle'] }}" aria-hidden="true" inert>
@@ -56,4 +63,38 @@
     <p class="ig-empty">Ikuti kegiatan, proyek terbaru, dan dokumentasi pemasangan kami di Instagram.</p>
   @endif
 </aside>
+
+@if (($youtubeVideos ?? collect())->isNotEmpty())
+  <aside class="ig-drawer yt-drawer" id="ytDrawer" aria-label="YouTube {{ '@'.$yt['handle'] }}" aria-hidden="true" inert>
+    <div class="ig-head">
+      <div class="ig-avatar" aria-hidden="true"><img src="{{ asset('images/logo-igb.png') }}" alt=""></div>
+      <div class="ig-who">
+        <a href="{{ $yt['url'] }}" target="_blank" rel="noopener" class="ig-handle">{{ '@'.$yt['handle'] }}</a>
+        <span class="ig-name">Video terbaru di YouTube</span>
+      </div>
+      <button type="button" class="ig-close" data-yt-close aria-label="Tutup panel YouTube">✕</button>
+    </div>
+
+    <div class="yt-player" id="ytPlayer" hidden></div>
+
+    <ul class="yt-list">
+      @foreach (($youtubeVideos ?? collect()) as $video)
+        <li>
+          <a href="{{ $video->url }}" target="_blank" rel="noopener" class="yt-item" data-yt-id="{{ $video->id }}" data-yt-title="{{ $video->title }}">
+            <span class="yt-thumb">
+              <img src="{{ $video->thumb }}" alt="" loading="lazy" decoding="async">
+              <span class="yt-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
+            </span>
+            <span class="yt-meta">
+              <span class="yt-title">{{ $video->title }}</span>
+              @if ($video->published_at)<span class="ig-date">{{ $video->published_at->locale('id')->translatedFormat('d M Y') }}</span>@endif
+            </span>
+          </a>
+        </li>
+      @endforeach
+    </ul>
+
+    <a href="{{ $yt['url'] }}" target="_blank" rel="noopener" class="btn btn-red ig-follow">{!! $ytIcon !!} Subscribe di YouTube</a>
+  </aside>
+@endif
 <div class="ig-scrim" id="igScrim" hidden></div>

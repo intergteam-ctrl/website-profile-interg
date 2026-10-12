@@ -3,9 +3,12 @@
 namespace App\Filament\Pages;
 
 use App\Models\SiteSetting;
+use App\Support\SocialFeeds;
 use BackedEnum;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
@@ -96,13 +99,60 @@ class ManageSiteSettings extends Page
                             ->rows(3)
                             ->columnSpanFull(),
                     ]),
+
+                Section::make('Instagram otomatis')
+                    ->description('Isi token agar panel Instagram di website menampilkan postingan terbaru secara otomatis (diperbarui tiap jam). Tanpa token, yang tampil adalah postingan yang diinput manual di menu Instagram.')
+                    ->collapsible()
+                    ->schema([
+                        Placeholder::make('instagram_status')
+                            ->label('Status')
+                            ->content(function (): string {
+                                $setting = SiteSetting::instance();
+
+                                if (blank($setting->instagram_access_token)) {
+                                    return 'Belum terhubung — memakai postingan manual.';
+                                }
+
+                                return 'Terhubung. Token diperpanjang otomatis'.($setting->instagram_token_refreshed_at ? ' (terakhir '.$setting->instagram_token_refreshed_at->locale('id')->diffForHumans().').' : '.');
+                            }),
+
+                        TextInput::make('instagram_access_token')
+                            ->label('Access token Instagram')
+                            ->password()
+                            ->revealable()
+                            ->autocomplete('off')
+                            ->helperText('Akun Instagram harus Business/Creator. Buat token di Meta for Developers → aplikasi → Instagram API with Instagram Login → Generate token. Kosongkan untuk tidak mengubah token yang tersimpan.'),
+
+                        Toggle::make('instagram_disconnect')
+                            ->label('Putuskan Instagram (hapus token)')
+                            ->default(false),
+                    ]),
             ])
             ->statePath('data');
     }
 
     public function save(): void
     {
-        SiteSetting::instance()->update($this->form->getState());
+        $state = $this->form->getState();
+        $setting = SiteSetting::instance();
+
+        $disconnect = (bool) ($state['instagram_disconnect'] ?? false);
+        $token = trim((string) ($state['instagram_access_token'] ?? ''));
+        unset($state['instagram_disconnect'], $state['instagram_access_token']);
+
+        if ($disconnect) {
+            SocialFeeds::forget();
+            $setting->forceFill(['instagram_access_token' => null, 'instagram_token_refreshed_at' => null]);
+        } elseif ($token !== '') {
+            SocialFeeds::forget();
+            $setting->forceFill(['instagram_access_token' => $token, 'instagram_token_refreshed_at' => null]);
+        }
+
+        $setting->fill($state)->save();
+        SocialFeeds::forget();
+
+        $this->data['instagram_access_token'] = null;
+        $this->data['instagram_disconnect'] = false;
 
         Notification::make()
             ->success()
