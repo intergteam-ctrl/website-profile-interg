@@ -239,4 +239,12 @@ class FrontendTest extends TestCase
 
         $this->assertLessThan(strpos($html, 'yt-tab'), strpos($html, 'id="igTab"'));
     }
+
+    public function test_google_search_console_verification_file_is_public(): void
+    {
+        $this->assertSame(
+            'google-site-verification: googlebab8923c65baeaed.html',
+            trim(file_get_contents(public_path('googlebab8923c65baeaed.html')))
+        );
+    }
 }
