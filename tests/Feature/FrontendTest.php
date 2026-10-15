@@ -150,7 +150,8 @@ class FrontendTest extends TestCase
         foreach (['/', '/marketplace'] as $uri) {
             $this->get($uri)
                 ->assertOk()
-                ->assertSee('mailto:interg.team@gmail.com', false)
+                ->assertSee('mailto:official@interg.co.id', false)
+                ->assertDontSee('interg.team@gmail.com', false)
                 ->assertDontSee('sales@interg.co.id', false);
         }
     }

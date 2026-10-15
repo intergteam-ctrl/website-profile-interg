@@ -28,7 +28,7 @@ return [
     // the contact section or footer. Admin → Pengaturan Situs can override it.
     'marketplace_whatsapp' => env('MARKETPLACE_WHATSAPP', '081252032058'),
     'marketplace_greeting' => 'Halo, ada yang bisa dibantu?',
-    'email' => env('COMPANY_EMAIL', 'interg.team@gmail.com'),
+    'email' => env('COMPANY_EMAIL', 'official@interg.co.id'),
     'website' => 'interg.co.id',
     'address' => "Perum Permata Jingga Blok AA No. 27,\nTunggulwulung, Lowokwaru, Kota Malang 65143",
 
