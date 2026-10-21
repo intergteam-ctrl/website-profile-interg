@@ -15,8 +15,8 @@ class PostsTable
     {
         return $table
             ->columns([
-                ImageColumn::make('image')
-                    ->disk('s3'),
+                ImageColumn::make('image_url')
+                    ->label('Gambar'),
                 TextColumn::make('title')
                     ->searchable()
                     ->limit(40),

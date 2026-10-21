@@ -31,7 +31,7 @@ class ProductsTable
                 TextColumn::make('stock')
                     ->numeric()
                     ->sortable(),
-                ImageColumn::make('image'),
+                ImageColumn::make('image_url')->label('Foto'),
                 TextColumn::make('status')
                     ->badge()
                     ->formatStateUsing(fn (?string $state) => match ($state) {

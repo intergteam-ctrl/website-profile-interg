@@ -18,11 +18,18 @@ use Throwable;
  */
 class ImageUploader
 {
-    public const DISK = 's3';
+    /**
+     * Disk that holds uploaded images. On Laravel Cloud this is the Object
+     * Storage bucket attached with disk name "s3" (override with IMAGE_DISK).
+     */
+    public static function disk(): string
+    {
+        return (string) config('filesystems.image_disk', 's3');
+    }
 
     public static function isConfigured(): bool
     {
-        $cfg = config('filesystems.disks.'.self::DISK, []);
+        $cfg = config('filesystems.disks.'.self::disk(), []);
 
         return filled($cfg['bucket'] ?? null)
             && (filled($cfg['region'] ?? null) || filled($cfg['endpoint'] ?? null))
@@ -49,7 +56,7 @@ class ImageUploader
         try {
             if ($binary === null) {
                 // Not a GD-readable image (e.g. SVG): store as uploaded.
-                $path = $file->store($directory, self::DISK);
+                $path = $file->store($directory, self::disk());
                 if (! $path) {
                     throw new \RuntimeException('store() returned false');
                 }
@@ -58,7 +65,10 @@ class ImageUploader
             }
 
             $path = $directory.'/'.Str::uuid().'.jpg';
-            if (Storage::disk(self::DISK)->put($path, $binary, 'public') === false) {
+            // No per-file visibility: Cloudflare R2 (Laravel Cloud Object
+            // Storage) rejects ACLs with "NotImplemented". Whether files are
+            // public is decided by the bucket itself.
+            if (Storage::disk(self::disk())->put($path, $binary) === false) {
                 throw new \RuntimeException('put() returned false');
             }
 
@@ -68,6 +78,41 @@ class ImageUploader
         } catch (Throwable $e) {
             Log::error('Image upload to object storage failed', ['directory' => $directory, 'error' => $e->getMessage()]);
             self::fail($component, 'Foto gagal diunggah ke penyimpanan (Object Storage). Coba lagi beberapa saat, atau simpan tanpa foto terlebih dahulu.');
+        }
+    }
+
+    /**
+     * Browser URL for a stored image path.
+     *
+     * - "images/…" paths are bundled files in /public.
+     * - Public bucket with a public URL configured → permanent URL.
+     * - Otherwise (private bucket, or URL not configured) → signed URL valid
+     *   for a few hours, which works for any bucket.
+     */
+    public static function url(?string $path): ?string
+    {
+        if (blank($path)) {
+            return null;
+        }
+
+        if (str_starts_with($path, 'images/')) {
+            return asset($path);
+        }
+
+        if (! self::isConfigured()) {
+            return null;
+        }
+
+        try {
+            $disk = Storage::disk(self::disk());
+
+            if (filled(config('filesystems.disks.'.self::disk().'.url'))) {
+                return $disk->url($path);
+            }
+
+            return $disk->temporaryUrl($path, now()->addHours(6)->endOfHour());
+        } catch (Throwable) {
+            return null;
         }
     }
 

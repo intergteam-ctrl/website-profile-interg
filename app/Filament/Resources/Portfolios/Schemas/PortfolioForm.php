@@ -86,7 +86,7 @@ class PortfolioForm
                     ->label('Foto / screenshot')
                     ->helperText('Disarankan rasio 16:10, maks. 5 MB. Otomatis diperkecil.')
                     ->image()
-                    ->disk('s3')
+                    ->disk(ImageUploader::disk())
                     // Initial Company Profile images are bundled in /public/images,
                     // not on S3. Without this, Filament would treat them as missing
                     // and silently drop them when an admin saves the record.
@@ -95,7 +95,8 @@ class PortfolioForm
                         ? ['name' => basename($file), 'size' => 0, 'type' => null, 'url' => asset($file)]
                         : $component->getUploadedFile($file, $storedFileNames))
                     ->directory('portfolios')
-                    ->visibility('public')
+                    // Preview via signed URL: works for public and private buckets alike.
+                    ->visibility('private')
                     ->imagePreviewHeight('100')
                     ->maxSize(5120)
                     ->saveUploadedFileUsing(fn (TemporaryUploadedFile $file, BaseFileUpload $component): string => ImageUploader::store($file, 'portfolios', $component, maxWidth: 1000, quality: 75)),

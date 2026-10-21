@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use App\Support\ImageUploader;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
 /**
  * A post from the company Instagram account, picked by an admin to show in
@@ -33,22 +33,6 @@ class InstagramPost extends Model
 
     public function getImageUrlAttribute(): ?string
     {
-        if (! $this->image) {
-            return null;
-        }
-
-        if (str_starts_with($this->image, 'images/')) {
-            return asset($this->image);
-        }
-
-        if (blank(config('filesystems.disks.s3.bucket'))) {
-            return null;
-        }
-
-        try {
-            return Storage::disk('s3')->url($this->image);
-        } catch (\Throwable) {
-            return null;
-        }
+        return ImageUploader::url($this->image);
     }
 }

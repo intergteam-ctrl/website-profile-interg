@@ -58,9 +58,10 @@ class InstagramPostResource extends Resource
                 ->required()
                 ->image()
                 ->imageCropAspectRatio('1:1')
-                ->disk('s3')
+                ->disk(ImageUploader::disk())
                 ->directory('instagram')
-                ->visibility('public')
+                // Preview via signed URL: works for public and private buckets alike.
+                ->visibility('private')
                 ->maxSize(5120)
                 ->saveUploadedFileUsing(fn (TemporaryUploadedFile $file, BaseFileUpload $component): string => ImageUploader::store($file, 'instagram', $component, maxWidth: 600, quality: 75, square: 600)),
 

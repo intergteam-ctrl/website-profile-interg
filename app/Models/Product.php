@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
+use App\Support\ImageUploader;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Filesystem\FilesystemAdapter;
-use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
@@ -30,22 +29,6 @@ class Product extends Model
 
     public function getImageUrlAttribute(): ?string
     {
-        if (! $this->image) {
-            return null;
-        }
-
-        // Jangan crash kalau konfigurasi bucket belum diisi
-        if (blank(config('filesystems.disks.s3.bucket'))) {
-            return null;
-        }
-
-        try {
-            /** @var FilesystemAdapter $disk */
-            $disk = Storage::disk('s3');
-
-            return $disk->url($this->image);
-        } catch (\Throwable) {
-            return null;
-        }
+        return ImageUploader::url($this->image);
     }
 }

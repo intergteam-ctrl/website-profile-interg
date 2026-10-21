@@ -80,9 +80,10 @@ class ProductForm
                     ->label('Foto produk')
                     ->helperText('Maks. 5 MB. Otomatis diperkecil ke lebar 800px.')
                     ->image()
-                    ->disk('s3')
+                    ->disk(ImageUploader::disk())
                     ->directory('products')
-                    ->visibility('public')
+                    // Preview via signed URL: works for public and private buckets alike.
+                    ->visibility('private')
                     ->imagePreviewHeight('100')
                     ->maxSize(5120)
                     ->saveUploadedFileUsing(fn (TemporaryUploadedFile $file, BaseFileUpload $component): string => ImageUploader::store($file, 'products', $component, maxWidth: 800, quality: 72)),

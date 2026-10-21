@@ -15,6 +15,9 @@ return [
 
     'default' => env('FILESYSTEM_DISK', 'local'),
 
+    // Disk for images uploaded in the admin panel (see App\Support\ImageUploader).
+    'image_disk' => env('IMAGE_DISK', 's3'),
+
     /*
     |--------------------------------------------------------------------------
     | Filesystem Disks

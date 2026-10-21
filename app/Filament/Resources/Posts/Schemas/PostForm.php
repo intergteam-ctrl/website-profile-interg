@@ -48,9 +48,10 @@ class PostForm
 
                 FileUpload::make('image')
                     ->image()
-                    ->disk('s3')
+                    ->disk(ImageUploader::disk())
                     ->directory('posts')
-                    ->visibility('public')
+                    // Preview via signed URL: works for public and private buckets alike.
+                    ->visibility('private')
                     ->imagePreviewHeight('100')
                     ->maxSize(5120)
                     ->saveUploadedFileUsing(fn (TemporaryUploadedFile $file, BaseFileUpload $component): string => ImageUploader::store($file, 'posts', $component, maxWidth: 1200, quality: 75)),
