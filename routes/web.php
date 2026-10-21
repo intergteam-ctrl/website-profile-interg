@@ -12,6 +12,7 @@ Route::get('/blog', [FrontendController::class, 'blog'])->name('blog');
 Route::get('/blog/{slug}', [FrontendController::class, 'blogShow'])->name('blog.show');
 Route::get('/portfolio', [FrontendController::class, 'portfolio'])->name('portfolio');
 Route::get('/marketplace', [FrontendController::class, 'marketplace'])->name('marketplace');
+Route::get('/download', [FrontendController::class, 'downloads'])->name('downloads');
 
 // Contact form submission (rate-limited: 5 per minute per IP).
 Route::post('/contact', [ContactMessageController::class, 'store'])

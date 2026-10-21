@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Download;
 use App\Models\Portfolio;
 use App\Models\Post;
 use App\Models\Product;
@@ -52,6 +53,19 @@ class FrontendController extends Controller
     {
         return view('frontend.portfolio', [
             'portfolios' => Portfolio::query()->latest('id')->paginate(9),
+        ]);
+    }
+
+    public function downloads(): View
+    {
+        $downloads = Download::query()->visible()->get();
+
+        return view('frontend.downloads', [
+            // Grouped by category (uncategorised items last, as "Lainnya").
+            'groups' => $downloads->groupBy(fn (Download $d) => $d->category ?: '')
+                ->sortKeys()
+                ->sortBy(fn ($items, $key) => $key === '' ? 1 : 0),
+            'total' => $downloads->count(),
         ]);
     }
 

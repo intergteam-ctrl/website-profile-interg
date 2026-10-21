@@ -10,6 +10,7 @@
       ['label' => 'Blog',        'href' => $onHome ? '#blog' : route('blog'), 'active' => request()->routeIs('blog', 'blog.show')],
       ['label' => 'Kontak',      'href' => $section('contact')],
       ['label' => 'Marketplace', 'href' => route('marketplace'), 'active' => request()->routeIs('marketplace')],
+      ['label' => 'Download',    'href' => route('downloads'), 'active' => request()->routeIs('downloads')],
   ];
 
   $assetVersion = fn (string $path) => asset($path).'?v='.(@filemtime(public_path($path)) ?: '1');
