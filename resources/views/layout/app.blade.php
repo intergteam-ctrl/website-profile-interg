@@ -11,6 +11,7 @@
       ['label' => 'Kontak',      'href' => $section('contact')],
       ['label' => 'Marketplace', 'href' => route('marketplace'), 'active' => request()->routeIs('marketplace')],
       ['label' => 'Download',    'href' => route('downloads'), 'active' => request()->routeIs('downloads')],
+      ['label' => 'Games',       'href' => route('games'), 'active' => request()->routeIs('games', 'games.show')],
   ];
 
   $assetVersion = fn (string $path) => asset($path).'?v='.(@filemtime(public_path($path)) ?: '1');

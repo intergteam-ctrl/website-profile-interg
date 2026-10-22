@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\ToolController;
 use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\FrontendController;
+use App\Http\Controllers\GameController;
 use App\Http\Middleware\EnsureAdmin;
 use Illuminate\Support\Facades\Route;
 
@@ -13,6 +14,9 @@ Route::get('/blog/{slug}', [FrontendController::class, 'blogShow'])->name('blog.
 Route::get('/portfolio', [FrontendController::class, 'portfolio'])->name('portfolio');
 Route::get('/marketplace', [FrontendController::class, 'marketplace'])->name('marketplace');
 Route::get('/download', [FrontendController::class, 'downloads'])->name('downloads');
+Route::get('/games', [GameController::class, 'index'])->name('games');
+Route::get('/games/{game}', [GameController::class, 'show'])->name('games.show');
+Route::get('/games/{game}/play', [GameController::class, 'play'])->name('games.play');
 
 // Contact form submission (rate-limited: 5 per minute per IP).
 Route::post('/contact', [ContactMessageController::class, 'store'])
