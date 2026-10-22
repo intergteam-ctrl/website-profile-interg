@@ -16,7 +16,9 @@ Route::get('/marketplace', [FrontendController::class, 'marketplace'])->name('ma
 Route::get('/download', [FrontendController::class, 'downloads'])->name('downloads');
 Route::get('/games', [GameController::class, 'index'])->name('games');
 Route::get('/games/{game}', [GameController::class, 'show'])->name('games.show');
-Route::get('/games/{game}/play', [GameController::class, 'play'])->name('games.play');
+Route::get('/games/{game}/{file}', [GameController::class, 'file'])
+    ->where('file', '[A-Za-z0-9._-]+')
+    ->name('games.file');
 
 // Contact form submission (rate-limited: 5 per minute per IP).
 Route::post('/contact', [ContactMessageController::class, 'store'])

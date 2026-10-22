@@ -3,48 +3,64 @@
 namespace App\Http\Controllers;
 
 use App\Models\Game;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class GameController extends Controller
 {
+    /** /games — every game shown as a folder. */
     public function index(): View
     {
-        return view('frontend.games', [
-            // Folder-style listing; the HTML itself is not loaded here, only its size.
-            'games' => Game::query()->visible()
-                ->select(['id', 'title', 'slug', 'description', 'file_name', 'updated_at'])
-                ->selectRaw('LENGTH(html) as html_bytes')
-                ->get(),
-        ]);
+        $games = Game::query()->visible()->withCount('files')->get();
+
+        // Folder sizes without loading the HTML itself.
+        $sizes = DB::table('game_files')->whereIn('game_id', $games->pluck('id'))
+            ->groupBy('game_id')->selectRaw('game_id, SUM(LENGTH(html)) as bytes, MAX(updated_at) as changed')
+            ->get()->keyBy('game_id');
+
+        return view('frontend.games', compact('games', 'sizes'));
     }
 
+    /** /games/{folder} — the files inside one folder. */
     public function show(Game $game): View
     {
         abort_unless($game->is_active, 404);
 
-        return view('frontend.game-show', [
-            'game' => $game,
-            'others' => Game::query()->visible()->whereKeyNot($game->id)->take(6)->get(['id', 'title', 'slug', 'image']),
-        ]);
+        $files = $game->files()->select(['id', 'game_id', 'name', 'updated_at'])->selectRaw('LENGTH(html) as bytes')->get();
+
+        return view('frontend.game-folder', compact('game', 'files'));
     }
 
     /**
-     * Raw game HTML. Served with a CSP sandbox so it runs in an opaque origin
-     * even when opened directly: scripts work, but cookies, storage of
-     * interg.co.id, the admin session and top-level navigation do not.
+     * /games/{folder}/{file} — raw HTML (".html" suffix optional, so relative
+     * links like href="terms.html" between files keep working).
+     *
+     * Served with a CSP sandbox: it runs in an opaque origin, so scripts work
+     * but cookies, storage of this site and the admin session are out of reach.
      */
-    public function play(Game $game): Response
+    public function file(Game $game, string $file): Response|RedirectResponse
     {
         abort_unless($game->is_active, 404);
 
-        return response(self::withStorageShim((string) $game->html))
+        $name = preg_replace('/\.html?$/i', '', $file);
+        $record = $game->files()->where('name', strtolower($name))->first();
+
+        if (! $record) {
+            // Old links (/games/{folder}/play) → the folder's first file.
+            $first = $file === 'play' ? $game->files()->first(['id', 'game_id', 'name']) : null;
+            abort_unless($first, 404);
+
+            return redirect()->route('games.file', [$game, $first->name], 301);
+        }
+
+        return response(self::withStorageShim((string) $record->html))
             ->header('Content-Type', 'text/html; charset=UTF-8')
             ->header('Content-Security-Policy', 'sandbox allow-scripts allow-pointer-lock allow-popups allow-modals')
             ->header('X-Content-Type-Options', 'nosniff')
             ->header('X-Frame-Options', 'SAMEORIGIN')
             ->header('Referrer-Policy', 'no-referrer')
-            ->header('X-Robots-Tag', 'noindex')
             ->header('Cache-Control', 'public, max-age=300');
     }
 

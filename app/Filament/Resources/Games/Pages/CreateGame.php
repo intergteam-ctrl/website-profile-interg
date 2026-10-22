@@ -9,8 +9,19 @@ class CreateGame extends CreateRecord
 {
     protected static string $resource = GameResource::class;
 
+    /** @var array<int|string, mixed>|null */
+    protected ?array $uploadedHtml = null;
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        return GameResource::absorbHtmlUpload($data);
+        $this->uploadedHtml = (array) ($data['html_files'] ?? []);
+        unset($data['html_files']);
+
+        return $data;
+    }
+
+    protected function afterCreate(): void
+    {
+        GameResource::storeUploadedFiles($this->record, $this->uploadedHtml);
     }
 }

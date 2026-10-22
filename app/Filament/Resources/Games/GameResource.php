@@ -5,15 +5,15 @@ namespace App\Filament\Resources\Games;
 use App\Filament\Resources\Games\Pages\CreateGame;
 use App\Filament\Resources\Games\Pages\EditGame;
 use App\Filament\Resources\Games\Pages\ListGames;
+use App\Filament\Resources\Games\RelationManagers\FilesRelationManager;
 use App\Models\Game;
-use App\Support\ImageUploader;
+use App\Models\GameFile;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\BaseFileUpload;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -22,7 +22,6 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
@@ -63,36 +62,30 @@ class GameResource extends Resource
                 ->maxLength(120)
                 ->unique(ignoreRecord: true),
 
-            FileUpload::make('html_file')
-                ->label('File game (.html)')
-                ->helperText('Satu file HTML yang berisi semua kode game (CSS/JS/gambar di dalam file atau dari CDN). Maks. 8 MB. Saat edit, kosongkan untuk tetap memakai file lama.')
+            FileUpload::make('html_files')
+                ->label('File HTML')
+                ->helperText('Bisa pilih beberapa file sekaligus. Nama file menjadi alamatnya: privacy.html → /games/{folder}/privacy. File dengan nama yang sama akan menimpa file lama. Maks. 8 MB per file.')
+                ->multiple()
                 ->acceptedFileTypes(['text/html', '.html', '.htm'])
                 ->maxSize(Game::MAX_KB)
                 ->storeFiles(false)
                 ->required(fn (string $operation): bool => $operation === 'create')
                 ->rule(fn () => function (string $attribute, $value, \Closure $fail): void {
-                    if ($value instanceof TemporaryUploadedFile && ! in_array(strtolower($value->getClientOriginalExtension()), ['html', 'htm'], true)) {
-                        $fail('File harus berformat .html atau .htm.');
+                    foreach ((array) $value as $file) {
+                        if ($file instanceof TemporaryUploadedFile && ! in_array(strtolower($file->getClientOriginalExtension()), ['html', 'htm'], true)) {
+                            $fail('Semua file harus berformat .html atau .htm.');
+
+                            return;
+                        }
                     }
                 })
                 ->columnSpanFull(),
 
             Textarea::make('description')
-                ->label('Deskripsi / cara bermain')
+                ->label('Deskripsi')
                 ->rows(3)
                 ->maxLength(1000)
                 ->columnSpanFull(),
-
-            FileUpload::make('image')
-                ->label('Gambar sampul (opsional)')
-                ->helperText('Rasio 16:9 paling rapi. Butuh Object Storage terpasang.')
-                ->image()
-                ->disk(ImageUploader::disk())
-                ->directory('games')
-                // Preview via signed URL: works for public and private buckets alike.
-                ->visibility('private')
-                ->maxSize(5120)
-                ->saveUploadedFileUsing(fn (TemporaryUploadedFile $file, BaseFileUpload $component): string => ImageUploader::store($file, 'games', $component, maxWidth: 800, quality: 75)),
 
             Toggle::make('is_active')
                 ->label('Tampilkan di situs')
@@ -106,18 +99,17 @@ class GameResource extends Resource
             ->defaultSort('sort_order')
             ->reorderable('sort_order')
             ->columns([
-                ImageColumn::make('image_url')->label('Sampul'),
-                TextColumn::make('title')->label('Judul')->searchable()->weight('bold'),
-                TextColumn::make('file_name')->label('File')->placeholder('—')->color('gray'),
-                TextColumn::make('size_label')->label('Ukuran'),
+                TextColumn::make('slug')->label('Folder')->searchable()->weight('bold')->prefix('/games/'),
+                TextColumn::make('title')->label('Judul')->searchable(),
+                TextColumn::make('files_count')->label('File')->counts('files')->suffix(' file'),
                 ToggleColumn::make('is_active')->label('Tampil'),
                 TextColumn::make('updated_at')->label('Diubah')->since()->sortable(),
             ])
             ->recordActions([
-                Action::make('play')
-                    ->label('Main')
-                    ->icon(Heroicon::OutlinedPlay)
-                    ->url(fn (Game $record): string => route('games.play', $record), shouldOpenInNewTab: true),
+                Action::make('open')
+                    ->label('Buka folder')
+                    ->icon(Heroicon::OutlinedFolderOpen)
+                    ->url(fn (Game $record): string => route('games.show', $record), shouldOpenInNewTab: true),
                 EditAction::make(),
                 DeleteAction::make(),
             ])
@@ -125,25 +117,30 @@ class GameResource extends Resource
     }
 
     /**
-     * Turns the uploaded file (kept in memory, not on disk) into the stored
-     * HTML. Laravel Cloud Object Storage refuses .html files, so the game
-     * lives in the database.
+     * Saves uploaded HTML files into the folder (kept in the database:
+     * Laravel Cloud Object Storage deletes .html files). Same name = replace.
      *
-     * @param  array<string, mixed>  $data
-     * @return array<string, mixed>
+     * @param  array<int|string, mixed>|null  $files
      */
-    public static function absorbHtmlUpload(array $data): array
+    public static function storeUploadedFiles(Game $game, ?array $files): void
     {
-        $file = $data['html_file'] ?? null;
-        $file = is_array($file) ? reset($file) : $file;
-        unset($data['html_file']);
+        foreach ((array) $files as $file) {
+            if (! $file instanceof TemporaryUploadedFile) {
+                continue;
+            }
 
-        if ($file instanceof TemporaryUploadedFile) {
-            $data['html'] = (string) $file->get();
-            $data['file_name'] = Str::limit($file->getClientOriginalName(), 180, '');
+            GameFile::query()->updateOrCreate(
+                ['game_id' => $game->id, 'name' => GameFile::nameFromFilename($file->getClientOriginalName())],
+                ['html' => (string) $file->get()],
+            );
         }
 
-        return $data;
+        $game->touch();
+    }
+
+    public static function getRelations(): array
+    {
+        return [FilesRelationManager::class];
     }
 
     public static function getPages(): array

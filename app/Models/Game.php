@@ -5,23 +5,27 @@ namespace App\Models;
 use App\Support\ImageUploader;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * A browser game uploaded by an admin as one self-contained HTML file.
- * It is always played inside a sandbox (see GameController::play) so its
- * scripts can never touch the site's cookies or the admin session.
+ * A game "folder" holding one or more HTML files uploaded by an admin.
+ * Files are always served inside a sandbox (see GameController::file) so
+ * their scripts can never touch the site's cookies or the admin session.
  */
 class Game extends Model
 {
-    protected $fillable = ['title', 'slug', 'description', 'image', 'html', 'file_name', 'is_active', 'sort_order'];
-
-    protected $hidden = ['html'];
+    protected $fillable = ['title', 'slug', 'description', 'image', 'is_active', 'sort_order'];
 
     protected $casts = [
         'is_active' => 'boolean',
     ];
 
     public const MAX_KB = 8192;
+
+    public function files(): HasMany
+    {
+        return $this->hasMany(GameFile::class)->orderBy('name');
+    }
 
     public function scopeVisible(Builder $query): Builder
     {
@@ -36,12 +40,5 @@ class Game extends Model
     public function getImageUrlAttribute(): ?string
     {
         return ImageUploader::url($this->image);
-    }
-
-    public function getSizeLabelAttribute(): string
-    {
-        $bytes = strlen((string) $this->getRawOriginal('html', $this->html));
-
-        return $bytes >= 1048576 ? round($bytes / 1048576, 1).' MB' : max(1, (int) round($bytes / 1024)).' KB';
     }
 }
