@@ -117,7 +117,7 @@ class GameResource extends Resource
                 Action::make('play')
                     ->label('Main')
                     ->icon(Heroicon::OutlinedPlay)
-                    ->url(fn (Game $record): string => route('games.show', $record), shouldOpenInNewTab: true),
+                    ->url(fn (Game $record): string => route('games.play', $record), shouldOpenInNewTab: true),
                 EditAction::make(),
                 DeleteAction::make(),
             ])

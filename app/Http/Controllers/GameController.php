@@ -11,7 +11,11 @@ class GameController extends Controller
     public function index(): View
     {
         return view('frontend.games', [
-            'games' => Game::query()->visible()->get(['id', 'title', 'slug', 'description', 'image']),
+            // Folder-style listing; the HTML itself is not loaded here, only its size.
+            'games' => Game::query()->visible()
+                ->select(['id', 'title', 'slug', 'description', 'file_name', 'updated_at'])
+                ->selectRaw('LENGTH(html) as html_bytes')
+                ->get(),
         ]);
     }
 

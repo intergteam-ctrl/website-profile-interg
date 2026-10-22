@@ -25,13 +25,18 @@ class GamesTest extends TestCase
 
     public function test_games_page_and_menu(): void
     {
-        $this->get('/games')->assertOk()->assertSee('Belum ada game yang tersedia.');
+        $this->get('/games')->assertOk()->assertSee('Folder ini masih kosong.');
         $this->get('/')->assertSee('href="'.route('games').'"', false);
 
         $this->game();
         Game::create(['title' => 'Draft', 'slug' => 'draft', 'html' => '<p>x</p>', 'is_active' => false]);
 
-        $this->get('/games')->assertOk()->assertSee('Ular Tangga')->assertSee(route('games.show', 'ular-tangga'), false)->assertDontSee('Draft');
+        $this->get('/games')->assertOk()
+            ->assertSee('Ular Tangga')
+            ->assertSee('class="fx-row"', false)
+            ->assertSee('href="'.route('games.play', 'ular-tangga').'" class="fx-row" target="_blank"', false)
+            ->assertDontSee('<canvas', false)
+            ->assertDontSee('Draft');
         $this->get('/games/draft')->assertNotFound();
         $this->get('/games/draft/play')->assertNotFound();
     }
