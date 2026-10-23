@@ -20,20 +20,96 @@ class ImageUploader
 {
     /**
      * Disk that holds uploaded images. On Laravel Cloud this is the Object
-     * Storage bucket attached with disk name "s3" (override with IMAGE_DISK).
+     * Storage bucket attached to the environment, detected automatically
+     * ("s3" preferred; override with IMAGE_DISK).
      */
     public static function disk(): string
     {
-        return (string) config('filesystems.image_disk', 's3');
+        // 1. Explicit choice (IMAGE_DISK env).
+        if (filled($explicit = config('filesystems.image_disk'))) {
+            return (string) $explicit;
+        }
+
+        // 2. The conventional "s3" disk, if a bucket is attached under that name.
+        if (self::diskIsUsable('s3')) {
+            return 's3';
+        }
+
+        // 3. Whatever bucket Laravel Cloud attached, under any disk name:
+        //    the default disk first, then any other S3-compatible disk.
+        $candidates = array_unique(array_merge(
+            [(string) config('filesystems.default')],
+            array_keys((array) config('filesystems.disks', [])),
+        ));
+
+        foreach ($candidates as $name) {
+            if (self::diskIsUsable($name)) {
+                return $name;
+            }
+        }
+
+        return 's3';
     }
 
     public static function isConfigured(): bool
     {
-        $cfg = config('filesystems.disks.'.self::disk(), []);
+        return self::diskIsUsable(self::disk());
+    }
 
-        return filled($cfg['bucket'] ?? null)
+    private static function diskIsUsable(string $name): bool
+    {
+        $cfg = (array) config('filesystems.disks.'.$name, []);
+
+        return ($cfg['driver'] ?? null) === 's3'
+            && filled($cfg['bucket'] ?? null)
             && (filled($cfg['region'] ?? null) || filled($cfg['endpoint'] ?? null))
             && filled($cfg['key'] ?? null);
+    }
+
+    /**
+     * Uploads, reads back and deletes a tiny test file, to prove the bucket
+     * works end to end. Returns null on success or a readable error.
+     */
+    public static function selfTest(): ?string
+    {
+        if (! self::isConfigured()) {
+            return 'Bucket belum terhubung ke aplikasi (tidak ada disk S3 yang terkonfigurasi).';
+        }
+
+        $path = 'healthcheck/'.Str::uuid().'.txt';
+
+        try {
+            // Same disk, but throwing so the real storage error can be shown.
+            $disk = Storage::build(array_merge((array) config('filesystems.disks.'.self::disk()), ['throw' => true]));
+
+            if ($disk->put($path, 'ok') === false) {
+                return 'Gagal menulis file uji ke bucket.';
+            }
+            if ($disk->get($path) !== 'ok') {
+                return 'File uji tertulis tetapi tidak bisa dibaca kembali.';
+            }
+            $disk->delete($path);
+
+            return null;
+        } catch (Throwable $e) {
+            Log::error('Object storage self-test failed', ['disk' => self::disk(), 'error' => $e->getMessage()]);
+
+            return Str::limit($e->getMessage(), 300);
+        }
+    }
+
+    /** @return array{connected: bool, disk: string, bucket: ?string, public_url: ?string} */
+    public static function status(): array
+    {
+        $disk = self::disk();
+        $cfg = (array) config('filesystems.disks.'.$disk, []);
+
+        return [
+            'connected' => self::isConfigured(),
+            'disk' => $disk,
+            'bucket' => $cfg['bucket'] ?? null,
+            'public_url' => $cfg['url'] ?? null,
+        ];
     }
 
     /**

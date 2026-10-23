@@ -16,7 +16,8 @@ return [
     'default' => env('FILESYSTEM_DISK', 'local'),
 
     // Disk for images uploaded in the admin panel (see App\Support\ImageUploader).
-    'image_disk' => env('IMAGE_DISK', 's3'),
+    // Empty = auto-detect the bucket Laravel Cloud attached (any disk name).
+    'image_disk' => env('IMAGE_DISK'),
 
     /*
     |--------------------------------------------------------------------------

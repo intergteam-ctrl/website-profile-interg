@@ -3,8 +3,10 @@
 namespace App\Filament\Pages;
 
 use App\Models\SiteSetting;
+use App\Support\ImageUploader;
 use App\Support\SocialFeeds;
 use BackedEnum;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -39,6 +41,24 @@ class ManageSiteSettings extends Page
     {
         return $schema
             ->components([
+                Section::make('Penyimpanan foto (Object Storage)')
+                    ->description('Tempat foto produk Marketplace, Blog, Portfolio dan Instagram disimpan.')
+                    ->collapsible()
+                    ->schema([
+                        Placeholder::make('storage_status')
+                            ->label('Status')
+                            ->content(function (): string {
+                                $s = ImageUploader::status();
+
+                                if (! $s['connected']) {
+                                    return '❌ Belum terhubung. Di Laravel Cloud: environment production → Add bucket → pilih bucket → Disk name "s3" → Save → Deploy.';
+                                }
+
+                                return '✅ Terhubung — disk "'.$s['disk'].'", bucket "'.$s['bucket'].'". '
+                                    .($s['public_url'] ? 'Foto memakai alamat publik.' : 'Foto memakai link bertanda tangan (bucket private atau alamat publik tidak diset) — tetap tampil.');
+                            }),
+                    ]),
+
                 Section::make('Hero')
                     ->description('Bagian paling atas halaman utama.')
                     ->components([
@@ -129,6 +149,23 @@ class ManageSiteSettings extends Page
                     ]),
             ])
             ->statePath('data');
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('testStorage')
+                ->label('Tes upload foto ke bucket')
+                ->icon(Heroicon::OutlinedArrowUpTray)
+                ->color('gray')
+                ->action(function (): void {
+                    $error = ImageUploader::selfTest();
+
+                    $error === null
+                        ? Notification::make()->success()->title('Bucket berfungsi')->body('File uji berhasil diunggah, dibaca dan dihapus. Upload foto produk siap dipakai.')->send()
+                        : Notification::make()->danger()->title('Bucket belum berfungsi')->body($error)->persistent()->send();
+                }),
+        ];
     }
 
     public function save(): void
