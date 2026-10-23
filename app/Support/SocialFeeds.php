@@ -34,7 +34,7 @@ class SocialFeeds
      */
     public static function youtube(int $limit = 8): Collection
     {
-        $channelId = config('company.youtube.channel_id');
+        $channelId = Socials::youtubeChannelId();
 
         if (blank($channelId)) {
             return collect();
@@ -133,7 +133,7 @@ class SocialFeeds
 
     public static function forget(): void
     {
-        Cache::forget('feeds.youtube.'.config('company.youtube.channel_id'));
+        Cache::forget('feeds.youtube.'.Socials::youtubeChannelId());
 
         $token = self::setting()?->instagram_access_token;
 

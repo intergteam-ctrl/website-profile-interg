@@ -853,3 +853,6 @@ body.modal-open { overflow: hidden; }
   .game-grid:not(.game-grid--small) { grid-template-columns: 1fr; }
   .game-stage { aspect-ratio: 3 / 4; max-height: 75vh; }
 }
+.footer-other-links { list-style: none; display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 12px; font-size: 14px; }
+.footer-other-links a { color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+.footer-other-links a:hover { color: var(--ink); }

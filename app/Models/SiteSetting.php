@@ -18,6 +18,8 @@ class SiteSetting extends Model
         'website',
         'address',
         'instagram_access_token',
+        'socials',
+        'youtube_channel_id',
     ];
 
     protected $hidden = ['instagram_access_token'];
@@ -27,6 +29,7 @@ class SiteSetting extends Model
         return [
             'instagram_access_token' => 'encrypted',
             'instagram_token_refreshed_at' => 'datetime',
+            'socials' => 'array',
         ];
     }
 

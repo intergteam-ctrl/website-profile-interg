@@ -22,7 +22,7 @@ class InstagramDrawerTest extends TestCase
                 ->assertSee('aria-label="Instagram @intergqueenbumindo"', false)
                 ->assertSee('https://www.instagram.com/intergqueenbumindo/', false)
                 ->assertDontSee('{{ $ig', false)
-                ->assertSee('aria-label="Instagram"><svg', false);
+                ->assertSee('aria-label="Instagram" title="Instagram"><svg', false);
         }
     }
 

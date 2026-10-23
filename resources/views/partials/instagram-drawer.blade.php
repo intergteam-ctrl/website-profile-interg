@@ -4,35 +4,44 @@
   Expects: $instagramPosts (Collection<InstagramPost>).
 --}}
 @php
-  $ig = config('company.instagram');
-  $yt = config('company.youtube');
-  $tt = config('company.tiktok');
+  // Links come from Admin → Media Sosial; an empty link hides its tab.
+  $socialLink = fn (string $key): array => ['url' => \App\Support\Socials::url($key), 'handle' => ltrim((string) \App\Support\Socials::handle($key), '@')];
+  $ig = $socialLink('instagram');
+  $yt = $socialLink('youtube');
+  $tt = $socialLink('tiktok');
   $ytIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15.1V8.9l5.8 3.1-5.8 3.1z"/></svg>';
   $igIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-3.3-.1-4.8-1.7-4.9-4.9C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8C2.4 3.9 3.9 2.4 7.2 2.3 8.4 2.2 8.8 2.2 12 2.2zM12 0C8.7 0 8.3 0 7.1.1 2.7.3.3 2.7.1 7.1 0 8.3 0 8.7 0 12s0 3.7.1 4.9c.2 4.4 2.6 6.8 7 7 1.2.1 1.6.1 4.9.1s3.7 0 4.9-.1c4.4-.2 6.8-2.6 7-7 .1-1.2.1-1.6.1-4.9s0-3.7-.1-4.9c-.2-4.4-2.6-6.8-7-7C15.7 0 15.3 0 12 0zm0 5.8a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.8a1.4 1.4 0 1 0 0 2.9 1.4 1.4 0 0 0 0-2.9z"/></svg>';
 @endphp
 
+@if ($ig['url'] || $yt['url'] || $tt['url'])
 <div class="side-tabs">
+  @if ($ig['url'])
   <button type="button" class="ig-tab" id="igTab" aria-controls="igDrawer" aria-expanded="false">
     {!! $igIcon !!}
     <span>Instagram</span>
   </button>
-  @if (($youtubeVideos ?? collect())->isNotEmpty())
+  @endif
+  @if ($yt['url'] && ($youtubeVideos ?? collect())->isNotEmpty())
     <button type="button" class="ig-tab yt-tab" id="ytTab" aria-controls="ytDrawer" aria-expanded="false">
       {!! $ytIcon !!}
       <span>YouTube</span>
     </button>
-  @else
+  @elseif ($yt['url'])
     <a href="{{ $yt['url'] }}" class="ig-tab yt-tab" target="_blank" rel="noopener" aria-label="YouTube {{ '@'.$yt['handle'] }} (buka di tab baru)">
       {!! $ytIcon !!}
       <span>YouTube</span>
     </a>
   @endif
+  @if ($tt['url'])
   <a href="{{ $tt['url'] }}" class="ig-tab tt-tab" target="_blank" rel="noopener" aria-label="TikTok {{ '@'.$tt['handle'] }} (buka di tab baru)">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.6 5.8A4.3 4.3 0 0 1 15.5 3h-3.1v12.4a2.6 2.6 0 1 1-2.6-2.6c.3 0 .5 0 .8.1V9.7a5.7 5.7 0 1 0 4.9 5.7V9a7.4 7.4 0 0 0 4.3 1.4V7.3a4.3 4.3 0 0 1-3.2-1.5z"/></svg>
     <span>TikTok</span>
   </a>
+  @endif
 </div>
+@endif
 
+@if ($ig['url'])
 <aside class="ig-drawer" id="igDrawer" aria-label="Instagram {{ '@'.$ig['handle'] }}" aria-hidden="true" inert>
   <div class="ig-head">
     <div class="ig-avatar" aria-hidden="true"><img src="{{ asset('images/logo-igb.png') }}" alt=""></div>
@@ -68,8 +77,9 @@
     <p class="ig-empty">Ikuti kegiatan, proyek terbaru, dan dokumentasi pemasangan kami di Instagram.</p>
   @endif
 </aside>
+@endif
 
-@if (($youtubeVideos ?? collect())->isNotEmpty())
+@if ($yt['url'] && ($youtubeVideos ?? collect())->isNotEmpty())
   <aside class="ig-drawer yt-drawer" id="ytDrawer" aria-label="YouTube {{ '@'.$yt['handle'] }}" aria-hidden="true" inert>
     <div class="ig-head">
       <div class="ig-avatar" aria-hidden="true"><img src="{{ asset('images/logo-igb.png') }}" alt=""></div>

@@ -526,7 +526,7 @@
       ],
       'geo' => ['@type' => 'GeoCoordinates', 'latitude' => $geo['lat'], 'longitude' => $geo['lng']],
       'hasMap' => $maps['google'],
-      'sameAs' => array_values(array_filter([config('company.instagram.url')])),
+      'sameAs' => array_values(array_merge(\App\Support\Socials::links(), array_column(\App\Support\Socials::others(), 'url'))),
   ])
   {{-- JSON_HEX_TAG keeps "</script>" sequences from breaking out of the tag. --}}
   <script type="application/ld+json">{!! json_encode($localBusiness, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}</script>

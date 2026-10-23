@@ -254,7 +254,7 @@ class FrontendTest extends TestCase
         $html = $this->get('/')->assertOk()
             ->assertSee('class="ig-tab tt-tab"', false)
             ->assertSee('https://www.tiktok.com/@intergqueenbumindo', false)
-            ->assertSee('aria-label="Tiktok"', false)
+            ->assertSee('aria-label="TikTok"', false)
             ->getContent();
 
         $this->assertLessThan(strpos($html, 'tt-tab'), strpos($html, 'yt-tab'));
