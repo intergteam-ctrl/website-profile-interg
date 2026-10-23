@@ -40,8 +40,47 @@
   var igScrim = document.getElementById('igScrim');
   var panels = [
     { tab: document.getElementById('igTab'), drawer: document.getElementById('igDrawer'), close: '[data-ig-close]' },
-    { tab: document.getElementById('ytTab'), drawer: document.getElementById('ytDrawer'), close: '[data-yt-close]' }
+    { tab: document.getElementById('ytTab'), drawer: document.getElementById('ytDrawer'), close: '[data-yt-close]' },
+    { tab: document.getElementById('ttTab'), drawer: document.getElementById('ttDrawer'), close: '[data-tt-close]', onOpen: loadTikTok }
   ].filter(function (p) { return p.tab && p.drawer; });
+
+  // TikTok creator embed: injected on first open only.
+  var ttLoaded = false;
+  function loadTikTok(drawer) {
+    if (ttLoaded) return;
+    ttLoaded = true;
+    var user = drawer.getAttribute('data-tt-user');
+    var url = drawer.getAttribute('data-tt-url');
+    var box = document.getElementById('ttEmbed');
+    var fallback = document.getElementById('ttFallback');
+    if (!user || !box) return;
+
+    var quote = document.createElement('blockquote');
+    quote.className = 'tiktok-embed';
+    quote.setAttribute('cite', url);
+    quote.setAttribute('data-unique-id', user);
+    quote.setAttribute('data-embed-type', 'creator');
+    quote.style.maxWidth = '780px';
+    quote.style.minWidth = '288px';
+    var section = document.createElement('section');
+    var a = document.createElement('a');
+    a.href = url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = '@' + user;
+    section.appendChild(a);
+    quote.appendChild(section);
+    box.innerHTML = '';
+    box.appendChild(quote);
+
+    var script = document.createElement('script');
+    script.src = 'https://www.tiktok.com/embed.js';
+    script.async = true;
+    script.onerror = function () { if (fallback) fallback.hidden = false; };
+    document.body.appendChild(script);
+
+    // If TikTok has not replaced the placeholder with its player, offer the link.
+    setTimeout(function () {
+      if (!box.querySelector('iframe') && fallback) fallback.hidden = false;
+    }, 10000);
+  }
   var ytPlayer = document.getElementById('ytPlayer');
 
   function stopVideo() {
@@ -58,6 +97,7 @@
     panel.tab.setAttribute('aria-expanded', String(open));
     if (igScrim) igScrim.hidden = !open;
     if (open) {
+      if (panel.onOpen) panel.onOpen(panel.drawer);
       // Wait a frame so the panel is no longer inert/hidden when focusing.
       requestAnimationFrame(function () {
         var close = panel.drawer.querySelector(panel.close);

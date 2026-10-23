@@ -252,7 +252,11 @@ class FrontendTest extends TestCase
     public function test_tiktok_link_is_shown_below_youtube_and_in_footer(): void
     {
         $html = $this->get('/')->assertOk()
-            ->assertSee('class="ig-tab tt-tab"', false)
+            ->assertSee('class="ig-tab tt-tab" id="ttTab"', false)
+            ->assertSee('id="ttDrawer"', false)
+            ->assertSee('data-tt-user="intergqueenbumindo"', false)
+            // TikTok's script is injected by site.js on first open, never in the page itself.
+            ->assertDontSee('tiktok.com/embed.js', false)
             ->assertSee('https://www.tiktok.com/@intergqueenbumindo', false)
             ->assertSee('aria-label="TikTok"', false)
             ->getContent();

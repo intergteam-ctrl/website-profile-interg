@@ -536,6 +536,13 @@ body.modal-open { overflow: hidden; }
 .ig-tab span { writing-mode: vertical-rl; transform: rotate(180deg); font-family: var(--font-head); font-weight: 600; font-size: 13px; letter-spacing: 0.08em; }
 .side-tabs:has(.ig-tab[aria-expanded="true"]), .side-tabs:has(.yt-tab[aria-expanded="true"]) { opacity: 0; pointer-events: none; }
 .yt-tab:hover, .tt-tab:hover { background: #000; }
+.side-tabs:has(.tt-tab[aria-expanded="true"]) { opacity: 0; pointer-events: none; }
+.tt-drawer { width: min(400px, 92vw); }
+.tt-embed { min-height: 360px; border-radius: 10px; overflow: hidden; }
+.tt-embed .tiktok-embed { margin: 0 !important; }
+.tt-loading { padding: 40px 12px; text-align: center; font-size: 14px; color: var(--muted); background: var(--paper-2); border: 1px dashed var(--line); border-radius: 10px; }
+.tt-fallback { font-size: 13.5px; color: var(--muted); line-height: 1.5; }
+.tt-fallback[hidden] { display: none; }
 .tt-tab svg { width: 18px; height: 18px; }
 .yt-tab svg { width: 19px; height: 19px; }
 
