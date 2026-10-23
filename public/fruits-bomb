@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kebijakan Privasi — Fruits Bomb</title>
+<style>
+body{margin:0;background:#FFF6F0;color:#3A2234;font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+main{max-width:760px;margin:0 auto;padding:28px 18px 48px}
+h1{font-size:1.7rem;margin:0 0 4px}h2{font-size:1.15rem;margin:28px 0 6px}
+.meta{color:#7A5A70;font-size:.9rem}.lang{border-top:2px solid #F1D9CF;margin-top:36px;padding-top:12px}
+a{color:#C2185B}
+</style>
+</head>
+<body>
+<main>
+<!-- URL: https://interg.co.id/games/fruits-bomb/privacy.html . Data organisasi sama dengan JDG. Cek alamat jalan sebelum diunggah. -->
+<h1>Kebijakan Privasi Fruits Bomb</h1>
+<p class="meta">Berlaku sejak: 22 Oktober 2026 · Pengembang: InterG Studio (CV INTER G QUEEN BUMINDO)</p>
+
+<p>Kebijakan ini menjelaskan data apa yang diproses saat Anda memainkan game Fruits Bomb ("Game") di Android, untuk apa, dan pilihan yang Anda miliki.</p>
+
+<h2>1. Data yang disimpan di perangkat Anda</h2>
+<p>Game menyimpan nama pemain yang Anda ketik, skor dan rekor, poin dan gelar karier, kemajuan misi harian, koleksi buah, pilihan bahasa, serta pengaturan suara dan musik. Semua data ini <strong>hanya disimpan di perangkat Anda</strong> dan tidak dikirim ke server kami (data analitik dijelaskan di bagian 3). Kami tidak membuat akun dan tidak meminta email, nomor telepon, atau kontak Anda.</p>
+
+<h2>2. Iklan (Google AdMob)</h2>
+<p>Game menampilkan iklan dari Google AdMob, termasuk iklan berhadiah yang hanya diputar jika Anda memilih menontonnya, dan iklan di antara ronde. Untuk menampilkan dan mengukur iklan serta mencegah penipuan, Google dapat mengumpulkan dan memproses:</p>
+<ul>
+<li>ID iklan perangkat (Advertising ID) dan informasi perangkat (model, versi sistem, bahasa);</li>
+<li>alamat IP dan perkiraan lokasi yang diturunkan darinya;</li>
+<li>interaksi dengan iklan, serta data diagnostik dan kinerja aplikasi.</li>
+</ul>
+<p>Data tersebut dikirim secara terenkripsi dan diproses oleh Google sesuai <a href="https://policies.google.com/privacy">Kebijakan Privasi Google</a>. Cara Google memakai data dari aplikasi mitra: <a href="https://policies.google.com/technologies/partner-sites">policies.google.com/technologies/partner-sites</a>.</p>
+<p><strong>Pilihan Anda:</strong> Anda dapat mereset atau menghapus ID iklan, atau menonaktifkan personalisasi iklan, di pengaturan Android (Setelan → Privasi → Iklan). Pengguna di Wilayah Ekonomi Eropa, Inggris, dan Swiss akan diminta persetujuan saat pertama membuka Game, dan dapat mengubahnya kapan saja di menu Pengaturan → Privasi iklan.</p>
+
+<h2>3. Analitik (Google Analytics for Firebase)</h2>
+<p>Untuk memahami cara Game dimainkan dan memperbaikinya, Game memakai Google Analytics for Firebase. Yang dicatat: peristiwa permainan (misalnya ronde dimulai, skor dan level akhir, pemakaian bom, iklan yang ditonton), lama sesi, versi aplikasi, model dan versi Android, negara perkiraan, serta ID instans aplikasi dan ID iklan perangkat. <strong>Nama pemain tidak pernah dikirim.</strong> Data diproses oleh Google sesuai <a href="https://policies.google.com/privacy">Kebijakan Privasi Google</a> dan <a href="https://firebase.google.com/support/privacy">ketentuan privasi Firebase</a>. Anda dapat membatasinya dengan mereset atau menghapus ID iklan di pengaturan Android.</p>
+
+<h2>4. Font</h2>
+<p>Game memuat huruf (font) dari layanan Google Fonts saat tersambung ke internet. Untuk itu perangkat Anda menghubungi server Google, yang dapat mencatat alamat IP Anda.</p>
+
+<h2>5. Anak-anak</h2>
+<p>Game ini ditujukan untuk pengguna berusia 13 tahun ke atas dan tidak dirancang untuk anak di bawah 13 tahun. Kami tidak dengan sengaja mengumpulkan data pribadi anak.</p>
+
+<h2>6. Menghapus data</h2>
+<p>Karena data permainan hanya ada di perangkat Anda, Anda dapat menghapusnya dengan menghapus data aplikasi (Setelan → Aplikasi → Fruits Bomb → Penyimpanan → Hapus data) atau mencopot pemasangan Game. Data yang diproses Google untuk iklan diatur oleh Google; Anda dapat mengelolanya di <a href="https://myaccount.google.com/data-and-privacy">myaccount.google.com</a>.</p>
+
+<h2>7. Perubahan kebijakan</h2>
+<p>Kami dapat memperbarui kebijakan ini, misalnya jika menambahkan fitur baru. Versi terbaru selalu tersedia di halaman ini beserta tanggal berlakunya.</p>
+
+<h2>8. Kontak</h2>
+<p>InterG Studio (CV INTER G QUEEN BUMINDO) · Kota Malang, Jawa Timur, Indonesia · Email: <a href="mailto:official@interg.co.id">official@interg.co.id</a> · <a href="https://interg.co.id">interg.co.id</a></p>
+
+<div class="lang" lang="en">
+<h1>Fruits Bomb Privacy Policy</h1>
+<p class="meta">Effective: 22 October 2026 · Developer: InterG Studio (CV INTER G QUEEN BUMINDO)</p>
+<h2>1. Data stored on your device</h2>
+<p>The Game stores the player name you type, scores and records, career points and titles, daily mission progress, fruit collection, language and sound settings. This data <strong>stays on your device</strong> and is not sent to our servers (analytics data is described in section 3). We do not create accounts or ask for your email, phone number or contacts.</p>
+<h2>2. Advertising (Google AdMob)</h2>
+<p>The Game shows ads from Google AdMob, including rewarded ads that play only if you choose to watch them, and ads between rounds. To serve and measure ads and prevent fraud, Google may collect and process your device's advertising ID and device information, IP address and approximate location derived from it, ad interactions, and app diagnostics and performance data. Data is encrypted in transit and processed under the <a href="https://policies.google.com/privacy">Google Privacy Policy</a> (see also <a href="https://policies.google.com/technologies/partner-sites">how Google uses data from partner apps</a>).</p>
+<p><strong>Your choices:</strong> reset or delete your advertising ID or opt out of ad personalization in Android settings. Users in the EEA, UK and Switzerland are asked for consent on first launch and can change it any time in Settings → Ad privacy.</p>
+<h2>3. Analytics (Google Analytics for Firebase)</h2>
+<p>To understand how the Game is played and improve it, the Game uses Google Analytics for Firebase. It records gameplay events (such as round start, final score and level, bomb use, ads watched), session length, app version, device model and Android version, approximate country, and the app instance ID and advertising ID. <strong>Your player name is never sent.</strong> Data is processed by Google under the <a href="https://policies.google.com/privacy">Google Privacy Policy</a> and <a href="https://firebase.google.com/support/privacy">Firebase privacy terms</a>.</p>
+<h2>4. Fonts</h2>
+<p>The Game loads fonts from Google Fonts when online; your device contacts Google servers, which may log your IP address.</p>
+<h2>5. Children</h2>
+<p>The Game is intended for users aged 13 and older and is not designed for children under 13. We do not knowingly collect personal data from children.</p>
+<h2>6. Deleting data</h2>
+<p>Clear the app's data in Android settings or uninstall the Game. Data processed by Google for advertising is managed at <a href="https://myaccount.google.com/data-and-privacy">myaccount.google.com</a>.</p>
+<h2>7. Changes</h2>
+<p>We may update this policy; the latest version and its effective date are always on this page.</p>
+<h2>8. Contact</h2>
+<p>InterG Studio (CV INTER G QUEEN BUMINDO) · Malang, East Java, Indonesia · Email: <a href="mailto:official@interg.co.id">official@interg.co.id</a> · <a href="https://interg.co.id">interg.co.id</a></p>
+</div>
+</main>
+</body>
+</html>
