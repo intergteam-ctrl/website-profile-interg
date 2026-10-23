@@ -101,19 +101,15 @@
           </p>
           @php($socials = \App\Support\Socials::links())
           @php($otherLinks = \App\Support\Socials::others())
-          @if ($socials)
+          @if ($socials || $otherLinks)
             <div class="footer-socials">
               @foreach ($socials as $network => $url)
                 <a href="{{ $url }}" class="footer-social" target="_blank" rel="noopener" aria-label="{{ \App\Support\Socials::name($network) }}" title="{{ \App\Support\Socials::name($network) }}">{!! \App\Support\Socials::icon($network) !!}</a>
               @endforeach
-            </div>
-          @endif
-          @if ($otherLinks)
-            <ul class="footer-other-links">
               @foreach ($otherLinks as $link)
-                <li><a href="{{ $link['url'] }}" target="_blank" rel="noopener">{{ $link['label'] }}</a></li>
+                <a href="{{ $link['url'] }}" class="footer-social" target="_blank" rel="noopener" aria-label="{{ $link['label'] }}" title="{{ $link['label'] }}">{!! $link['icon'] !!}</a>
               @endforeach
-            </ul>
+            </div>
           @endif
         </div>
 

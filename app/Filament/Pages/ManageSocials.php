@@ -3,16 +3,22 @@
 namespace App\Filament\Pages;
 
 use App\Models\SiteSetting;
+use App\Support\ImageUploader;
 use App\Support\SocialFeeds;
+use App\Support\SocialIcons;
 use App\Support\Socials;
 use BackedEnum;
+use Filament\Forms\Components\BaseFileUpload;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 /**
  * Admin → Media Sosial: every social media / app store link of the company.
@@ -76,14 +82,29 @@ class ManageSocials extends Page
                     ]),
 
                 Section::make('Link lainnya')
-                    ->description('Platform yang tidak ada di daftar di atas (mis. marketplace, portal mitra). Tampil sebagai teks di footer.')
+                    ->description('Platform yang tidak ada di daftar di atas (mis. GitHub, Shopee, Tokopedia). Tampil sebagai logo di footer, di samping ikon media sosial.')
                     ->collapsible()
                     ->schema([
                         Repeater::make('others')
                             ->hiddenLabel()
                             ->schema([
-                                TextInput::make('label')->label('Nama')->required()->maxLength(40)->placeholder('Tokopedia'),
-                                TextInput::make('url')->label('Link')->required()->url()->maxLength(500)->regex('#^https?://#i')->placeholder('https://…'),
+                                TextInput::make('label')->label('Nama')->required()->maxLength(40)->placeholder('GitHub'),
+                                TextInput::make('url')->label('Link')->required()->url()->maxLength(500)->regex('#^https?://#i')->placeholder('https://github.com/…'),
+                                Select::make('icon')
+                                    ->label('Logo')
+                                    ->options(['auto' => 'Otomatis dari link'] + SocialIcons::options())
+                                    ->default('auto')
+                                    ->native(false)
+                                    ->helperText('"Otomatis" mengenali GitHub, GitLab, Discord, Shopee, Tokopedia, dll. dari linknya.'),
+                                FileUpload::make('logo')
+                                    ->label('Atau upload logo sendiri (opsional)')
+                                    ->helperText('PNG/JPG persegi, mengganti pilihan logo di samping. Butuh Object Storage terpasang.')
+                                    ->image()
+                                    ->disk(ImageUploader::disk())
+                                    ->directory('social-logos')
+                                    ->visibility('private')
+                                    ->maxSize(1024)
+                                    ->saveUploadedFileUsing(fn (TemporaryUploadedFile $file, BaseFileUpload $component): string => ImageUploader::store($file, 'social-logos', $component, maxWidth: 128, quality: 85, square: 128)),
                             ])
                             ->columns(2)
                             ->defaultItems(0)

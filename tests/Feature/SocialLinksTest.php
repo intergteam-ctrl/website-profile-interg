@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Filament\Pages\ManageSocials;
 use App\Models\SiteSetting;
 use App\Models\User;
+use App\Support\SocialIcons;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Livewire\Livewire;
@@ -37,7 +38,11 @@ class SocialLinksTest extends TestCase
                 'tiktok' => '',
                 'linkedin' => 'https://www.linkedin.com/company/inter-g',
                 'google_play' => 'https://play.google.com/store/apps/dev?id=123',
-                'others' => [['label' => 'Tokopedia', 'url' => 'https://www.tokopedia.com/interg']],
+                'others' => [
+                    ['label' => 'Tokopedia', 'url' => 'https://www.tokopedia.com/interg', 'icon' => 'auto'],
+                    ['label' => 'GitHub', 'url' => 'https://github.com/intergteam-ctrl', 'icon' => 'auto'],
+                    ['label' => 'Portal Mitra', 'url' => 'https://mitra.example.com', 'icon' => 'discord'],
+                ],
             ])
             ->call('save')
             ->assertHasNoFormErrors()
@@ -54,7 +59,11 @@ class SocialLinksTest extends TestCase
             ->assertSee('aria-label="LinkedIn"', false)
             ->assertSee('aria-label="Google Play"', false)
             ->assertSee('https://www.tokopedia.com/interg', false)
-            ->assertSee('Tokopedia');
+            ->assertSee('aria-label="Tokopedia"', false)
+            ->assertSee('aria-label="GitHub" title="GitHub"><svg', false)
+            ->assertSee(SocialIcons::svg('github'), false)
+            ->assertSee(SocialIcons::svg('shop'), false)
+            ->assertSee(SocialIcons::svg('discord'), false);
     }
 
     public function test_empty_instagram_hides_its_tab_and_panel(): void

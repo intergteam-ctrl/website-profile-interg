@@ -70,14 +70,31 @@ class Socials
         return $links;
     }
 
-    /** @return list<array{label: string, url: string}> */
+    /**
+     * "Link lainnya" with their icon: uploaded logo → chosen icon → icon
+     * guessed from the link (github.com → GitHub) → globe.
+     *
+     * @return list<array{label: string, url: string, icon: string}>
+     */
     public static function others(): array
     {
         $saved = self::setting()?->socials;
 
         return collect(is_array($saved) ? ($saved['others'] ?? []) : [])
             ->filter(fn ($o) => is_array($o) && filled($o['label'] ?? null) && self::isSafeUrl((string) ($o['url'] ?? '')))
-            ->map(fn (array $o) => ['label' => (string) $o['label'], 'url' => (string) $o['url']])
+            ->map(function (array $o): array {
+                $url = (string) $o['url'];
+                $logo = filled($o['logo'] ?? null) ? ImageUploader::url((string) $o['logo']) : null;
+                $key = filled($o['icon'] ?? null) && $o['icon'] !== 'auto' ? (string) $o['icon'] : SocialIcons::guess($url);
+
+                return [
+                    'label' => (string) $o['label'],
+                    'url' => $url,
+                    'icon' => $logo
+                        ? '<img src="'.e($logo).'" alt="" loading="lazy">'
+                        : (SocialIcons::svg($key) ?? SocialIcons::svg('website')),
+                ];
+            })
             ->values()->all();
     }
 
