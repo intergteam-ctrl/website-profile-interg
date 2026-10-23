@@ -157,6 +157,11 @@ return [
         'limit' => 9,
     ],
 
+    'tiktok' => [
+        'handle' => 'intergqueenbumindo',
+        'url' => env('SOCIAL_TIKTOK', 'https://www.tiktok.com/@intergqueenbumindo'),
+    ],
+
     'youtube' => [
         'handle' => 'InterGQueenBumindo',
         // Public RSS feed of this channel is used to show the latest videos.
@@ -171,6 +176,7 @@ return [
         'instagram' => env('SOCIAL_INSTAGRAM', 'https://www.instagram.com/intergqueenbumindo/'),
         'facebook' => env('SOCIAL_FACEBOOK'),
         'youtube' => env('SOCIAL_YOUTUBE', 'https://www.youtube.com/@InterGQueenBumindo'),
+        'tiktok' => env('SOCIAL_TIKTOK', 'https://www.tiktok.com/@intergqueenbumindo'),
     ],
 
 ];

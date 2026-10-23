@@ -534,7 +534,8 @@ body.modal-open { overflow: hidden; }
 .ig-tab svg { width: 18px; height: 18px; fill: currentColor; }
 .ig-tab span { writing-mode: vertical-rl; transform: rotate(180deg); font-family: var(--font-head); font-weight: 600; font-size: 13px; letter-spacing: 0.08em; }
 .side-tabs:has(.ig-tab[aria-expanded="true"]), .side-tabs:has(.yt-tab[aria-expanded="true"]) { opacity: 0; pointer-events: none; }
-.yt-tab:hover { background: #000; }
+.yt-tab:hover, .tt-tab:hover { background: #000; }
+.tt-tab svg { width: 18px; height: 18px; }
 .yt-tab svg { width: 19px; height: 19px; }
 
 .ig-drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 1050; width: min(360px, 88vw); background: #fff; border-left: 1px solid var(--line); box-shadow: -20px 0 60px rgba(29, 31, 35, 0.12); padding: 22px 20px 28px; overflow-y: auto; transform: translateX(105%); visibility: hidden; transition: transform 0.35s var(--ease), visibility 0.35s; display: flex; flex-direction: column; gap: 16px; }

@@ -248,4 +248,15 @@ class FrontendTest extends TestCase
             trim(file_get_contents(public_path('googlebab8923c65baeaed.html')))
         );
     }
+
+    public function test_tiktok_link_is_shown_below_youtube_and_in_footer(): void
+    {
+        $html = $this->get('/')->assertOk()
+            ->assertSee('class="ig-tab tt-tab"', false)
+            ->assertSee('https://www.tiktok.com/@intergqueenbumindo', false)
+            ->assertSee('aria-label="Tiktok"', false)
+            ->getContent();
+
+        $this->assertLessThan(strpos($html, 'tt-tab'), strpos($html, 'yt-tab'));
+    }
 }
