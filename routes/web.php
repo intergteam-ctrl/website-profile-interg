@@ -43,3 +43,21 @@ Route::middleware(EnsureAdmin::class)->prefix('admin/tools')->name('admin.tools.
     Route::get('/kuitansi', [ToolController::class, 'kuitansi'])->name('kuitansi');
     Route::get('/kuitansi-fcom', [ToolController::class, 'kuitansiFcom'])->name('kuitansi-fcom');
 });
+
+// Static pages uploaded to public/{folder}/{name}.html (e.g. app privacy
+// policies) are served by the web server at /{folder}/{name}.html. This
+// fallback also makes them reachable without ".html": /{folder}/{name}.
+// It only runs when no other route matched, so it cannot shadow anything.
+Route::fallback(function (string $fallbackPlaceholder = '') {
+    if (preg_match('#^([a-z0-9][a-z0-9_-]*)/([a-z0-9][a-z0-9_-]*)$#i', trim($fallbackPlaceholder, '/'), $m)) {
+        $file = public_path($m[1].'/'.$m[2].'.html');
+
+        if (is_file($file)) {
+            return response(file_get_contents($file))
+                ->header('Content-Type', 'text/html; charset=UTF-8')
+                ->header('Cache-Control', 'public, max-age=300');
+        }
+    }
+
+    abort(404);
+});
