@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Filament\Resources\Games\Pages\EditGame;
 use App\Models\Game;
 use App\Models\User;
+use App\Support\AppStore;
 use App\Support\PlayStore;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
@@ -66,13 +67,14 @@ class PlayStoreTest extends TestCase
             ->assertSee('Monster Mess')
             ->assertSee('https://play-lh.googleusercontent.com/ICON123=s256', false)
             ->assertSee('href="'.url('/studio/kubi-puzzle').'"', false)
-            ->assertSee('https://play.google.com/store/apps/details?id=com.interg.kubipuzzle', false);
+            ->assertDontSee('180 handcrafted puzzles.');
 
         $this->get('/studio/monster-mess')->assertOk()
             ->assertSee('180 handcrafted puzzles.')
             ->assertSee('https://play-lh.googleusercontent.com/SHOT1=h720', false)
             ->assertSee('★ 4.6', false)
-            ->assertSee('Download di Google Play');
+            ->assertSee('Download di Google Play')
+            ->assertSee('https://play.google.com/store/apps/details?id=com.mavensplayground.monstermess', false);
 
         // Saved as a fallback for when Google Play cannot be reached.
         $this->assertSame('Monster Mess', Game::where('slug', 'monster-mess')->first()->play_data['id']['name']);
@@ -104,5 +106,32 @@ class PlayStoreTest extends TestCase
             ->fillForm(['play_package' => 'https://evil.example/?id=x'])
             ->call('save')
             ->assertHasFormErrors(['play_package']);
+    }
+
+    public function test_app_store_link_and_listing(): void
+    {
+        $this->assertSame('1234567890', AppStore::idFrom('https://apps.apple.com/id/app/monster-mess/id1234567890'));
+        $this->assertSame('1234567890', AppStore::idFrom('1234567890'));
+        $this->assertNull(AppStore::idFrom('https://evil.example/app/id1234567890'));
+
+        Http::fake([
+            'play.google.com/*' => Http::response('', 404),
+            'itunes.apple.com/*' => Http::response(['resultCount' => 1, 'results' => [[
+                'trackId' => 1234567890, 'trackName' => 'Swarm Maze iOS', 'description' => "Defend the maze.\n\nMore details here.",
+                'artworkUrl512' => 'https://is1-ssl.mzstatic.com/icon.png', 'screenshotUrls' => ['https://is1-ssl.mzstatic.com/s1.png'],
+                'primaryGenreName' => 'Games', 'averageUserRating' => 4.8, 'userRatingCount' => 15,
+            ]]]),
+        ]);
+
+        $game = Game::where('slug', 'swarm-maze')->firstOrFail();
+        $game->forceFill(['app_store_id' => '1234567890'])->save();
+
+        $this->get('/studio')->assertOk()->assertSee('Swarm Maze iOS')->assertSee('https://is1-ssl.mzstatic.com/icon.png', false);
+        $this->get('/studio/swarm-maze')->assertOk()
+            ->assertSee('https://apps.apple.com/id/app/id1234567890', false)
+            ->assertSee('Download di App Store')
+            ->assertSee('Defend the maze.')
+            ->assertSee('Baca selengkapnya')
+            ->assertSee('https://is1-ssl.mzstatic.com/s1.png', false);
     }
 }

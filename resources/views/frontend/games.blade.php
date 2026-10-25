@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('title', 'InterG Studio')
-@section('description', __('Game dan aplikasi mobile karya InterG Studio — tersedia di Google Play.'))
+@section('description', __('Game dan aplikasi mobile karya InterG Studio — tersedia di Google Play dan App Store.'))
 
 @section('content')
 
@@ -11,7 +11,7 @@
       <img src="{{ asset('images/interg-studio.png') }}" alt="" width="88" height="88" class="studio-logo">
       <div>
         <h1 class="section-title">InterG Studio</h1>
-        <p class="section-sub">{{ __('Game dan aplikasi mobile buatan tim kami — dari puzzle santai hingga aplikasi gizi. Semua tersedia di Google Play.') }}</p>
+        <p class="section-sub">{{ __('Game dan aplikasi mobile buatan tim kami. Pilih aplikasi untuk melihat screenshot, deskripsi, dan link download.') }}</p>
       </div>
       <a href="https://play.google.com/store/apps/developer?id=InterG+Studio" class="btn btn-dark studio-dev" target="_blank" rel="noopener">
         @include('partials.play-icon') {{ __('Lihat di Google Play') }}
@@ -19,38 +19,29 @@
     </div>
 
     @if ($games->isNotEmpty())
+      {{-- Compact grid: icon and name only; everything else is on the app page. --}}
       <ul class="app-grid">
         @foreach ($games as $game)
-          @php($play = $game->play_package ? $game->play() : null)
-          @php($name = $play['name'] ?? $game->title)
-          @php($icon = $play['icon'] ?? $game->image_url)
-          @php($summary = \Illuminate\Support\Str::limit(strtok((string) ($play['description'] ?? $game->description ?? ''), "\n") ?: '', 150))
+          @php($app = $game->listing())
           <li>
-            <article class="app-tile">
-              <a href="{{ lroute('games.show', $game) }}" class="app-tile-link">
-                <span class="app-tile-icon">
-                  @if ($icon)
-                    <img src="{{ $icon }}" alt="" loading="lazy" width="72" height="72">
-                  @else
-                    <span aria-hidden="true">{{ \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr($name, 0, 1)) }}</span>
-                  @endif
-                </span>
-                <span class="app-tile-body">
-                  <span class="app-tile-name">{{ $name }}</span>
-                  <span class="app-tile-meta">
-                    @if (! empty($play['category'])){{ __($play['category']) }}@endif
-                    @if (! empty($play['rating']))<span class="app-tile-rating" aria-label="{{ __('Rating') }} {{ $play['rating'] }}">★ {{ number_format($play['rating'], 1) }}</span>@endif
-                  </span>
-                  @if ($summary)<span class="app-tile-desc">{{ $summary }}</span>@endif
-                </span>
-              </a>
-              <div class="app-tile-actions">
-                <a href="{{ lroute('games.show', $game) }}" class="link-arrow">{{ __('Lihat detail') }}</a>
-                @if ($game->play_package)
-                  <a href="{{ $game->play_url }}" class="app-tile-play" target="_blank" rel="noopener">@include('partials.play-icon') Google Play</a>
+            <a href="{{ lroute('games.show', $game) }}" class="app-tile">
+              <span class="app-tile-icon">
+                @if ($app['icon'])
+                  <img src="{{ $app['icon'] }}" alt="" loading="lazy" width="80" height="80">
+                @else
+                  <span aria-hidden="true">{{ \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr($app['name'], 0, 1)) }}</span>
                 @endif
-              </div>
-            </article>
+              </span>
+              <span class="app-tile-name">{{ $app['name'] }}</span>
+              <span class="app-tile-meta">
+                @if ($app['category']){{ __($app['category']) }}@endif
+                @if ($app['rating'])<span class="app-tile-rating">★ {{ number_format($app['rating'], 1) }}</span>@endif
+              </span>
+              <span class="app-tile-stores">
+                @if ($game->play_package)<span title="Google Play">@include('partials.play-icon')<span class="sr-only">Google Play</span></span>@endif
+                @if ($game->app_store_id)<span title="App Store">@include('partials.apple-icon')<span class="sr-only">App Store</span></span>@endif
+              </span>
+            </a>
           </li>
         @endforeach
       </ul>

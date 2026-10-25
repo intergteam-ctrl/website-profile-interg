@@ -1,10 +1,10 @@
 @extends('layout.app')
 
 @php
-  $play = $game->play();
-  $name = $play['name'] ?? $game->title;
-  $icon = $play['icon'] ?? $game->image_url;
-  $about = trim((string) ($play['description'] ?? $game->description ?? ''));
+  $play = $game->listing();
+  $name = $play['name'];
+  $icon = $play['icon'];
+  $about = trim($play['description']);
 @endphp
 
 @section('title', $name.' — InterG Studio')
@@ -35,9 +35,14 @@
           @if (! empty($play['rating']))<span>★ {{ number_format($play['rating'], 1) }}@if (! empty($play['ratings'])) ({{ number_format($play['ratings'], 0, ',', '.') }})@endif</span>@endif
           @if (! empty($play['content_rating']))<span>{{ $play['content_rating'] }}</span>@endif
         </p>
-        @if ($game->play_package)
-          <a href="{{ $game->play_url }}" class="btn btn-red app-hero-play" target="_blank" rel="noopener">@include('partials.play-icon') {{ __('Download di Google Play') }}</a>
-        @endif
+        <div class="app-hero-actions">
+          @if ($game->play_package)
+            <a href="{{ $game->play_url }}" class="btn btn-red app-hero-play" target="_blank" rel="noopener">@include('partials.play-icon') {{ __('Download di Google Play') }}</a>
+          @endif
+          @if ($game->app_store_id)
+            <a href="{{ $game->app_store_url }}" class="btn btn-dark app-hero-play" target="_blank" rel="noopener">@include('partials.apple-icon') {{ __('Download di App Store') }}</a>
+          @endif
+        </div>
       </div>
     </header>
 
@@ -55,7 +60,14 @@
       <div>
         <h2 class="app-h2">{{ __('Tentang aplikasi ini') }}</h2>
         @if ($about !== '')
-          <div class="app-about">{{ $about }}</div>
+          @php([$lead, $rest] = array_pad(preg_split('/\R\s*\R/', $about, 2), 2, ''))
+          <div class="app-about">{{ $lead }}</div>
+          @if (trim($rest) !== '')
+            <details class="app-more">
+              <summary>{{ __('Baca selengkapnya') }}</summary>
+              <div class="app-about">{{ trim($rest) }}</div>
+            </details>
+          @endif
         @else
           <p class="empty-state">{{ __('Deskripsi belum tersedia.') }}</p>
         @endif

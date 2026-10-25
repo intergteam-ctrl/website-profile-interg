@@ -44,7 +44,7 @@ class GamesTest extends TestCase
 
         $this->get('/studio')->assertOk()
             ->assertSee('Fruits Bomb')
-            ->assertSee('href="'.route('games.show', 'fruits-bomb').'" class="app-tile-link"', false)
+            ->assertSee('href="'.route('games.show', 'fruits-bomb').'" class="app-tile"', false)
             ->assertDontSee('Kebijakan privasi')
             ->assertDontSee('/studio/draft', false);
         $this->get('/studio/draft')->assertNotFound();

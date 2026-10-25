@@ -8,6 +8,7 @@ use App\Filament\Resources\Games\Pages\ListGames;
 use App\Filament\Resources\Games\RelationManagers\FilesRelationManager;
 use App\Models\Game;
 use App\Models\GameFile;
+use App\Support\AppStore;
 use App\Support\PlayStore;
 use BackedEnum;
 use Filament\Actions\Action;
@@ -76,6 +77,19 @@ class GameResource extends Resource
                 })
                 ->columnSpanFull(),
 
+            TextInput::make('app_store_id')
+                ->label('Link App Store (Apple)')
+                ->placeholder('https://apps.apple.com/id/app/nama-app/id1234567890')
+                ->helperText('Opsional. Tempel link aplikasi di App Store. Jika diisi, tombol App Store muncul di website; ikon/screenshot/deskripsi diambil dari App Store bila Google Play tidak tersedia.')
+                ->formatStateUsing(fn (?string $state): ?string => $state ? AppStore::url($state) : null)
+                ->dehydrateStateUsing(fn (?string $state): ?string => AppStore::idFrom($state))
+                ->rule(fn () => function (string $attribute, $value, \Closure $fail): void {
+                    if (filled($value) && ! AppStore::idFrom($value)) {
+                        $fail('Harus link aplikasi App Store (apps.apple.com/…/id1234567890).');
+                    }
+                })
+                ->columnSpanFull(),
+
             FileUpload::make('html_files')
                 ->label('File HTML')
                 ->helperText('Bisa pilih beberapa file sekaligus. Nama file menjadi alamatnya: privacy.html → /studio/{folder}/privacy. File dengan nama yang sama akan menimpa file lama. Maks. 8 MB per file.')
@@ -113,6 +127,7 @@ class GameResource extends Resource
             ->reorderable('sort_order')
             ->columns([
                 TextColumn::make('play_package')->label('Google Play')->placeholder('—')->color('gray')->limit(32),
+                TextColumn::make('app_store_id')->label('App Store')->placeholder('—')->color('gray'),
                 TextColumn::make('slug')->label('Folder')->searchable()->weight('bold')->prefix('/studio/'),
                 TextColumn::make('title')->label('Judul')->searchable(),
                 TextColumn::make('files_count')->label('File')->counts('files')->suffix(' file'),

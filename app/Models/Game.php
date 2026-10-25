@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\AppStore;
 use App\Support\ImageUploader;
 use App\Support\Locale;
 use App\Support\PlayStore;
@@ -17,11 +18,12 @@ use Illuminate\Support\Facades\Cache;
  */
 class Game extends Model
 {
-    protected $fillable = ['title', 'slug', 'description', 'image', 'play_package', 'is_active', 'sort_order'];
+    protected $fillable = ['title', 'slug', 'description', 'image', 'play_package', 'app_store_id', 'is_active', 'sort_order'];
 
     protected $casts = [
         'is_active' => 'boolean',
         'play_data' => 'array',
+        'app_store_data' => 'array',
     ];
 
     public const MAX_KB = 8192;
@@ -113,6 +115,26 @@ class Game extends Model
 
             Cache::put("play.{$package}.{$locale}", $data ?: false, $data ? now()->addHours(12) : now()->addMinutes(30));
         }
+
+        // App Store: one lookup request for all apps that need it.
+        $apple = [];
+        foreach ($games as $game) {
+            if ($game->app_store_id && Cache::get("appstore.{$game->app_store_id}.{$locale}") === null) {
+                $apple[$game->app_store_id] = $game;
+            }
+        }
+
+        foreach (AppStore::fetchMany(array_map('strval', array_keys($apple)), $locale) as $id => $data) {
+            $game = $apple[$id];
+
+            if ($data) {
+                $all = (array) $game->app_store_data;
+                $all[$locale] = $data + ['fetched_at' => now()->toIso8601String()];
+                $game->forceFill(['app_store_data' => $all])->saveQuietly();
+            }
+
+            Cache::put("appstore.{$id}.{$locale}", $data ?: false, $data ? now()->addHours(12) : now()->addMinutes(30));
+        }
     }
 
     public function forgetPlay(): void
@@ -125,5 +147,75 @@ class Game extends Model
     public function getPlayUrlAttribute(): ?string
     {
         return $this->play_package ? PlayStore::url($this->play_package) : null;
+    }
+
+    /**
+     * Apple App Store listing in the current language (cached 12 hours,
+     * last good copy kept as fallback).
+     *
+     * @return array<string, mixed>|null
+     */
+    public function appStore(?string $locale = null): ?array
+    {
+        if (blank($this->app_store_id)) {
+            return null;
+        }
+
+        $locale ??= Locale::current();
+        $saved = $this->app_store_data[$locale] ?? $this->app_store_data['en'] ?? $this->app_store_data['id'] ?? null;
+        $key = "appstore.{$this->app_store_id}.{$locale}";
+        $fresh = Cache::get($key);
+
+        if ($fresh === null) {
+            $data = AppStore::fetch($this->app_store_id, $locale);
+
+            if ($data) {
+                $all = (array) $this->app_store_data;
+                $all[$locale] = $data + ['fetched_at' => now()->toIso8601String()];
+                $this->forceFill(['app_store_data' => $all])->saveQuietly();
+            }
+
+            $fresh = $data ?: false;
+            Cache::put($key, $fresh, $data ? now()->addHours(12) : now()->addMinutes(30));
+        }
+
+        return $fresh ?: $saved;
+    }
+
+    /**
+     * What the website shows: Google Play listing first, App Store as the
+     * fallback for anything missing, then the text entered in the admin.
+     *
+     * @return array{name: string, icon: ?string, description: string, screenshots: list<string>, category: ?string, rating: ?float, ratings: ?int, content_rating: ?string}
+     */
+    public function listing(): array
+    {
+        $play = $this->play() ?? [];
+        $apple = $this->appStore() ?? [];
+        $pick = fn (string $k) => ! empty($play[$k]) ? $play[$k] : ($apple[$k] ?? null);
+
+        return [
+            'name' => $pick('name') ?: $this->title,
+            'icon' => $pick('icon') ?: $this->image_url,
+            'description' => (string) ($pick('description') ?: $this->description ?: ''),
+            'screenshots' => $pick('screenshots') ?: [],
+            'category' => $pick('category'),
+            'rating' => $pick('rating'),
+            'ratings' => ! empty($play['rating']) ? ($play['ratings'] ?? null) : ($apple['ratings'] ?? null),
+            'content_rating' => $pick('content_rating'),
+        ];
+    }
+
+    public function forgetStores(): void
+    {
+        foreach (array_keys(Locale::SUPPORTED) as $locale) {
+            Cache::forget("play.{$this->play_package}.{$locale}");
+            Cache::forget("appstore.{$this->app_store_id}.{$locale}");
+        }
+    }
+
+    public function getAppStoreUrlAttribute(): ?string
+    {
+        return $this->app_store_id ? AppStore::url($this->app_store_id) : null;
     }
 }
