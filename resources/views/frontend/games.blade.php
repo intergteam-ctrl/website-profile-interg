@@ -7,6 +7,11 @@
 
 <section class="section section--page">
   <div class="container">
+    <div class="section-head section-head--center">
+      <h1 class="section-title">Games</h1>
+      <p class="section-sub">Game ringan berbasis browser dari tim kami. Buka folder, lalu klik file untuk bermain langsung tanpa instal.</p>
+    </div>
+
     <div class="fx" role="region" aria-label="Folder Games">
       @include('partials.fx-bar', ['segments' => [['games', null]], 'count' => $games->count().' folder'])
 

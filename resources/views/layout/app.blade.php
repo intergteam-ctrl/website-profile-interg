@@ -28,7 +28,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ $fullTitle }}</title>
   <meta name="description" content="{{ $metaDescription }}">
-  <meta name="theme-color" content="#FFFFFF">
+  <meta name="theme-color" content="#071528">
   <link rel="canonical" href="{{ url()->current() }}">
 
   <meta property="og:type" content="website">
@@ -45,7 +45,7 @@
   <link rel="apple-touch-icon" href="{{ $assetVersion('apple-touch-icon.png') }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,600;1,800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ $assetVersion('css/site.css') }}">
   <script>document.documentElement.classList.add('js');</script>
 </head>
