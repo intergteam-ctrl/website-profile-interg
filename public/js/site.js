@@ -36,6 +36,30 @@
     if (e.key === 'Escape' && mobileNav && mobileNav.classList.contains('open')) setMobileNav(false);
   });
 
+  /* ---------- Side menu (Marketplace, Download, Games) ---------- */
+  var moreTab = document.getElementById('moreTab');
+  var moreNav = document.getElementById('moreNav');
+  var moreScrim = document.getElementById('moreScrim');
+  function setMore(open) {
+    if (!moreTab || !moreNav) return;
+    moreNav.classList.toggle('open', open);
+    moreNav.setAttribute('aria-hidden', String(!open));
+    moreNav.inert = !open;
+    moreTab.setAttribute('aria-expanded', String(open));
+    if (moreScrim) moreScrim.hidden = !open;
+    if (open) {
+      requestAnimationFrame(function () { var f = moreNav.querySelector('.more-item'); if (f) f.focus({ preventScroll: true }); });
+    } else {
+      moreTab.focus({ preventScroll: true });
+    }
+  }
+  if (moreTab) moreTab.addEventListener('click', function () { setMore(!moreNav.classList.contains('open')); });
+  if (moreScrim) moreScrim.addEventListener('click', function () { setMore(false); });
+  document.querySelectorAll('[data-more-close]').forEach(function (el) { el.addEventListener('click', function () { setMore(false); }); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && moreNav && moreNav.classList.contains('open')) setMore(false);
+  });
+
   /* ---------- Instagram & YouTube side panels ---------- */
   var igScrim = document.getElementById('igScrim');
   var panels = [

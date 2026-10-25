@@ -146,6 +146,30 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
 #navbar:not(.scrolled):not(.solid) .nav-links a:hover { color: #fff; }
 #navbar:not(.scrolled):not(.solid) .nav-links a.active { color: #fff; background: rgba(255, 255, 255, 0.1); }
 .nav-cta { padding: 10px 18px; font-size: 15px; }
+.nav-more { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-head); font-weight: 600; font-size: 15px; color: var(--ink-2); padding: 8px 12px; border-radius: 6px; transition: color var(--transition), background var(--transition); }
+.nav-more svg { width: 15px; height: 15px; fill: currentColor; }
+.nav-more:hover { color: var(--teal-600); }
+.nav-more.active, .nav-more[aria-expanded="true"] { color: var(--teal-700); background: var(--teal-soft); }
+#navbar:not(.scrolled):not(.solid) .nav-more { color: rgba(255, 255, 255, 0.82); }
+#navbar:not(.scrolled):not(.solid) .nav-more:hover { color: #fff; }
+#navbar:not(.scrolled):not(.solid) .nav-more.active, #navbar:not(.scrolled):not(.solid) .nav-more[aria-expanded="true"] { color: #fff; background: rgba(255, 255, 255, 0.1); }
+
+/* Side menu for the extra pages */
+.more-drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 1060; width: min(360px, 90vw); background: #fff; border-left: 1px solid var(--line); box-shadow: -20px 0 60px rgba(7, 21, 40, 0.16); padding: 22px 20px 28px; display: flex; flex-direction: column; gap: 18px; overflow-y: auto; transform: translateX(105%); visibility: hidden; transition: transform 0.3s var(--ease), visibility 0.3s; }
+.more-drawer.open { transform: none; visibility: visible; transition: transform 0.3s var(--ease), visibility 0s; }
+.more-scrim { position: fixed; inset: 0; z-index: 1055; background: rgba(7, 21, 40, 0.35); }
+.more-head { display: flex; align-items: center; justify-content: space-between; }
+.more-head h2 { font-size: 19px; font-weight: 700; letter-spacing: -0.015em; color: var(--navy-900); }
+.more-list { list-style: none; display: grid; gap: 6px; }
+.more-item { display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 10px; border: 1px solid var(--line); transition: border-color var(--transition), background var(--transition); }
+.more-item:hover { border-color: var(--teal-600); background: var(--paper-2); }
+.more-item.active { border-color: var(--teal-600); background: var(--teal-soft); }
+.more-icon { width: 42px; height: 42px; border-radius: 10px; background: var(--navy-900); display: grid; place-items: center; flex-shrink: 0; }
+.more-icon svg { width: 21px; height: 21px; fill: #fff; }
+.more-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.35; }
+.more-text strong { font-size: 16px; color: var(--navy-900); }
+.more-text span { font-size: 14px; color: var(--muted); }
+.more-cta { margin-top: auto; }
 
 .hamburger { display: none; flex-direction: column; gap: 5px; padding: 10px; margin-right: -10px; }
 .hamburger span { width: 24px; height: 2.5px; background: var(--navy-900); border-radius: 2px; }
@@ -672,11 +696,11 @@ body.modal-open { overflow: hidden; }
    RESPONSIVE
    ========================================================================== */
 /* Nine menu items: tighten them on smaller laptops, hamburger below 1280px. */
-@media (max-width: 1440px) {
-  .nav-links a { padding: 8px 9px; font-size: 14.5px; }
+@media (max-width: 1140px) {
+  .nav-links a, .nav-more { padding: 8px 9px; font-size: 14.5px; }
   .nav-cta { padding: 10px 16px; font-size: 14.5px; }
 }
-@media (max-width: 1279px) {
+@media (max-width: 1023px) {
   .nav-links, .nav-cta { display: none; }
   .hamburger { display: flex; }
 }
