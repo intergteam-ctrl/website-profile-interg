@@ -77,9 +77,14 @@
   {{-- Navbar --}}
   <header id="navbar" class="{{ $onHome ? '' : 'solid' }}">
     <div class="container nav-inner">
-      <a href="{{ $section('hero') }}" class="brand" aria-label="{{ config('company.name') }} — beranda">
-        <img src="{{ asset('images/logo-igb.png') }}" alt="IG&amp;B — Accelerating Innovation and Technology" width="176" height="40">
-      </a>
+      <div class="brand-group">
+        <a href="{{ $section('hero') }}" class="brand" aria-label="{{ config('company.name') }} — {{ __('Beranda') }}">
+          <img src="{{ asset('images/logo-igb.png') }}" alt="IG&amp;B — Accelerating Innovation and Technology" width="176" height="40">
+        </a>
+        <a href="{{ lroute('games') }}" class="brand-studio" title="InterG Studio" aria-label="InterG Studio">
+          <img src="{{ asset('images/interg-studio.png') }}" alt="" width="36" height="36">
+        </a>
+      </div>
 
       <ul class="nav-links">
         @foreach ($topItems as $item)

@@ -953,3 +953,15 @@ html:lang(zh-Hans) .hero-headline, html:lang(zh-Hans) .section-title, html:lang(
   .app-tile { padding: 18px 10px 14px; }
   .app-tile-icon { width: 64px; height: 64px; border-radius: 16px; }
 }
+
+/* InterG Studio logo next to IG&B in the top bar */
+.brand-group { display: inline-flex; align-items: center; gap: 14px; flex-shrink: 0; }
+.brand-studio { display: inline-flex; padding-left: 14px; border-left: 1px solid var(--line); }
+.brand-studio img { width: 36px; height: 36px; border-radius: 9px; transition: transform var(--transition); }
+.brand-studio:hover img { transform: scale(1.06); }
+#navbar:not(.scrolled):not(.solid) .brand-studio { border-left-color: rgba(255, 255, 255, 0.22); }
+@media (max-width: 640px) {
+  .brand-group { gap: 10px; }
+  .brand-studio { padding-left: 10px; }
+  .brand-studio img { width: 30px; height: 30px; border-radius: 8px; }
+}
