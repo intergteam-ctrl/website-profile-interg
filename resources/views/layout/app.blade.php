@@ -15,7 +15,7 @@
       ['label' => __('Download'),    'href' => lroute('downloads'), 'active' => $L::is('downloads'), 'side' => true,
        'desc' => __('Company profile, brosur & panduan'), 'icon' => 'M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z'],
       ['label' => 'InterG Studio', 'image' => asset('images/interg-studio.png'),       'href' => lroute('games'), 'active' => $L::is('games', 'games.show', 'games.file'), 'side' => true,
-       'desc' => __('Game & aplikasi mobile kami di Google Play'), 'icon' => 'M21 6H3a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm4-3a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z'],
+       'desc' => __('Game & aplikasi mobile kami di Google Play dan App Store'), 'icon' => 'M21 6H3a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm4-3a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z'],
   ];
   // Top bar keeps the page sections; extra pages live in the side menu.
   $topItems = array_filter($navItems, fn ($i) => empty($i['side']));
