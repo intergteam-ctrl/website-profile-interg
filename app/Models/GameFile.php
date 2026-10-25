@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 
-/** One HTML file inside a game folder: /games/{game}/{name}. */
+/** One HTML file inside a game folder: /studio/{game}/{name}. */
 class GameFile extends Model
 {
     protected $fillable = ['game_id', 'name', 'html'];

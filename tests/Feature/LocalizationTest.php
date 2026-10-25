@@ -13,7 +13,7 @@ class LocalizationTest extends TestCase
 
     public function test_every_public_page_exists_in_three_languages(): void
     {
-        foreach (['', '/blog', '/portfolio', '/marketplace', '/download', '/games'] as $path) {
+        foreach (['', '/blog', '/portfolio', '/marketplace', '/download', '/studio'] as $path) {
             $this->get($path ?: '/')->assertOk();
             $this->get('/en'.$path)->assertOk();
             $this->get('/zh'.$path)->assertOk();

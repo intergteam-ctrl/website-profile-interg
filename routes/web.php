@@ -18,14 +18,21 @@ $frontend = function (): void {
     Route::get('/portfolio', [FrontendController::class, 'portfolio'])->name('portfolio');
     Route::get('/marketplace', [FrontendController::class, 'marketplace'])->name('marketplace');
     Route::get('/download', [FrontendController::class, 'downloads'])->name('downloads');
-    Route::get('/games', [GameController::class, 'index'])->name('games');
-    Route::get('/games/{game}', [GameController::class, 'show'])->name('games.show');
-    Route::get('/games/{game}/{file}', [GameController::class, 'file'])
+    Route::get('/studio', [GameController::class, 'index'])->name('games');
+    Route::get('/studio/{game}', [GameController::class, 'show'])->name('games.show');
+    Route::get('/studio/{game}/{file}', [GameController::class, 'file'])
         ->where('file', '[A-Za-z0-9._-]+')
         ->name('games.file');
 };
 
 Route::middleware(SetLocale::class.':'.Locale::DEFAULT)->group($frontend);
+
+// "Games" was renamed to InterG Studio (/studio). Old links — including
+// game files and app privacy pages under /games/… — keep working (301).
+Route::get('{locale}/games/{path?}', fn (string $locale, string $path = '') => redirect('/'.$locale.'/studio'.($path !== '' ? '/'.$path : '').(request()->getQueryString() ? '?'.request()->getQueryString() : ''), 301))
+    ->whereIn('locale', Locale::prefixed())->where('path', '.*');
+Route::get('games/{path?}', fn (string $path = '') => redirect('/studio'.($path !== '' ? '/'.$path : '').(request()->getQueryString() ? '?'.request()->getQueryString() : ''), 301))
+    ->where('path', '.*');
 foreach (Locale::prefixed() as $locale) {
     Route::prefix($locale)->name($locale.'.')->middleware(SetLocale::class.':'.$locale)->group($frontend);
 }

@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('title', $game->title.' — '.__('Games'))
+@section('title', $game->title.' — InterG Studio')
 @section('description', \Illuminate\Support\Str::limit($game->description ?: $game->title.' — '.__('folder game Inter G Queen Bumindo.'), 155))
 
 @section('content')
@@ -8,7 +8,7 @@
 <section class="section section--page">
   <div class="container">
     <div class="fx" role="region" aria-label="Folder {{ $game->slug }}">
-      @include('partials.fx-bar', ['segments' => [['games', lroute('games')], [$game->slug, null]], 'count' => __(':n file', ['n' => $files->count()])])
+      @include('partials.fx-bar', ['segments' => [['studio', lroute('games')], [$game->slug, null]], 'count' => __(':n file', ['n' => $files->count()])])
 
       @if ($game->description)
         <p class="fx-info"><strong>{{ $game->title }}</strong> — {{ $game->description }}</p>
@@ -21,7 +21,7 @@
           <a href="{{ lroute('games') }}" class="fx-row fx-row--up">
             <span class="fx-name">
               <svg class="fx-up" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 9.8V20h2V9.8l4.6 4.6L19 13l-7-7-7 7 1.4 1.4z"/></svg>
-              <span class="fx-text"><span class="fx-title">..</span><span class="fx-desc">{{ __('Kembali ke folder games') }}</span></span>
+              <span class="fx-text"><span class="fx-title">..</span><span class="fx-desc">{{ __('Kembali ke InterG Studio') }}</span></span>
             </span>
             <span></span><span></span><span></span>
           </a>

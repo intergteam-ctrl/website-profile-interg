@@ -10,7 +10,7 @@ use Illuminate\View\View;
 
 class GameController extends Controller
 {
-    /** /games — every game shown as a folder. */
+    /** /studio — every game shown as a folder. */
     public function index(): View
     {
         $games = Game::query()->visible()->withCount('files')->get();
@@ -23,7 +23,7 @@ class GameController extends Controller
         return view('frontend.games', compact('games', 'sizes'));
     }
 
-    /** /games/{folder} — the files inside one folder. */
+    /** /studio/{folder} — the files inside one folder. */
     public function show(Game $game): View
     {
         abort_unless($game->is_active, 404);
@@ -34,7 +34,7 @@ class GameController extends Controller
     }
 
     /**
-     * /games/{folder}/{file} — raw HTML (".html" suffix optional, so relative
+     * /studio/{folder}/{file} — raw HTML (".html" suffix optional, so relative
      * links like href="terms.html" between files keep working).
      *
      * Served with a CSP sandbox: it runs in an opaque origin, so scripts work
@@ -48,7 +48,7 @@ class GameController extends Controller
         $record = $game->files()->where('name', strtolower($name))->first();
 
         if (! $record) {
-            // Old links (/games/{folder}/play) → the folder's first file.
+            // Old links (/studio/{folder}/play) → the folder's first file.
             $first = $file === 'play' ? $game->files()->first(['id', 'game_id', 'name']) : null;
             abort_unless($first, 404);
 

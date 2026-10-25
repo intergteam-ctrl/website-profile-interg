@@ -19,7 +19,6 @@
     "Nama": "名称",
     "Ukuran": "大小",
     "Diubah": "修改日期",
-    "Kembali ke folder games": "返回游戏文件夹",
     "Buka di tab baru": "在新标签页打开",
     "Folder ini masih kosong.": "此文件夹为空。",
     "Klik file untuk membukanya di tab baru.": "点击文件即可在新标签页中打开。",
@@ -347,5 +346,6 @@
     "Jumlah maksimal sesuai stok tersedia (:n)": "已达库存上限（:n 件）",
     ":name ditambahkan ke keranjang": "已将 :name 加入购物车",
     "Hapus": "删除",
-    "Menu: Lainnya": "更多"
+    "Menu: Lainnya": "更多",
+    "Kembali ke InterG Studio": "返回 InterG Studio"
 }

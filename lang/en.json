@@ -19,7 +19,6 @@
     "Nama": "Name",
     "Ukuran": "Size",
     "Diubah": "Modified",
-    "Kembali ke folder games": "Back to the games folder",
     "Buka di tab baru": "Open in a new tab",
     "Folder ini masih kosong.": "This folder is empty.",
     "Klik file untuk membukanya di tab baru.": "Click a file to open it in a new tab.",
@@ -347,5 +346,6 @@
     "Jumlah maksimal sesuai stok tersedia (:n)": "Maximum quantity reached (:n in stock)",
     ":name ditambahkan ke keranjang": ":name added to cart",
     "Hapus": "Remove",
-    "Menu: Lainnya": "More"
+    "Menu: Lainnya": "More",
+    "Kembali ke InterG Studio": "Back to InterG Studio"
 }

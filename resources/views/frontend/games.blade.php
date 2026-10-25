@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('title', __('Games'))
+@section('title', 'InterG Studio')
 @section('description', __('Kumpulan game ringan berbasis browser dari Inter G Queen Bumindo — buka folder lalu klik file untuk main.'))
 
 @section('content')
@@ -8,12 +8,12 @@
 <section class="section section--page">
   <div class="container">
     <div class="section-head section-head--center">
-      <h1 class="section-title">{{ __('Games') }}</h1>
+      <h1 class="section-title">InterG Studio</h1>
       <p class="section-sub">{{ __('Game ringan berbasis browser dari tim kami. Buka folder, lalu klik file untuk bermain langsung tanpa instal.') }}</p>
     </div>
 
-    <div class="fx" role="region" aria-label="{{ __('Folder Games') }}">
-      @include('partials.fx-bar', ['segments' => [['games', null]], 'count' => __(':n folder', ['n' => $games->count()])])
+    <div class="fx" role="region" aria-label="InterG Studio">
+      @include('partials.fx-bar', ['segments' => [['studio', null]], 'count' => __(':n folder', ['n' => $games->count()])])
 
       <div class="fx-head" aria-hidden="true"><span>{{ __('Nama') }}</span><span>{{ __('Ukuran') }}</span><span>{{ __('Diubah') }}</span><span></span></div>
 

@@ -34,7 +34,7 @@ class GameResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPuzzlePiece;
 
-    protected static ?string $navigationLabel = 'Games';
+    protected static ?string $navigationLabel = 'InterG Studio';
 
     protected static ?string $modelLabel = 'game';
 
@@ -56,7 +56,7 @@ class GameResource extends Resource
 
             TextInput::make('slug')
                 ->label('Alamat (slug)')
-                ->prefix('/games/')
+                ->prefix('/studio/')
                 ->required()
                 ->alphaDash()
                 ->maxLength(120)
@@ -64,7 +64,7 @@ class GameResource extends Resource
 
             FileUpload::make('html_files')
                 ->label('File HTML')
-                ->helperText('Bisa pilih beberapa file sekaligus. Nama file menjadi alamatnya: privacy.html → /games/{folder}/privacy. File dengan nama yang sama akan menimpa file lama. Maks. 8 MB per file.')
+                ->helperText('Bisa pilih beberapa file sekaligus. Nama file menjadi alamatnya: privacy.html → /studio/{folder}/privacy. File dengan nama yang sama akan menimpa file lama. Maks. 8 MB per file.')
                 ->multiple()
                 ->acceptedFileTypes(['text/html', '.html', '.htm'])
                 ->maxSize(Game::MAX_KB)
@@ -99,7 +99,7 @@ class GameResource extends Resource
             ->defaultSort('sort_order')
             ->reorderable('sort_order')
             ->columns([
-                TextColumn::make('slug')->label('Folder')->searchable()->weight('bold')->prefix('/games/'),
+                TextColumn::make('slug')->label('Folder')->searchable()->weight('bold')->prefix('/studio/'),
                 TextColumn::make('title')->label('Judul')->searchable(),
                 TextColumn::make('files_count')->label('File')->counts('files')->suffix(' file'),
                 ToggleColumn::make('is_active')->label('Tampil'),

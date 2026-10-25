@@ -28,29 +28,29 @@ class GamesTest extends TestCase
 
     public function test_games_root_lists_folders(): void
     {
-        $this->get('/games')->assertOk()->assertSee('Folder ini masih kosong.');
+        $this->get('/studio')->assertOk()->assertSee('Folder ini masih kosong.');
         $this->get('/')->assertSee('href="'.route('games').'"', false);
 
         $this->folder();
         Game::create(['title' => 'Draft', 'slug' => 'draft', 'is_active' => false]);
 
-        $this->get('/games')->assertOk()
+        $this->get('/studio')->assertOk()
             ->assertSee('fruits-bomb')
             ->assertSee('2 file')
             ->assertSee('href="'.route('games.show', 'fruits-bomb').'" class="fx-row"', false)
             ->assertDontSee('Kebijakan privasi')
             ->assertDontSee('draft</span>', false);
-        $this->get('/games/draft')->assertNotFound();
+        $this->get('/studio/draft')->assertNotFound();
     }
 
     public function test_folder_lists_files_with_url_named_after_the_file(): void
     {
         $this->folder();
 
-        $this->get('/games/fruits-bomb')->assertOk()
+        $this->get('/studio/fruits-bomb')->assertOk()
             ->assertSee('privacy.html')
             ->assertSee('index.html')
-            ->assertSee('href="'.url('/games/fruits-bomb/privacy').'" class="fx-row" target="_blank"', false)
+            ->assertSee('href="'.url('/studio/fruits-bomb/privacy').'" class="fx-row" target="_blank"', false)
             ->assertSee('href="'.route('games').'"', false);
     }
 
@@ -58,25 +58,25 @@ class GamesTest extends TestCase
     {
         $this->folder();
 
-        foreach (['/games/fruits-bomb/privacy', '/games/fruits-bomb/privacy.html', '/games/fruits-bomb/PRIVACY.html'] as $uri) {
+        foreach (['/studio/fruits-bomb/privacy', '/studio/fruits-bomb/privacy.html', '/studio/fruits-bomb/PRIVACY.html'] as $uri) {
             $r = $this->get($uri)->assertOk()->assertSee('Kebijakan privasi Fruits Bomb');
             $this->assertStringStartsWith('sandbox allow-scripts', $r->headers->get('Content-Security-Policy'));
             $this->assertStringNotContainsString('allow-same-origin', $r->headers->get('Content-Security-Policy'));
         }
 
-        $html = $this->get('/games/fruits-bomb/index')->getContent();
+        $html = $this->get('/studio/fruits-bomb/index')->getContent();
         $this->assertStringStartsWith('<!DOCTYPE html><html><head><script>', $html);
 
-        $this->get('/games/fruits-bomb/nothing')->assertNotFound();
+        $this->get('/studio/fruits-bomb/nothing')->assertNotFound();
         // Old /play links redirect to the first file.
-        $this->get('/games/fruits-bomb/play')->assertRedirect(url('/games/fruits-bomb/index'));
+        $this->get('/studio/fruits-bomb/play')->assertRedirect(url('/studio/fruits-bomb/index'));
     }
 
     public function test_inactive_folder_files_are_hidden(): void
     {
         $this->folder(['is_active' => false]);
 
-        $this->get('/games/fruits-bomb/privacy')->assertNotFound();
+        $this->get('/studio/fruits-bomb/privacy')->assertNotFound();
     }
 
     public function test_admin_creates_folder_with_several_files_and_replaces_by_name(): void
@@ -97,7 +97,7 @@ class GamesTest extends TestCase
 
         $game = Game::where('slug', 'fruits-bomb')->firstOrFail();
         $this->assertEqualsCanonicalizing(['index', 'privacy-policy'], $game->files()->pluck('name')->all());
-        $this->get('/games/fruits-bomb/privacy-policy')->assertOk()->assertSee('Privasi v1');
+        $this->get('/studio/fruits-bomb/privacy-policy')->assertOk()->assertSee('Privasi v1');
 
         // Uploading a file with the same name replaces it; other files stay.
         Livewire::test(EditGame::class, ['record' => $game->getRouteKey()])
@@ -106,7 +106,7 @@ class GamesTest extends TestCase
             ->assertHasNoFormErrors();
 
         $this->assertSame(2, GameFile::count());
-        $this->get('/games/fruits-bomb/index')->assertSee('Game v2');
+        $this->get('/studio/fruits-bomb/index')->assertSee('Game v2');
 
         Livewire::test(FilesRelationManager::class, ['ownerRecord' => $game, 'pageClass' => EditGame::class])
             ->assertOk()
@@ -132,5 +132,17 @@ class GamesTest extends TestCase
         // Covered by the migration itself: the column must be gone and files table present.
         $this->assertFalse(\Schema::hasColumn('games', 'html'));
         $this->assertTrue(\Schema::hasTable('game_files'));
+    }
+
+    public function test_old_games_links_redirect_to_studio(): void
+    {
+        $this->folder();
+
+        $this->get('/games')->assertRedirect('/studio')->assertStatus(301);
+        $this->get('/games/fruits-bomb/privacy')->assertRedirect('/studio/fruits-bomb/privacy');
+        $this->get('/games/fruits-bomb/privacy.html?x=1')->assertRedirect('/studio/fruits-bomb/privacy.html?x=1');
+        $this->get('/en/games/fruits-bomb')->assertRedirect('/en/studio/fruits-bomb');
+        $this->get('/studio')->assertOk()->assertSee('InterG Studio');
+        $this->get('/studio/fruits-bomb/privacy')->assertOk()->assertSee('Kebijakan privasi Fruits Bomb');
     }
 }
