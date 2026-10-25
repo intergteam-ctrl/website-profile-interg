@@ -1,20 +1,21 @@
 @php
-  $onHome = request()->routeIs('home');
-  $section = fn (string $id) => $onHome ? '#'.$id : route('home').'#'.$id;
+  $L = \App\Support\Locale::class;
+  $onHome = $L::is('home');
+  $section = fn (string $id) => $onHome ? '#'.$id : lroute('home').'#'.$id;
 
   $navItems = [
-      ['label' => 'Beranda',     'href' => $section('hero')],
-      ['label' => 'Tentang',     'href' => $section('about')],
-      ['label' => 'Layanan',     'href' => $section('services')],
-      ['label' => 'Proyek',      'href' => $section('display')],
-      ['label' => 'Blog',        'href' => $onHome ? '#blog' : route('blog'), 'active' => request()->routeIs('blog', 'blog.show')],
-      ['label' => 'Kontak',      'href' => $section('contact')],
-      ['label' => 'Marketplace', 'href' => route('marketplace'), 'active' => request()->routeIs('marketplace'), 'side' => true,
-       'desc' => 'Laptop, hardware, software & aksesoris IT', 'icon' => 'M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM7.2 14.6l.1-.1L8.1 13h7.4c.8 0 1.4-.4 1.7-1l3.6-6.5A1 1 0 0 0 20 4H5.2l-.9-2H1v2h2l3.6 7.6-1.4 2.4A2 2 0 0 0 7 17h12v-2H7.4c-.1 0-.2-.1-.2-.2z'],
-      ['label' => 'Download',    'href' => route('downloads'), 'active' => request()->routeIs('downloads'), 'side' => true,
-       'desc' => 'Company profile, brosur & panduan', 'icon' => 'M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z'],
-      ['label' => 'Games',       'href' => route('games'), 'active' => request()->routeIs('games', 'games.show'), 'side' => true,
-       'desc' => 'Game ringan langsung di browser', 'icon' => 'M21 6H3a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm4-3a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z'],
+      ['label' => __('Beranda'),     'href' => $section('hero')],
+      ['label' => __('Tentang'),     'href' => $section('about')],
+      ['label' => __('Layanan'),     'href' => $section('services')],
+      ['label' => __('Proyek'),      'href' => $section('display')],
+      ['label' => __('Blog'),        'href' => $onHome ? '#blog' : lroute('blog'), 'active' => $L::is('blog', 'blog.show')],
+      ['label' => __('Kontak'),      'href' => $section('contact')],
+      ['label' => __('Marketplace'), 'href' => lroute('marketplace'), 'active' => $L::is('marketplace'), 'side' => true,
+       'desc' => __('Laptop, hardware, software & aksesoris IT'), 'icon' => 'M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM7.2 14.6l.1-.1L8.1 13h7.4c.8 0 1.4-.4 1.7-1l3.6-6.5A1 1 0 0 0 20 4H5.2l-.9-2H1v2h2l3.6 7.6-1.4 2.4A2 2 0 0 0 7 17h12v-2H7.4c-.1 0-.2-.1-.2-.2z'],
+      ['label' => __('Download'),    'href' => lroute('downloads'), 'active' => $L::is('downloads'), 'side' => true,
+       'desc' => __('Company profile, brosur & panduan'), 'icon' => 'M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z'],
+      ['label' => __('Games'),       'href' => lroute('games'), 'active' => $L::is('games', 'games.show', 'games.file'), 'side' => true,
+       'desc' => __('Game ringan langsung di browser'), 'icon' => 'M21 6H3a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm4-3a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z'],
   ];
   // Top bar keeps the page sections; extra pages live in the side menu.
   $topItems = array_filter($navItems, fn ($i) => empty($i['side']));
@@ -26,10 +27,10 @@
   $fullTitle = $pageTitle
       ? $pageTitle.' — '.config('company.short_name').' '.config('company.name')
       : config('company.short_name').' — '.config('company.name').' | '.config('company.tagline');
-  $metaDescription = trim($__env->yieldContent('description')) ?: 'Inter G Queen Bumindo (IGB) — Total IT Solution Provider di Malang: system integrator, software development, IoT, display solution, dan IT consulting untuk pemerintahan dan perusahaan.';
+  $metaDescription = trim($__env->yieldContent('description')) ?: __('Inter G Queen Bumindo (IGB) — Total IT Solution Provider di Malang: system integrator, software development, IoT, display solution, dan IT consulting untuk pemerintahan dan perusahaan.');
 @endphp
 <!DOCTYPE html>
-<html lang="id">
+<html lang="{{ $L::htmlLang() }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,6 +38,10 @@
   <meta name="description" content="{{ $metaDescription }}">
   <meta name="theme-color" content="#071528">
   <link rel="canonical" href="{{ url()->current() }}">
+  @foreach (array_keys($L::SUPPORTED) as $code)
+    <link rel="alternate" hreflang="{{ $L::SUPPORTED[$code]['html'] }}" href="{{ $L::switchUrl($code) }}">
+  @endforeach
+  <link rel="alternate" hreflang="x-default" href="{{ $L::switchUrl($L::DEFAULT) }}">
 
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="{{ config('company.name') }}">
@@ -57,15 +62,16 @@
   <script>document.documentElement.classList.add('js');</script>
 </head>
 <body class="@yield('body_class')">
-  <a href="#main" class="skip-link">Lewati ke konten</a>
+  <a href="#main" class="skip-link">{{ __('Lewati ke konten') }}</a>
 
   {{-- Mobile navigation --}}
-  <nav class="mobile-nav" id="mobileNav" aria-label="Menu utama (mobile)" aria-hidden="true">
-    <button type="button" class="mobile-close" data-mobile-nav-close aria-label="Tutup menu">✕</button>
+  <nav class="mobile-nav" id="mobileNav" aria-label="{{ __('Menu utama') }}" aria-hidden="true">
+    <button type="button" class="mobile-close" data-mobile-nav-close aria-label="{{ __('Tutup menu') }}">✕</button>
     @foreach ($navItems as $item)
       <a href="{{ $item['href'] }}" data-mobile-nav-close>{{ $item['label'] }}</a>
     @endforeach
-    <a href="{{ $section('contact') }}" class="btn btn-red" data-mobile-nav-close>Konsultasi Gratis</a>
+    @include('partials.lang-switch', ['class' => 'lang-switch lang-switch--mobile'])
+    <a href="{{ $section('contact') }}" class="btn btn-red" data-mobile-nav-close>{{ __('Konsultasi Gratis') }}</a>
   </nav>
 
   {{-- Navbar --}}
@@ -82,14 +88,16 @@
         <li>
           <button type="button" @class(['nav-more', 'active' => $sideActive]) id="moreTab" aria-controls="moreNav" aria-expanded="false">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v6H4zm10 0h6v6h-6zM4 14h6v6H4zm10 0h6v6h-6z"/></svg>
-            Lainnya
+            {{ __('Menu: Lainnya') }}
           </button>
         </li>
       </ul>
 
-      <a href="{{ $section('contact') }}" class="btn btn-red nav-cta">Konsultasi Gratis</a>
+      @include('partials.lang-switch', ['class' => 'lang-switch'])
 
-      <button type="button" class="hamburger" id="hamburger" aria-label="Buka menu" aria-controls="mobileNav" aria-expanded="false">
+      <a href="{{ $section('contact') }}" class="btn btn-red nav-cta">{{ __('Konsultasi Gratis') }}</a>
+
+      <button type="button" class="hamburger" id="hamburger" aria-label="{{ __('Buka menu') }}" aria-controls="mobileNav" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
     </div>
@@ -100,10 +108,10 @@
   </main>
 
   {{-- Side menu: Marketplace, Download, Games --}}
-  <aside class="more-drawer" id="moreNav" aria-label="Menu lainnya" aria-hidden="true" inert>
+  <aside class="more-drawer" id="moreNav" aria-label="{{ __('Menu lainnya') }}" aria-hidden="true" inert>
     <div class="more-head">
-      <h2>Menu lainnya</h2>
-      <button type="button" class="ig-close" data-more-close aria-label="Tutup menu lainnya">✕</button>
+      <h2>{{ __('Menu lainnya') }}</h2>
+      <button type="button" class="ig-close" data-more-close aria-label="{{ __('Tutup menu lainnya') }}">✕</button>
     </div>
     <ul class="more-list">
       @foreach ($sideItems as $item)
@@ -115,7 +123,7 @@
         </li>
       @endforeach
     </ul>
-    <a href="{{ $section('contact') }}" class="btn btn-red more-cta" data-more-close>Konsultasi Gratis</a>
+    <a href="{{ $section('contact') }}" class="btn btn-red more-cta" data-more-close>{{ __('Konsultasi Gratis') }}</a>
   </aside>
   <div class="more-scrim" id="moreScrim" hidden></div>
 
@@ -130,7 +138,7 @@
             <img src="{{ asset('images/logo-igb.png') }}" alt="IG&amp;B — Accelerating Innovation and Technology" width="176" height="40">
           </a>
           <p class="footer-desc">
-            {{ config('company.name') }} — Total IT Solution untuk pemerintahan dan perusahaan: system integrator, software, IoT, surveillance, dan display solution.
+            {{ config('company.name') }} — {{ __('Total IT Solution untuk pemerintahan dan perusahaan: system integrator, software, IoT, surveillance, dan display solution.') }}
           </p>
           @php($socials = \App\Support\Socials::links())
           @php($otherLinks = \App\Support\Socials::others())
@@ -147,7 +155,7 @@
         </div>
 
         <div>
-          <div class="footer-col-title">Quick Links</div>
+          <div class="footer-col-title">{{ __('Tautan') }}</div>
           <ul class="footer-links">
             @foreach ($navItems as $item)
               <li><a href="{{ $item['href'] }}">{{ $item['label'] }}</a></li>
@@ -156,16 +164,16 @@
         </div>
 
         <div>
-          <div class="footer-col-title">Layanan</div>
+          <div class="footer-col-title">{{ __('Layanan') }}</div>
           <ul class="footer-links">
             @foreach (config('company.services') as $service)
-              <li><a href="{{ $section($service['anchor'] === 'contact' ? 'services' : $service['anchor']) }}">{{ $service['title'] }}</a></li>
+              <li><a href="{{ $section($service['anchor'] === 'contact' ? 'services' : $service['anchor']) }}">{{ __($service['title']) }}</a></li>
             @endforeach
           </ul>
         </div>
 
         <div>
-          <div class="footer-col-title">Kontak</div>
+          <div class="footer-col-title">{{ __('Kontak') }}</div>
           <ul class="footer-links">
             <li><a href="tel:{{ preg_replace('/[^\d+]/', '', $site['phone']) }}">{{ $site['phone'] }}</a></li>
             @if ($site['whatsapp_link'])
@@ -178,12 +186,15 @@
       </div>
 
       <div class="footer-bottom">
-        <div>© {{ now()->year }} <span>{{ config('company.name') }}</span>. All rights reserved.</div>
+        <div>© {{ now()->year }} <span>{{ config('company.name') }}</span>. {{ __('Hak cipta dilindungi.') }}</div>
         <div class="footer-tagline">{{ config('company.tagline') }}</div>
       </div>
     </div>
   </footer>
 
+  {{-- Strings used by site.js / marketplace.js, in the page language. --}}
+  @php($jsStrings = collect(['Mengirim...', 'Maaf, stok :name sedang habis', 'Jumlah maksimal sesuai stok tersedia (:n)', ':name ditambahkan ke keranjang', 'Jumlah', 'Kurangi', 'Tambah', 'Hapus', 'Stok habis', 'Sisa :n', 'Stok tersedia', 'Tambah ke Keranjang', 'Video belum bisa dimuat di sini (mungkin diblokir browser atau koneksi). Buka langsung di TikTok:'])->mapWithKeys(fn ($k) => [$k => __($k)]))
+  <script>window.IGB_T = @json($jsStrings);</script>
   <script src="{{ $assetVersion('js/site.js') }}" defer></script>
   @stack('scripts')
 </body>

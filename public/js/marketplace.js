@@ -4,6 +4,13 @@
 (function () {
   'use strict';
 
+  // Translated UI strings from the page (layout.app → window.IGB_T).
+  function t(key, vars) {
+    var text = (window.IGB_T || {})[key] || key;
+    Object.keys(vars || {}).forEach(function (k) { text = text.split(':' + k).join(vars[k]); });
+    return text;
+  }
+
   var dataEl = document.getElementById('mpData');
   var grid = document.getElementById('mpGrid');
 
@@ -101,15 +108,15 @@
     var p = products[id];
     if (!p) return;
     var limit = maxQty(p);
-    if (limit < 1) { toast('Maaf, stok ' + p.name + ' sedang habis'); return; }
+    if (limit < 1) { toast(t('Maaf, stok :name sedang habis', { name: p.name })); return; }
     var item = findItem(id);
     var current = item ? item.qty : 0;
     var next = Math.min(limit, current + (qty || 1));
-    if (next === current) { toast('Jumlah maksimal sesuai stok tersedia (' + limit + ')'); return; }
+    if (next === current) { toast(t('Jumlah maksimal sesuai stok tersedia (:n)', { n: limit })); return; }
     if (item) item.qty = next; else cart.push({ id: id, qty: next });
     saveCart();
     renderCart();
-    toast('✓ ' + p.name + ' ditambahkan ke keranjang');
+    toast('✓ ' + t(':name ditambahkan ke keranjang', { name: p.name }));
     bumpCount();
   }
 
@@ -188,10 +195,10 @@
       var row = el('div', 'cart-row');
       var qty = el('div', 'qty qty--sm');
       qty.setAttribute('role', 'group');
-      qty.setAttribute('aria-label', 'Jumlah ' + p.name);
-      var minus = el('button', null, '−'); minus.type = 'button'; minus.setAttribute('aria-label', 'Kurangi');
-      var input = el('input'); input.type = 'number'; input.min = '1'; input.max = String(maxQty(p)); input.value = item.qty; input.setAttribute('aria-label', 'Jumlah');
-      var plus = el('button', null, '+'); plus.type = 'button'; plus.setAttribute('aria-label', 'Tambah');
+      qty.setAttribute('aria-label', t('Jumlah') + ' ' + p.name);
+      var minus = el('button', null, '−'); minus.type = 'button'; minus.setAttribute('aria-label', t('Kurangi'));
+      var input = el('input'); input.type = 'number'; input.min = '1'; input.max = String(maxQty(p)); input.value = item.qty; input.setAttribute('aria-label', t('Jumlah'));
+      var plus = el('button', null, '+'); plus.type = 'button'; plus.setAttribute('aria-label', t('Tambah'));
       plus.disabled = item.qty >= maxQty(p);
       minus.addEventListener('click', function () { setQty(p.id, item.qty - 1); });
       plus.addEventListener('click', function () { setQty(p.id, item.qty + 1); });
@@ -204,7 +211,7 @@
 
       var del = el('button', 'cart-del', '✕');
       del.type = 'button';
-      del.setAttribute('aria-label', 'Hapus ' + p.name);
+      del.setAttribute('aria-label', t('Hapus') + ' ' + p.name);
       del.addEventListener('click', function () { removeItem(p.id); });
       li.appendChild(del);
 
@@ -276,9 +283,9 @@
   var openId = null;
 
   function stockLabel(p) {
-    if (p.stock < 1) return { text: 'Stok habis', cls: 'is-out' };
-    if (p.stock <= 2) return { text: 'Sisa ' + p.stock, cls: 'is-low' };
-    return { text: 'Stok tersedia', cls: '' };
+    if (p.stock < 1) return { text: t('Stok habis'), cls: 'is-out' };
+    if (p.stock <= 2) return { text: t('Sisa :n', { n: p.stock }), cls: 'is-low' };
+    return { text: t('Stok tersedia'), cls: '' };
   }
 
   function openProduct(id) {
@@ -323,7 +330,7 @@
     modalQty.value = '1';
     modalQty.disabled = limit < 1;
     modalAdd.disabled = limit < 1;
-    modalAdd.lastChild.textContent = limit < 1 ? ' Stok habis' : ' Tambah ke Keranjang';
+    modalAdd.lastChild.textContent = ' ' + (limit < 1 ? t('Stok habis') : t('Tambah ke Keranjang'));
 
     if (typeof modal.showModal === 'function') {
       modal.showModal();

@@ -1,7 +1,7 @@
 @extends('layout.app')
 
-@section('title', 'Portfolio')
-@section('description', 'Project yang telah dikerjakan Inter G Queen Bumindo — display solution, IoT, hingga software development untuk pemerintahan dan perusahaan.')
+@section('title', __('Portfolio'))
+@section('description', __('Project yang telah dikerjakan Inter G Queen Bumindo — display solution, IoT, hingga software development untuk pemerintahan dan perusahaan.'))
 
 @section('content')
 
@@ -9,8 +9,8 @@
   <div class="container">
     <div class="section-head section-head--center reveal">
       <div class="eyebrow">Portfolio</div>
-      <h1 class="section-title">Semua <em>Project</em></h1>
-      <p class="section-sub">Berbagai project yang telah kami kerjakan — dari display solution, IoT, hingga software development.</p>
+      <h1 class="section-title">{{ __('Semua Project') }}</h1>
+      <p class="section-sub">{{ __('Berbagai project yang telah kami kerjakan — dari display solution, IoT, hingga software development.') }}</p>
     </div>
 
     @if ($portfolios->isNotEmpty())
@@ -21,7 +21,7 @@
       </div>
       @include('partials.pager', ['paginator' => $portfolios])
     @else
-      <p class="empty-state">Belum ada project yang ditampilkan.</p>
+      <p class="empty-state">{{ __('Belum ada project yang ditampilkan.') }}</p>
     @endif
   </div>
 </section>

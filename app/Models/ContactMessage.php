@@ -14,6 +14,8 @@ class ContactMessage extends Model
     public const SERVICES = [
         'System Integrator',
         'Software & App Development',
+        'Web Integration',
+        'Cloud Computing',
         'IoT Solution & Surveillance Camera',
         'Professional Integrated Display Solution',
         'Hardware Service & Maintenance',

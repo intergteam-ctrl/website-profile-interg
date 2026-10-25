@@ -258,16 +258,16 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
 /* ==========================================================================
    SERVICES — one ruled sheet instead of floating cards
    ========================================================================== */
-.services-grid { display: grid; grid-template-columns: repeat(3, 1fr); background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); overflow: hidden; }
-.service-card { padding: 32px 30px 30px; display: flex; flex-direction: column; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: #fff; transition: background var(--transition); }
-.service-card:nth-child(3n) { border-right: 0; }
-.service-card:nth-last-child(-n+3) { border-bottom: 0; }
+.services-grid { display: grid; grid-template-columns: repeat(4, 1fr); background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); overflow: hidden; }
+.service-card { padding: 28px 24px 26px; display: flex; flex-direction: column; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: #fff; transition: background var(--transition); }
+.service-card:nth-child(4n) { border-right: 0; }
+.service-card:nth-last-child(-n+4) { border-bottom: 0; }
 .service-card:hover { background: var(--paper-2); }
 .service-num { display: none; }
 .service-icon { width: 46px; height: 46px; border-radius: 10px; background: var(--teal-soft); display: grid; place-items: center; margin-bottom: 20px; }
 .service-icon svg { width: 24px; height: 24px; fill: var(--teal-700); }
-.service-title { font-family: var(--font-head); font-weight: 700; font-size: 20px; letter-spacing: -0.015em; color: var(--navy-900); line-height: 1.25; margin-bottom: 8px; }
-.service-desc { font-size: 15.5px; color: var(--slate); flex: 1; }
+.service-title { font-family: var(--font-head); font-weight: 700; font-size: 18.5px; letter-spacing: -0.015em; color: var(--navy-900); line-height: 1.25; margin-bottom: 8px; }
+.service-desc { font-size: 15px; color: var(--slate); flex: 1; }
 .service-card .link-arrow { margin-top: 18px; font-size: 15px; }
 
 /* ==========================================================================
@@ -710,9 +710,9 @@ body.modal-open { overflow: hidden; }
 @media (max-width: 1024px) {
   .grid-3, .apps-grid, .gallery, .iot-projects { grid-template-columns: repeat(2, 1fr); }
   .services-grid { grid-template-columns: repeat(2, 1fr); }
-  .service-card:nth-child(3n) { border-right: 1px solid var(--line); }
+  .service-card:nth-child(4n) { border-right: 1px solid var(--line); }
   .service-card:nth-child(2n) { border-right: 0; }
-  .service-card:nth-last-child(-n+3) { border-bottom: 1px solid var(--line); }
+  .service-card:nth-last-child(-n+4) { border-bottom: 1px solid var(--line); }
   .service-card:nth-last-child(-n+2) { border-bottom: 0; }
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
   .about-grid, .feature, .contact-grid { gap: 48px; }
@@ -873,3 +873,24 @@ body.modal-open { overflow: hidden; }
   .game-stage { aspect-ratio: 3 / 4; max-height: 75vh; }
 }
 .media-link svg, .media-thumb-icon { display: none; }
+
+/* ---------- Language switcher ---------- */
+.lang-switch { display: inline-flex; align-items: center; gap: 2px; padding: 3px; border: 1px solid var(--line); border-radius: 8px; margin-left: auto; margin-right: 10px; }
+.lang-switch a { font-size: 13px; font-weight: 700; color: var(--muted); padding: 4px 8px; border-radius: 5px; line-height: 1.2; transition: color var(--transition), background var(--transition); }
+.lang-switch a:hover { color: var(--navy-900); }
+.lang-switch a[aria-current] { background: var(--navy-900); color: #fff; }
+#navbar:not(.scrolled):not(.solid) .lang-switch { border-color: rgba(255, 255, 255, 0.22); }
+#navbar:not(.scrolled):not(.solid) .lang-switch a { color: rgba(255, 255, 255, 0.72); }
+#navbar:not(.scrolled):not(.solid) .lang-switch a:hover { color: #fff; }
+#navbar:not(.scrolled):not(.solid) .lang-switch a[aria-current] { background: #fff; color: var(--navy-950); }
+.lang-switch--mobile { margin: 8px 0 0; border-color: rgba(255, 255, 255, 0.22); }
+.lang-switch--mobile a { font-size: 15px !important; color: rgba(255, 255, 255, 0.72) !important; padding: 6px 12px; }
+.lang-switch--mobile a[aria-current] { background: #fff; color: var(--navy-950) !important; }
+.nav-inner .nav-links { margin-left: auto; }
+@media (max-width: 1023px) { .nav-inner > .lang-switch { margin-right: 4px; } }
+@media (max-width: 420px) { .nav-inner > .lang-switch { display: none; } }
+
+/* Mandarin: system CJK fonts, no negative tracking or extra word spacing. */
+html:lang(zh-Hans) { --font-head: 'Plus Jakarta Sans', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif; --font-body: var(--font-head); }
+html:lang(zh-Hans) body { word-spacing: normal; line-height: 1.75; }
+html:lang(zh-Hans) .hero-headline, html:lang(zh-Hans) .section-title, html:lang(zh-Hans) .hi-there, html:lang(zh-Hans) .get-in-touch { letter-spacing: 0; word-spacing: normal; }

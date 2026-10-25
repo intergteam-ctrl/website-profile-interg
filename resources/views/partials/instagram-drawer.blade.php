@@ -28,7 +28,7 @@
       <span>YouTube</span>
     </button>
   @elseif ($yt['url'])
-    <a href="{{ $yt['url'] }}" class="ig-tab yt-tab" target="_blank" rel="noopener" aria-label="YouTube {{ '@'.$yt['handle'] }} (buka di tab baru)">
+    <a href="{{ $yt['url'] }}" class="ig-tab yt-tab" target="_blank" rel="noopener" aria-label="YouTube {{ '@'.$yt['handle'] }} ({{ __('buka di tab baru') }})">
       {!! $ytIcon !!}
       <span>YouTube</span>
     </a>
@@ -50,32 +50,32 @@
       <a href="{{ $ig['url'] }}" target="_blank" rel="noopener" class="ig-handle">{{ '@'.$ig['handle'] }}</a>
       <span class="ig-name">{{ config('company.name') }}</span>
     </div>
-    <button type="button" class="ig-close" data-ig-close aria-label="Tutup panel Instagram">✕</button>
+    <button type="button" class="ig-close" data-ig-close aria-label="{{ __('Tutup panel Instagram') }}">✕</button>
   </div>
 
-  <a href="{{ $ig['url'] }}" target="_blank" rel="noopener" class="btn btn-red ig-follow">{!! $igIcon !!} Follow di Instagram</a>
+  <a href="{{ $ig['url'] }}" target="_blank" rel="noopener" class="btn btn-red ig-follow">{!! $igIcon !!} {{ __('Follow di Instagram') }}</a>
 
   @if ($instagramPosts->isNotEmpty())
     <ul class="ig-grid">
       @foreach ($instagramPosts as $post)
         <li>
-          <a href="{{ $post->url }}" target="_blank" rel="noopener" class="ig-item" aria-label="{{ $post->caption ? \Illuminate\Support\Str::limit($post->caption, 80) : 'Lihat postingan di Instagram' }}">
+          <a href="{{ $post->url }}" target="_blank" rel="noopener" class="ig-item" aria-label="{{ $post->caption ? \Illuminate\Support\Str::limit($post->caption, 80) : __('Lihat postingan di Instagram') }}">
             @if ($post->image_url)
               <img src="{{ $post->image_url }}" alt="" loading="lazy" decoding="async">
             @endif
             <span class="ig-overlay" aria-hidden="true">
               @if ($post->caption)<span class="ig-caption">{{ \Illuminate\Support\Str::limit($post->caption, 90) }}</span>@endif
-              @if ($post->posted_at)<span class="ig-date">{{ $post->posted_at->locale('id')->translatedFormat('d M Y') }}</span>@endif
+              @if ($post->posted_at)<span class="ig-date">{{ $post->posted_at->locale(\App\Support\Locale::carbon())->translatedFormat('d M Y') }}</span>@endif
             </span>
           </a>
         </li>
       @endforeach
     </ul>
-    <a href="{{ $ig['url'] }}" target="_blank" rel="noopener" class="link-arrow ig-more">Lihat semua postingan
+    <a href="{{ $ig['url'] }}" target="_blank" rel="noopener" class="link-arrow ig-more">{{ __('Lihat semua postingan') }}
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
     </a>
   @else
-    <p class="ig-empty">Ikuti kegiatan, proyek terbaru, dan dokumentasi pemasangan kami di Instagram.</p>
+    <p class="ig-empty">{{ __('Ikuti kegiatan, proyek terbaru, dan dokumentasi pemasangan kami di Instagram.') }}</p>
   @endif
 </aside>
 @endif
@@ -86,9 +86,9 @@
       <div class="ig-avatar" aria-hidden="true"><img src="{{ asset('images/logo-igb.png') }}" alt=""></div>
       <div class="ig-who">
         <a href="{{ $yt['url'] }}" target="_blank" rel="noopener" class="ig-handle">{{ '@'.$yt['handle'] }}</a>
-        <span class="ig-name">Video terbaru di YouTube</span>
+        <span class="ig-name">{{ __('Video terbaru di YouTube') }}</span>
       </div>
-      <button type="button" class="ig-close" data-yt-close aria-label="Tutup panel YouTube">✕</button>
+      <button type="button" class="ig-close" data-yt-close aria-label="{{ __('Tutup panel YouTube') }}">✕</button>
     </div>
 
     <div class="yt-player" id="ytPlayer" hidden></div>
@@ -103,14 +103,14 @@
             </span>
             <span class="yt-meta">
               <span class="yt-title">{{ $video->title }}</span>
-              @if ($video->published_at)<span class="ig-date">{{ $video->published_at->locale('id')->translatedFormat('d M Y') }}</span>@endif
+              @if ($video->published_at)<span class="ig-date">{{ $video->published_at->locale(\App\Support\Locale::carbon())->translatedFormat('d M Y') }}</span>@endif
             </span>
           </a>
         </li>
       @endforeach
     </ul>
 
-    <a href="{{ $yt['url'] }}" target="_blank" rel="noopener" class="btn btn-red ig-follow">{!! $ytIcon !!} Subscribe di YouTube</a>
+    <a href="{{ $yt['url'] }}" target="_blank" rel="noopener" class="btn btn-red ig-follow">{!! $ytIcon !!} {{ __('Subscribe di YouTube') }}</a>
   </aside>
 @endif
 @if ($tt['url'])
@@ -122,17 +122,17 @@
       <div class="ig-avatar" aria-hidden="true"><img src="{{ asset('images/logo-igb.png') }}" alt=""></div>
       <div class="ig-who">
         <a href="{{ $tt['url'] }}" target="_blank" rel="noopener" class="ig-handle">{{ '@'.$tt['handle'] }}</a>
-        <span class="ig-name">Video terbaru di TikTok</span>
+        <span class="ig-name">{{ __('Video terbaru di TikTok') }}</span>
       </div>
-      <button type="button" class="ig-close" data-tt-close aria-label="Tutup panel TikTok">✕</button>
+      <button type="button" class="ig-close" data-tt-close aria-label="{{ __('Tutup panel TikTok') }}">✕</button>
     </div>
 
     <div class="tt-embed" id="ttEmbed">
-      <p class="tt-loading">Memuat video TikTok…</p>
+      <p class="tt-loading">{{ __('Memuat video TikTok…') }}</p>
     </div>
-    <p class="tt-fallback" id="ttFallback" hidden>Video belum bisa dimuat di sini (mungkin diblokir browser atau koneksi). Buka langsung di TikTok:</p>
+    <p class="tt-fallback" id="ttFallback" hidden>{{ __('Video belum bisa dimuat di sini (mungkin diblokir browser atau koneksi). Buka langsung di TikTok:') }}</p>
 
-    <a href="{{ $tt['url'] }}" target="_blank" rel="noopener" class="btn btn-red ig-follow">{!! $ttIcon !!} Follow di TikTok</a>
+    <a href="{{ $tt['url'] }}" target="_blank" rel="noopener" class="btn btn-red ig-follow">{!! $ttIcon !!} {{ __('Follow di TikTok') }}</a>
   </aside>
 @endif
 <div class="ig-scrim" id="igScrim" hidden></div>

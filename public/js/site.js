@@ -217,7 +217,7 @@
       var btn = contactForm.querySelector('button[type="submit"]');
       if (btn) {
         btn.disabled = true;
-        btn.lastChild.textContent = ' Mengirim...';
+        btn.lastChild.textContent = ' ' + ((window.IGB_T || {})['Mengirim...'] || 'Mengirim...');
       }
     });
   }

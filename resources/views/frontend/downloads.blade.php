@@ -1,7 +1,7 @@
 @extends('layout.app')
 
-@section('title', 'Download')
-@section('description', 'Unduh company profile, brosur, panduan, dan dokumen lain dari Inter G Queen Bumindo (IGB).')
+@section('title', __('Download'))
+@section('description', __('Unduh company profile, brosur, panduan, dan dokumen lain dari Inter G Queen Bumindo (IGB).'))
 
 @section('content')
 
@@ -9,15 +9,15 @@
   <div class="container">
     <div class="section-head section-head--center reveal">
       <div class="eyebrow">Download</div>
-      <h1 class="section-title">Pusat <em>Unduhan</em></h1>
-      <p class="section-sub">Company profile, brosur, panduan, dan dokumen pendukung lainnya dari {{ config('company.short_name') }}.</p>
+      <h1 class="section-title">{{ __('Pusat Unduhan') }}</h1>
+      <p class="section-sub">{{ __('Company profile, brosur, panduan, dan dokumen pendukung lainnya dari :name.', ['name' => config('company.short_name')]) }}</p>
     </div>
 
     @if ($total > 0)
       @if ($groups->count() > 1)
-        <nav class="dl-cats" aria-label="Kategori unduhan">
+        <nav class="dl-cats" aria-label="{{ __('Kategori unduhan') }}">
           @foreach ($groups as $category => $items)
-            <a href="#dl-{{ \Illuminate\Support\Str::slug($category ?: 'lainnya') }}">{{ $category ?: 'Lainnya' }} <span>{{ $items->count() }}</span></a>
+            <a href="#dl-{{ \Illuminate\Support\Str::slug($category ?: 'lainnya') }}">{{ $category ?: __('Lainnya') }} <span>{{ $items->count() }}</span></a>
           @endforeach
         </nav>
       @endif
@@ -25,7 +25,7 @@
       @foreach ($groups as $category => $items)
         <div class="dl-group" id="dl-{{ \Illuminate\Support\Str::slug($category ?: 'lainnya') }}">
           @if ($groups->count() > 1)
-            <h2 class="dl-group-title">{{ $category ?: 'Lainnya' }}</h2>
+            <h2 class="dl-group-title">{{ $category ?: __('Lainnya') }}</h2>
           @endif
           <ul class="dl-list">
             @foreach ($items as $item)
@@ -39,13 +39,13 @@
                     <p class="dl-desc">{{ $item->description }}</p>
                   @endif
                   <div class="dl-meta">
-                    <span class="dl-kind">{{ $item->kind }}</span>
+                    <span class="dl-kind">{{ __($item->kind) }}</span>
                     @if ($item->host)<span>{{ $item->host }}</span>@endif
                   </div>
                 </div>
-                <a href="{{ $item->safe_url }}" class="btn btn-red dl-btn" target="_blank" rel="noopener noreferrer" aria-label="Download {{ $item->title }} (buka di tab baru)">
+                <a href="{{ $item->safe_url }}" class="btn btn-red dl-btn" target="_blank" rel="noopener noreferrer" aria-label="{{ __('Download') }} {{ $item->title }} ({{ __('buka di tab baru') }})">
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg>
-                  Download
+                  {{ __('Download') }}
                 </a>
               </li>
             @endforeach
@@ -53,7 +53,7 @@
         </div>
       @endforeach
     @else
-      <p class="empty-state">Belum ada file yang bisa diunduh.</p>
+      <p class="empty-state">{{ __('Belum ada file yang bisa diunduh.') }}</p>
     @endif
   </div>
 </section>

@@ -5,20 +5,30 @@ use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\GameController;
 use App\Http\Middleware\EnsureAdmin;
+use App\Http\Middleware\SetLocale;
+use App\Support\Locale;
 use Illuminate\Support\Facades\Route;
 
-// Frontend
-Route::get('/', [FrontendController::class, 'home'])->name('home');
-Route::get('/blog', [FrontendController::class, 'blog'])->name('blog');
-Route::get('/blog/{slug}', [FrontendController::class, 'blogShow'])->name('blog.show');
-Route::get('/portfolio', [FrontendController::class, 'portfolio'])->name('portfolio');
-Route::get('/marketplace', [FrontendController::class, 'marketplace'])->name('marketplace');
-Route::get('/download', [FrontendController::class, 'downloads'])->name('downloads');
-Route::get('/games', [GameController::class, 'index'])->name('games');
-Route::get('/games/{game}', [GameController::class, 'show'])->name('games.show');
-Route::get('/games/{game}/{file}', [GameController::class, 'file'])
-    ->where('file', '[A-Za-z0-9._-]+')
-    ->name('games.file');
+// Frontend — registered once per language: Indonesian at /, English at
+// /en and Mandarin at /zh (route names prefixed "en." / "zh.").
+$frontend = function (): void {
+    Route::get('/', [FrontendController::class, 'home'])->name('home');
+    Route::get('/blog', [FrontendController::class, 'blog'])->name('blog');
+    Route::get('/blog/{slug}', [FrontendController::class, 'blogShow'])->name('blog.show');
+    Route::get('/portfolio', [FrontendController::class, 'portfolio'])->name('portfolio');
+    Route::get('/marketplace', [FrontendController::class, 'marketplace'])->name('marketplace');
+    Route::get('/download', [FrontendController::class, 'downloads'])->name('downloads');
+    Route::get('/games', [GameController::class, 'index'])->name('games');
+    Route::get('/games/{game}', [GameController::class, 'show'])->name('games.show');
+    Route::get('/games/{game}/{file}', [GameController::class, 'file'])
+        ->where('file', '[A-Za-z0-9._-]+')
+        ->name('games.file');
+};
+
+Route::middleware(SetLocale::class.':'.Locale::DEFAULT)->group($frontend);
+foreach (Locale::prefixed() as $locale) {
+    Route::prefix($locale)->name($locale.'.')->middleware(SetLocale::class.':'.$locale)->group($frontend);
+}
 
 // Contact form submission (rate-limited: 5 per minute per IP).
 Route::post('/contact', [ContactMessageController::class, 'store'])

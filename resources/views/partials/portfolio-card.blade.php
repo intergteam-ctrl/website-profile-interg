@@ -5,7 +5,7 @@
     @else
       <div class="media-thumb-inner">
         <div class="media-thumb-icon" aria-hidden="true">🖥️</div>
-        <div class="media-thumb-label">{{ $item->category ?: 'Project' }}</div>
+        <div class="media-thumb-label">{{ $item->category ?: __('Project') }}</div>
       </div>
     @endif
   </div>

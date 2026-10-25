@@ -10,7 +10,7 @@
 
 <article class="section section--page">
   <div class="container article">
-    <a href="{{ route('blog') }}" class="article-back">← Semua Artikel</a>
+    <a href="{{ lroute('blog') }}" class="article-back">← {{ __('Semua Artikel') }}</a>
 
     @if ($post->category)
       <div class="eyebrow">{{ $post->category }}</div>
@@ -19,10 +19,10 @@
 
     <div class="article-meta">
       @if ($post->published_at)
-        <time datetime="{{ $post->published_at->toDateString() }}">{{ $post->published_at->locale('id')->translatedFormat('d F Y') }}</time>
+        <time datetime="{{ $post->published_at->toDateString() }}">{{ $post->published_at->locale(\App\Support\Locale::carbon())->translatedFormat('d F Y') }}</time>
       @endif
       <span aria-hidden="true">·</span>
-      <span>{{ max(1, (int) ceil(str_word_count(strip_tags((string) $post->content)) / 200)) }} menit baca</span>
+      <span>{{ max(1, (int) ceil(str_word_count(strip_tags((string) $post->content)) / 200)) }} {{ __('menit baca') }}</span>
     </div>
 
     @if ($post->image_url)
