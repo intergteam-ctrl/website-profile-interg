@@ -17,6 +17,14 @@ class GamesTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // The migration adds the studio's Google Play apps; start these tests empty.
+        Game::query()->delete();
+    }
+
     private function folder(array $attrs = []): Game
     {
         $game = Game::create($attrs + ['title' => 'Fruits Bomb', 'slug' => 'fruits-bomb', 'description' => 'Potong buah, hindari bom.']);
@@ -28,18 +36,17 @@ class GamesTest extends TestCase
 
     public function test_games_root_lists_folders(): void
     {
-        $this->get('/studio')->assertOk()->assertSee('Folder ini masih kosong.');
+        $this->get('/studio')->assertOk()->assertSee('Belum ada aplikasi yang ditampilkan.');
         $this->get('/')->assertSee('href="'.route('games').'"', false);
 
         $this->folder();
         Game::create(['title' => 'Draft', 'slug' => 'draft', 'is_active' => false]);
 
         $this->get('/studio')->assertOk()
-            ->assertSee('fruits-bomb')
-            ->assertSee('2 file')
-            ->assertSee('href="'.route('games.show', 'fruits-bomb').'" class="fx-row"', false)
+            ->assertSee('Fruits Bomb')
+            ->assertSee('href="'.route('games.show', 'fruits-bomb').'" class="app-tile-link"', false)
             ->assertDontSee('Kebijakan privasi')
-            ->assertDontSee('draft</span>', false);
+            ->assertDontSee('/studio/draft', false);
         $this->get('/studio/draft')->assertNotFound();
     }
 
@@ -50,7 +57,7 @@ class GamesTest extends TestCase
         $this->get('/studio/fruits-bomb')->assertOk()
             ->assertSee('privacy.html')
             ->assertSee('index.html')
-            ->assertSee('href="'.url('/studio/fruits-bomb/privacy').'" class="fx-row" target="_blank"', false)
+            ->assertSee('href="'.url('/studio/fruits-bomb/privacy').'" class="fx-row fx-row--compact" target="_blank"', false)
             ->assertSee('href="'.route('games').'"', false);
     }
 

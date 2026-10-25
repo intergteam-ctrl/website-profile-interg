@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\Games\Pages;
 
 use App\Filament\Resources\Games\GameResource;
+use App\Models\Game;
+use App\Support\Locale;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
@@ -29,6 +31,12 @@ class EditGame extends EditRecord
     protected function afterSave(): void
     {
         GameResource::storeUploadedFiles($this->record, $this->uploadedHtml);
+
+        // Refresh the Google Play listing right away (all languages).
+        $this->record->forgetPlay();
+        foreach (array_keys(Locale::SUPPORTED) as $locale) {
+            Game::warmPlay([$this->record], $locale);
+        }
 
         // Clear the upload field so the same files are not added again.
         $this->data['html_files'] = [];

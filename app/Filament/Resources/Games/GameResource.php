@@ -8,6 +8,7 @@ use App\Filament\Resources\Games\Pages\ListGames;
 use App\Filament\Resources\Games\RelationManagers\FilesRelationManager;
 use App\Models\Game;
 use App\Models\GameFile;
+use App\Support\PlayStore;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -62,6 +63,19 @@ class GameResource extends Resource
                 ->maxLength(120)
                 ->unique(ignoreRecord: true),
 
+            TextInput::make('play_package')
+                ->label('Link Google Play')
+                ->placeholder('https://play.google.com/store/apps/details?id=com.interg.namaapp')
+                ->helperText('Tempel link aplikasi di Google Play. Ikon, screenshot, deskripsi dan rating diambil otomatis dari Google Play (diperbarui tiap 12 jam). Kosongkan untuk game HTML tanpa Google Play.')
+                ->formatStateUsing(fn (?string $state): ?string => $state ? PlayStore::url($state) : null)
+                ->dehydrateStateUsing(fn (?string $state): ?string => PlayStore::packageFrom($state))
+                ->rule(fn () => function (string $attribute, $value, \Closure $fail): void {
+                    if (filled($value) && ! PlayStore::packageFrom($value)) {
+                        $fail('Harus link aplikasi Google Play (…/store/apps/details?id=…).');
+                    }
+                })
+                ->columnSpanFull(),
+
             FileUpload::make('html_files')
                 ->label('File HTML')
                 ->helperText('Bisa pilih beberapa file sekaligus. Nama file menjadi alamatnya: privacy.html → /studio/{folder}/privacy. File dengan nama yang sama akan menimpa file lama. Maks. 8 MB per file.')
@@ -69,7 +83,6 @@ class GameResource extends Resource
                 ->acceptedFileTypes(['text/html', '.html', '.htm'])
                 ->maxSize(Game::MAX_KB)
                 ->storeFiles(false)
-                ->required(fn (string $operation): bool => $operation === 'create')
                 ->rule(fn () => function (string $attribute, $value, \Closure $fail): void {
                     foreach ((array) $value as $file) {
                         if ($file instanceof TemporaryUploadedFile && ! in_array(strtolower($file->getClientOriginalExtension()), ['html', 'htm'], true)) {
@@ -99,6 +112,7 @@ class GameResource extends Resource
             ->defaultSort('sort_order')
             ->reorderable('sort_order')
             ->columns([
+                TextColumn::make('play_package')->label('Google Play')->placeholder('—')->color('gray')->limit(32),
                 TextColumn::make('slug')->label('Folder')->searchable()->weight('bold')->prefix('/studio/'),
                 TextColumn::make('title')->label('Judul')->searchable(),
                 TextColumn::make('files_count')->label('File')->counts('files')->suffix(' file'),

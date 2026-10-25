@@ -10,10 +10,11 @@ use Illuminate\View\View;
 
 class GameController extends Controller
 {
-    /** /studio — every game shown as a folder. */
+    /** /studio — the studio's apps and games (Google Play listings + HTML files). */
     public function index(): View
     {
         $games = Game::query()->visible()->withCount('files')->get();
+        Game::warmPlay($games);
 
         // Folder sizes without loading the HTML itself.
         $sizes = DB::table('game_files')->whereIn('game_id', $games->pluck('id'))
@@ -23,7 +24,7 @@ class GameController extends Controller
         return view('frontend.games', compact('games', 'sizes'));
     }
 
-    /** /studio/{folder} — the files inside one folder. */
+    /** /studio/{app} — one app: Play Store listing, screenshots and its files. */
     public function show(Game $game): View
     {
         abort_unless($game->is_active, 404);

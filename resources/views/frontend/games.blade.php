@@ -1,47 +1,62 @@
 @extends('layout.app')
 
 @section('title', 'InterG Studio')
-@section('description', __('Kumpulan game ringan berbasis browser dari Inter G Queen Bumindo — buka folder lalu klik file untuk main.'))
+@section('description', __('Game dan aplikasi mobile karya InterG Studio — tersedia di Google Play.'))
 
 @section('content')
 
-<section class="section section--page">
+<section class="section section--page studio">
   <div class="container">
-    <div class="section-head section-head--center">
-      <h1 class="section-title">InterG Studio</h1>
-      <p class="section-sub">{{ __('Game ringan berbasis browser dari tim kami. Buka folder, lalu klik file untuk bermain langsung tanpa instal.') }}</p>
+    <div class="studio-head">
+      <img src="{{ asset('images/interg-studio.png') }}" alt="" width="88" height="88" class="studio-logo">
+      <div>
+        <h1 class="section-title">InterG Studio</h1>
+        <p class="section-sub">{{ __('Game dan aplikasi mobile buatan tim kami — dari puzzle santai hingga aplikasi gizi. Semua tersedia di Google Play.') }}</p>
+      </div>
+      <a href="https://play.google.com/store/apps/developer?id=InterG+Studio" class="btn btn-dark studio-dev" target="_blank" rel="noopener">
+        @include('partials.play-icon') {{ __('Lihat di Google Play') }}
+      </a>
     </div>
 
-    <div class="fx" role="region" aria-label="InterG Studio">
-      @include('partials.fx-bar', ['segments' => [['studio', null]], 'count' => __(':n folder', ['n' => $games->count()])])
-
-      <div class="fx-head" aria-hidden="true"><span>{{ __('Nama') }}</span><span>{{ __('Ukuran') }}</span><span>{{ __('Diubah') }}</span><span></span></div>
-
-      @if ($games->isNotEmpty())
-        <ul class="fx-list">
-          @foreach ($games as $game)
-            @php($stat = $sizes[$game->id] ?? null)
-            <li>
-              <a href="{{ lroute('games.show', $game) }}" class="fx-row">
-                <span class="fx-name">
-                  @include('partials.fx-folder-icon')
-                  <span class="fx-text">
-                    <span class="fx-title">{{ $game->slug }}</span>
-                    <span class="fx-desc">{{ $game->title }}@if ($game->description) — {{ \Illuminate\Support\Str::limit($game->description, 100) }}@endif</span>
-                  </span>
+    @if ($games->isNotEmpty())
+      <ul class="app-grid">
+        @foreach ($games as $game)
+          @php($play = $game->play_package ? $game->play() : null)
+          @php($name = $play['name'] ?? $game->title)
+          @php($icon = $play['icon'] ?? $game->image_url)
+          @php($summary = \Illuminate\Support\Str::limit(strtok((string) ($play['description'] ?? $game->description ?? ''), "\n") ?: '', 150))
+          <li>
+            <article class="app-tile">
+              <a href="{{ lroute('games.show', $game) }}" class="app-tile-link">
+                <span class="app-tile-icon">
+                  @if ($icon)
+                    <img src="{{ $icon }}" alt="" loading="lazy" width="72" height="72">
+                  @else
+                    <span aria-hidden="true">{{ \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr($name, 0, 1)) }}</span>
+                  @endif
                 </span>
-                <span class="fx-size">{{ __(':n file', ['n' => $game->files_count]) }}</span>
-                <span class="fx-date">{{ ($stat?->changed ? \Illuminate\Support\Carbon::parse($stat->changed) : $game->updated_at)?->locale(\App\Support\Locale::carbon())->translatedFormat('d M Y') }}</span>
-                <span class="fx-open" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M10 6 8.6 7.4 13.2 12l-4.6 4.6L10 18l6-6z"/></svg></span>
+                <span class="app-tile-body">
+                  <span class="app-tile-name">{{ $name }}</span>
+                  <span class="app-tile-meta">
+                    @if (! empty($play['category'])){{ __($play['category']) }}@endif
+                    @if (! empty($play['rating']))<span class="app-tile-rating" aria-label="{{ __('Rating') }} {{ $play['rating'] }}">★ {{ number_format($play['rating'], 1) }}</span>@endif
+                  </span>
+                  @if ($summary)<span class="app-tile-desc">{{ $summary }}</span>@endif
+                </span>
               </a>
-            </li>
-          @endforeach
-        </ul>
-      @else
-        <p class="fx-empty">{{ __('Folder ini masih kosong.') }}</p>
-      @endif
-    </div>
-    <p class="fx-note">{{ __('Klik folder untuk melihat isinya.') }}</p>
+              <div class="app-tile-actions">
+                <a href="{{ lroute('games.show', $game) }}" class="link-arrow">{{ __('Lihat detail') }}</a>
+                @if ($game->play_package)
+                  <a href="{{ $game->play_url }}" class="app-tile-play" target="_blank" rel="noopener">@include('partials.play-icon') Google Play</a>
+                @endif
+              </div>
+            </article>
+          </li>
+        @endforeach
+      </ul>
+    @else
+      <p class="empty-state">{{ __('Belum ada aplikasi yang ditampilkan.') }}</p>
+    @endif
   </div>
 </section>
 
