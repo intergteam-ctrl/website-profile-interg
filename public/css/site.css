@@ -166,6 +166,8 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
 .more-item.active { border-color: var(--teal-600); background: var(--teal-soft); }
 .more-icon { width: 42px; height: 42px; border-radius: 10px; background: var(--navy-900); display: grid; place-items: center; flex-shrink: 0; }
 .more-icon svg { width: 21px; height: 21px; fill: #fff; }
+.more-icon--img { background: #013337; overflow: hidden; }
+.more-icon--img img { width: 100%; height: 100%; object-fit: cover; }
 .more-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.35; }
 .more-text strong { font-size: 16px; color: var(--navy-900); }
 .more-text span { font-size: 14px; color: var(--muted); }

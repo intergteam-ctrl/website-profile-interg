@@ -14,7 +14,7 @@
        'desc' => __('Laptop, hardware, software & aksesoris IT'), 'icon' => 'M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM7.2 14.6l.1-.1L8.1 13h7.4c.8 0 1.4-.4 1.7-1l3.6-6.5A1 1 0 0 0 20 4H5.2l-.9-2H1v2h2l3.6 7.6-1.4 2.4A2 2 0 0 0 7 17h12v-2H7.4c-.1 0-.2-.1-.2-.2z'],
       ['label' => __('Download'),    'href' => lroute('downloads'), 'active' => $L::is('downloads'), 'side' => true,
        'desc' => __('Company profile, brosur & panduan'), 'icon' => 'M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z'],
-      ['label' => __('Games'),       'href' => lroute('games'), 'active' => $L::is('games', 'games.show', 'games.file'), 'side' => true,
+      ['label' => 'InterG Studio', 'image' => asset('images/interg-studio.png'),       'href' => lroute('games'), 'active' => $L::is('games', 'games.show', 'games.file'), 'side' => true,
        'desc' => __('Game ringan langsung di browser'), 'icon' => 'M21 6H3a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm4-3a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z'],
   ];
   // Top bar keeps the page sections; extra pages live in the side menu.
@@ -117,7 +117,11 @@
       @foreach ($sideItems as $item)
         <li>
           <a href="{{ $item['href'] }}" @class(['more-item', 'active' => $item['active'] ?? false])>
-            <span class="more-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="{{ $item['icon'] }}"/></svg></span>
+            @if (! empty($item['image']))
+              <span class="more-icon more-icon--img" aria-hidden="true"><img src="{{ $item['image'] }}" alt="" width="42" height="42"></span>
+            @else
+              <span class="more-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="{{ $item['icon'] }}"/></svg></span>
+            @endif
             <span class="more-text"><strong>{{ $item['label'] }}</strong><span>{{ $item['desc'] }}</span></span>
           </a>
         </li>
